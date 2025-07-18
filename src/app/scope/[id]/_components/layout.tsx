@@ -2,20 +2,22 @@
 
 import Image from "next/image"
 import { Button } from "react-aria-components"
+import { SignedIn, UserButton } from "@clerk/nextjs"
+import { useParams } from "next/navigation"
 import { useSessionStorageUtility } from "@/lib/utils/storage-utility"
 import { twm } from "@/lib/utils/tailwind"
 import { Icon } from "@/lib/primitives/icon"
+import { ScopeHeader } from "@/modules/scope/scope-header"
+import { ScopeNavList } from "@/modules/scope/scope-nav-list"
 
-export function ScopeLayout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={twm("grid h-dvh w-dvw grid-cols-[auto_1fr]", "divide-x")}>
+    <div className={twm("grid h-dvh max-h-dvh w-dvw max-w-dvw grid-cols-[auto_1fr]", "divide-x")}>
       <Sidebar />
-      <main className="grid grid-rows-[auto_auto_1fr]">
-        <ScopeHeader />
-        <div className="flex flex-col items-center-safe p-16">
-          <div className="w-xl max-w-full">{children}</div>
-        </div>
-      </main>
+      <div className="grid grid-rows-[auto_auto_1fr]">
+        <Header />
+        <main className="p-16">{children}</main>
+      </div>
     </div>
   )
 }
@@ -46,35 +48,43 @@ export function Sidebar() {
           <Icon icon="double-chevron" className="rotate-90 text-neutral-400" />
         </Button>
       </div>
+      <div className="p-16">
+        <ScopeNavList />
+      </div>
     </nav>
   )
 }
 
-function ScopeHeader() {
+function Header() {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("sidebar-open", true)
+  const { id: scopeId } = useParams<{ id: string }>()
+
   return (
-    <header className="flex h-50 flex-col items-center-safe justify-center border-b px-16">
-      <div className="flex w-xl max-w-full items-center gap-16">
-        {/* ScopeNavTrigger for Desktop (opens sidebar) */}
-        <div
-          className={twm(
-            "hidden md:block",
-            sidebarOpen ? "!hidden" : "opacity-100 transition-opacity starting:opacity-0"
-          )}
-        >
-          <ScopeNavTrigger onPress={() => setSidebarOpen(true)} />
-        </div>
-        {/* ScopeNavTrigger for Mobile (opens modal) */}
-        <div className="block md:hidden">
-          <ScopeNavTrigger onPress={() => {}} />
-        </div>
-        <h1 className="text-lg font-semibold text-neutral-600">[CUL] Gathering Flow Refresh</h1>
+    <header className="flex h-50 w-full items-center gap-16 border-b px-16">
+      {/* NavTrigger for Desktop (opens sidebar) */}
+      <div
+        className={twm(
+          "hidden md:block",
+          sidebarOpen ? "!hidden" : "opacity-100 transition-opacity starting:opacity-0"
+        )}
+      >
+        <NavTrigger onPress={() => setSidebarOpen(true)} />
       </div>
+      {/* NavTrigger for Mobile (opens modal) */}
+      <div className="block md:hidden">
+        <NavTrigger onPress={() => {}} />
+      </div>
+      <div className="grow truncate">
+        <ScopeHeader scopeId={scopeId} />
+      </div>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
     </header>
   )
 }
 
-function ScopeNavTrigger({ onPress }: { onPress: () => void }) {
+function NavTrigger({ onPress }: { onPress: () => void }) {
   return (
     <Button
       className={twm("flex cursor-pointer items-center gap-4 hover:opacity-80")}

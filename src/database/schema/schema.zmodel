@@ -20,9 +20,9 @@ plugin hooks {
 }
 
 model User {
-  id               String   @id @deny('update', true) // Should match clerk auth ID
-  created_at       DateTime @default(now()) @db.Timestamptz @deny('update', true)
-  updated_at       DateTime @updatedAt @db.Timestamptz
+  id               String    @id
+  created_at       DateTime  @default(now()) @db.Timestamptz
+  updated_at       DateTime  @updatedAt @db.Timestamptz
 
   tasks            Task[]
   scopes           Scope[]
@@ -33,7 +33,7 @@ model User {
 
   @@auth
   @@map("users")
-  @@allow("update", auth().id == id)
+  @@allow("all", id == auth().id)
 }
 
 abstract model WithMetadata {
@@ -59,7 +59,7 @@ model Task extends WithMetadata {
   scope_id     String
   scope        Scope     @relation(fields: [scope_id], references: [id], onDelete: Cascade)
 
-  title        String    @trim @length(min: 1, max: 300, "title must be between 1 and 300 characters")
+  title        String    @trim
   content      String?   @trim
 
   due_at       DateTime? @db.Timestamptz

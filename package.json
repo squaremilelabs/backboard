@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.25.3",
-    "@prisma/client": "6.10.0",
+    "@prisma/client": "6.3.1",
     "@tanstack/react-query": "^5.81.5",
-    "@zenstackhq/runtime": "^2.16.1",
-    "@zenstackhq/server": "^2.16.1",
+    "@zenstackhq/runtime": "2.11.6",
+    "@zenstackhq/server": "2.11.6",
     "lucide-react": "^0.525.0",
     "next": "^15.3.5",
     "next-themes": "^0.4.6",
@@ -37,7 +37,7 @@
     "@types/node": "^24.0.10",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "@zenstackhq/tanstack-query": "^2.16.1",
+    "@zenstackhq/tanstack-query": "2.11.6",
     "eslint": "^9.30.1",
     "eslint-config-next": "15.3.5",
     "eslint-config-prettier": "^10.1.5",
@@ -47,9 +47,10 @@
     "prettier-plugin-classnames": "^0.8.1",
     "prettier-plugin-merge": "^0.8.0",
     "prettier-plugin-tailwindcss": "^0.6.13",
-    "prisma": "6.10.0",
+    "prisma": "6.3.1",
     "tailwindcss": "^4.1.11",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "zenstack": "^2.16.1"
+    "zenstack": "2.11.6"
   }
 }
