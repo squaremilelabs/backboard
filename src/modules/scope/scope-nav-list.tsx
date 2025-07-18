@@ -7,6 +7,11 @@ export function ScopeNavList() {
   const params = useParams<{ id: string }>()
   const { data: scopes } = useFindManyScope({
     where: { archived_at: null },
+    include: {
+      _count: {
+        select: { tasks: { where: { archived_at: null, completed_at: null, deferred_to: null } } },
+      },
+    },
     orderBy: { title: "asc" },
   })
 

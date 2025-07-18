@@ -3,12 +3,12 @@
 import Image from "next/image"
 import { Button } from "react-aria-components"
 import { SignedIn, UserButton } from "@clerk/nextjs"
-import { useParams } from "next/navigation"
 import { useSessionStorageUtility } from "@/lib/utils/storage-utility"
 import { twm } from "@/lib/utils/tailwind"
 import { Icon } from "@/lib/primitives/icon"
 import { ScopeHeader } from "@/modules/scope/scope-header"
 import { ScopeNavList } from "@/modules/scope/scope-nav-list"
+import { ScopeViewTabs } from "@/modules/scope/scope-view-tabs"
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,7 +16,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Sidebar />
       <div className="grid grid-rows-[auto_auto_1fr]">
         <Header />
-        <main className="p-16">{children}</main>
+        <main className="grid grid-rows-[auto_1fr] gap-16 p-16">
+          <ScopeViewTabs />
+          {children}
+        </main>
       </div>
     </div>
   )
@@ -57,7 +60,6 @@ export function Sidebar() {
 
 function Header() {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("sidebar-open", true)
-  const { id: scopeId } = useParams<{ id: string }>()
 
   return (
     <header className="flex h-50 w-full items-center gap-16 border-b px-16">
@@ -75,7 +77,7 @@ function Header() {
         <NavTrigger onPress={() => {}} />
       </div>
       <div className="grow truncate">
-        <ScopeHeader scopeId={scopeId} />
+        <ScopeHeader />
       </div>
       <SignedIn>
         <UserButton />

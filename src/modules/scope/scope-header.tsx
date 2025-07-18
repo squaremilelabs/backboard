@@ -1,10 +1,12 @@
 "use client"
 
+import { useParams } from "next/navigation"
 import { useFindUniqueScope } from "@/database/generated/hooks"
 
-export function ScopeHeader({ scopeId }: { scopeId: string }) {
+export function ScopeHeader() {
+  const params = useParams<{ id: string }>()
   const { data: scope } = useFindUniqueScope({
-    where: { id: scopeId },
+    where: { id: params.id },
   })
 
   return (
