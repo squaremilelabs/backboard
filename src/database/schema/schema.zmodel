@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+plugin prisma {
+  provider = '@core/prisma'
+  output = '../generated/prisma-schema/schema.prisma'
+}
+
+plugin hooks {
+  provider = '@zenstackhq/tanstack-query'
+  output = "../generated/hooks"
+  target = "react"
+  version = "v5"
+}
+
+model User {
+  id               String   @id @deny('update', true) // Should match clerk auth ID
+  created_at       DateTime @default(now()) @db.Timestamptz @deny('update', true)
+  updated_at       DateTime @updatedAt @db.Timestamptz
+
+  tasks            Task[]
+  scopes           Scope[]
+
+  scope_list_order String[]
+
+  @@auth
+  @@map("users")
+  @@allow("update", auth().id == id)
+}
+
+abstract model WithMetadata {
+  id            String    @id @default(cuid())
+  created_at    DateTime  @default(now()) @db.Timestamptz
+  updated_at    DateTime  @updatedAt @db.Timestamptz
+  created_by_id String    @default(auth().id)
+  created_by    User      @relation(fields: [created_by_id], references: [id], onDelete: Cascade)
+  archived_at   DateTime? @db.Timestamptz
+}
+
+model Scope extends WithMetadata {
+  title                   String   @trim @length(min: 1, max: 300, "title must be between 1 and 300 characters")
+  content                 String?  @trim
+  tasks                   Task[]
+  current_task_list_order String[]
+
+  @@map("scopes")
+  @@allow("all", created_by_id == auth().id)
+}
+
+model Task extends WithMetadata {
+  scope_id     String
+  scope        Scope     @relation(fields: [scope_id], references: [id], onDelete: Cascade)
+
+  title        String    @trim @length(min: 1, max: 300, "title must be between 1 and 300 characters")
+  content      String?   @trim
+
+  due_at       DateTime? @db.Timestamptz
+  defer_at     DateTime? @db.Timestamptz
+  completed_at DateTime? @db.Timestamptz
+
+  @@map("tasks")
+  @@allow("all", created_by_id == auth().id)
+}

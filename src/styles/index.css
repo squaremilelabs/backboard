@@ -1,7 +1,42 @@
 @import "tailwindcss";
+@import "./colors.css";
 
 @theme {
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
+
+  --spacing: 1px;
+
+  --text-*: initial;
+  --text-sm: 12px;
+  --text-sm--line-height: 16px;
+  --text-md: 14px;
+  --text-md--line-height: 20px;
+  --text-lg: 16px;
+  --text-lg--line-height: 24px;
+
+  --radius-*: 1px;
+
+  --breakpoint-*: initial;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 864px;
+  --breakpoint-lg: 1152px;
+  --breakpoint-xl: 1440px;
+
+  --container-*: initial;
+  --container-xs: 288px;
+  --container-sm: 576px;
+  --container-md: 864px;
+  --container-lg: 1152px;
+  --container-xl: 1440px;
 }
+
+@layer base {
+  /*  As of Tailwind V4, border-color defaulted to currentColor. Modified here. */
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    @apply border-neutral-200;
+  }
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
