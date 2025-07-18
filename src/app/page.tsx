@@ -1,3 +1,3 @@
 export default function RootPage() {
-  return <div>🤙</div>
+  return <div className="text-lg">Backboard</div>
 }

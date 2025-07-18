@@ -5,10 +5,10 @@ import "@/styles/index.css"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={twm(fontsClassName)}>
-      <Providers>
-        <body>{children}</body>
-      </Providers>
+    <html lang="en" className={twm(fontsClassName)} suppressHydrationWarning>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   )
 }

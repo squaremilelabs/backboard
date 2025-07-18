@@ -16,7 +16,10 @@
   --text-lg: 16px;
   --text-lg--line-height: 24px;
 
-  --radius-*: 1px;
+  --radius-*: initial;
+  --radius-sm: 1px;
+  --radius-md: 1px;
+  --radius-lg: 1px;
 
   --breakpoint-*: initial;
   --breakpoint-sm: 576px;
@@ -30,6 +33,14 @@
   --container-md: 864px;
   --container-lg: 1152px;
   --container-xl: 1440px;
+}
+
+html {
+  @apply bg-neutral-50;
+  @apply text-neutral-950;
+  @apply box-border;
+  @apply font-sans;
+  @apply text-md;
 }
 
 @layer base {

@@ -1,5 +1,7 @@
 import {
   ArchiveIcon,
+  ChevronDownIcon,
+  ChevronsDownIcon,
   CircleArrowOutUpLeftIcon,
   CircleCheckBigIcon,
   Clock4Icon,
@@ -9,6 +11,7 @@ import {
   LoaderIcon,
   LucideIcon,
   LucideProps,
+  MenuIcon,
   PlusIcon,
   XIcon,
 } from "lucide-react"
@@ -26,6 +29,9 @@ export type IconKey =
   | "return"
   | "loader"
   | "x"
+  | "menu"
+  | "double-chevron"
+  | "chevron"
 
 const ICON_MAP: Record<IconKey, LucideIcon> = {
   "drag-handle": GripVerticalIcon,
@@ -38,6 +44,9 @@ const ICON_MAP: Record<IconKey, LucideIcon> = {
   "return": CircleArrowOutUpLeftIcon,
   "loader": LoaderIcon,
   "x": XIcon,
+  "menu": MenuIcon,
+  "chevron": ChevronDownIcon,
+  "double-chevron": ChevronsDownIcon,
 }
 
 export const iconVariants = twv({
