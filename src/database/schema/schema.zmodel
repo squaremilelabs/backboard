@@ -61,7 +61,7 @@ model Task extends WithMetadata {
   content      String?   @trim
 
   due_at       DateTime? @db.Timestamptz
-  defer_at     DateTime? @db.Timestamptz
+  deferred_to  DateTime? @db.Timestamptz
   completed_at DateTime? @db.Timestamptz
 
   @@map("tasks")

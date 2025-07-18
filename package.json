@@ -1,12 +1,18 @@
 {
-  "name": "sml-app-base",
+  "name": "backboard",
   "version": "1.0.0",
-  "author": "E",
+  "author": "e@squaremilelabs.com",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
+  },
+   "prisma": {
+    "schema": "src/database/generated/prisma-schema/schema.prisma"
+  },
+  "zenstack": {
+    "schema": "src/database/schema/schema.zmodel"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.25.3",
