@@ -37,6 +37,9 @@ const metadata = {
                     name: "scope_list_order",
                     type: "String",
                     isArray: true,
+                }, clerk_data: {
+                    name: "clerk_data",
+                    type: "Json",
                 },
             }, uniqueConstraints: {
                 id: {

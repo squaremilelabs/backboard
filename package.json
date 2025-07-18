@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
-   "prisma": {
+  "prisma": {
     "schema": "src/database/generated/prisma-schema/schema.prisma"
   },
   "zenstack": {
@@ -26,6 +26,7 @@
     "react": "^19.1.0",
     "react-aria-components": "^1.10.1",
     "react-dom": "^19.1.0",
+    "svix": "^1.69.0",
     "tailwind-merge": "^3.3.1",
     "tailwind-variants": "^1.0.0"
   },

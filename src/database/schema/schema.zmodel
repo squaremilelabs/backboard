@@ -29,6 +29,8 @@ model User {
 
   scope_list_order String[]
 
+  clerk_data       Json
+
   @@auth
   @@map("users")
   @@allow("update", auth().id == id)

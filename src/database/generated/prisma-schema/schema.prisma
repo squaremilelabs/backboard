@@ -19,6 +19,7 @@ model User {
   tasks            Task[]
   scopes           Scope[]
   scope_list_order String[]
+  clerk_data       Json
 
   @@map("users")
 }
