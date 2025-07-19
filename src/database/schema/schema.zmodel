@@ -20,9 +20,9 @@ plugin hooks {
 }
 
 model User {
-  id               String    @id
-  created_at       DateTime  @default(now()) @db.Timestamptz
-  updated_at       DateTime  @updatedAt @db.Timestamptz
+  id               String   @id
+  created_at       DateTime @default(now()) @db.Timestamptz
+  updated_at       DateTime @updatedAt @db.Timestamptz
 
   tasks            Task[]
   scopes           Scope[]
@@ -56,15 +56,15 @@ model Scope extends WithMetadata {
 }
 
 model Task extends WithMetadata {
-  scope_id     String
-  scope        Scope     @relation(fields: [scope_id], references: [id], onDelete: Cascade)
+  scope_id            String
+  scope               Scope     @relation(fields: [scope_id], references: [id], onDelete: Cascade)
 
-  title        String    @trim
-  content      String?   @trim
+  title               String    @trim
+  content             String?   @trim
 
-  due_at       DateTime? @db.Timestamptz
-  deferred_to  DateTime? @db.Timestamptz
-  completed_at DateTime? @db.Timestamptz
+  due_at              DateTime? @db.Timestamptz
+  deferred_to         DateTime? @db.Timestamptz
+  completed_at        DateTime? @db.Timestamptz
 
   @@map("tasks")
   @@allow("all", created_by_id == auth().id)

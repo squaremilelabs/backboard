@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { Button } from "react-aria-components"
 import { SignedIn, UserButton } from "@clerk/nextjs"
 import { useSessionStorageUtility } from "@/lib/utils/storage-utility"
@@ -8,7 +7,7 @@ import { twm } from "@/lib/utils/tailwind"
 import { Icon } from "@/lib/primitives/icon"
 import { ScopeHeader } from "@/modules/scope/scope-header"
 import { ScopeNavList } from "@/modules/scope/scope-nav-list"
-import { ScopeViewTabs } from "@/modules/scope/scope-view-tabs"
+import { TasksViewTabs } from "@/modules/task/tasks-view-tabs"
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,8 +15,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Sidebar />
       <div className="grid grid-rows-[auto_auto_1fr]">
         <Header />
-        <main className="grid grid-rows-[auto_1fr] gap-16 p-16">
-          <ScopeViewTabs />
+        <main className="grid grid-rows-[auto_1fr] pt-0">
+          <TasksViewTabs />
           {children}
         </main>
       </div>
@@ -38,13 +37,6 @@ export function Sidebar() {
       )}
     >
       <div className="flex h-50 items-center gap-8 border-b p-16">
-        <Image
-          alt="Backboard"
-          src="/images/backboard-logo.svg"
-          width={20}
-          height={20}
-          className="shadow-md"
-        />
         <h1 className="font-semibold text-neutral-600">Backboard</h1>
         <div className="grow" />
         <Button className="cursor-pointer hover:opacity-80" onPress={() => setSidebarOpen(false)}>
@@ -62,7 +54,7 @@ function Header() {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("sidebar-open", true)
 
   return (
-    <header className="flex h-50 w-full items-center gap-16 border-b px-16">
+    <header className="flex h-50 w-full items-center gap-16 px-16">
       {/* NavTrigger for Desktop (opens sidebar) */}
       <div
         className={twm(
@@ -93,13 +85,6 @@ function NavTrigger({ onPress }: { onPress: () => void }) {
       onPress={onPress}
     >
       <Icon icon="menu" className="text-neutral-400" />
-      <Image
-        alt="Backboard"
-        src="/images/backboard-logo.svg"
-        width={20}
-        height={20}
-        className="shadow-md"
-      />
     </Button>
   )
 }

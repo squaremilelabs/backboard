@@ -8,11 +8,15 @@ import {
   ClockFadingIcon,
   CrosshairIcon,
   GripVerticalIcon,
+  InboxIcon,
   LoaderIcon,
   LucideIcon,
   LucideProps,
   MenuIcon,
   PlusIcon,
+  SquareCheckIcon,
+  SquareIcon,
+  SquareMinusIcon,
   XIcon,
 } from "lucide-react"
 import { VariantProps } from "tailwind-variants"
@@ -26,12 +30,16 @@ export type IconKey =
   | "defer"
   | "defer_fade"
   | "complete"
+  | "current"
   | "return"
   | "loader"
   | "x"
   | "menu"
   | "double-chevron"
   | "chevron"
+  | "checkbox-blank"
+  | "checkbox-checked"
+  | "checkbox-indeterminate"
 
 const ICON_MAP: Record<IconKey, LucideIcon> = {
   "drag-handle": GripVerticalIcon,
@@ -41,12 +49,16 @@ const ICON_MAP: Record<IconKey, LucideIcon> = {
   "defer": Clock4Icon,
   "defer_fade": ClockFadingIcon,
   "complete": CircleCheckBigIcon,
+  "current": InboxIcon,
   "return": CircleArrowOutUpLeftIcon,
   "loader": LoaderIcon,
   "x": XIcon,
   "menu": MenuIcon,
   "chevron": ChevronDownIcon,
   "double-chevron": ChevronsDownIcon,
+  "checkbox-blank": SquareIcon,
+  "checkbox-checked": SquareCheckIcon,
+  "checkbox-indeterminate": SquareMinusIcon,
 }
 
 export const iconVariants = twv({

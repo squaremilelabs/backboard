@@ -17,9 +17,9 @@
   --text-lg--line-height: 24px;
 
   --radius-*: initial;
-  --radius-sm: 1px;
-  --radius-md: 1px;
-  --radius-lg: 1px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
 
   --breakpoint-*: initial;
   --breakpoint-sm: 576px;
@@ -41,6 +41,7 @@ html {
   @apply box-border;
   @apply font-sans;
   @apply text-md;
+  @apply rounded-sm;
 }
 
 @layer base {

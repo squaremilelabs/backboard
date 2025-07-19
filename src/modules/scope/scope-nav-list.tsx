@@ -19,7 +19,7 @@ export function ScopeNavList() {
     <ListBox
       aria-label="Scope List"
       items={scopes ?? []}
-      dependencies={[scopes]}
+      dependencies={[scopes, params.id]}
       className="flex flex-col gap-2"
     >
       {(item) => {
@@ -29,10 +29,8 @@ export function ScopeNavList() {
             id={item.id}
             textValue={item.title}
             className={twm(
-              "p-8",
-              isActive
-                ? "bg-neutral-0 border-2 text-neutral-950"
-                : "text-neutral-500 hover:bg-neutral-200"
+              "px-8 py-4",
+              isActive ? "bg-neutral-200 text-neutral-950" : "text-neutral-500 hover:bg-neutral-100"
             )}
             href={`/scope/${item.id}`}
           >

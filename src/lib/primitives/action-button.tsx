@@ -3,7 +3,7 @@ import { twv } from "../utils/tailwind"
 
 export const actionButtonVariants = twv({
   base: [
-    "flex items-center min-w-fit p-8 gap-8",
+    "flex items-center min-w-fit min-h-36 min-w-36 p-8 gap-8",
     "not-disabled:cursor-pointer not-disabled:hover:opacity-70",
   ],
   variants: {
@@ -21,7 +21,7 @@ export const actionButtonVariants = twv({
   defaultVariants: {
     color: "neutral",
     transparent: false,
-    bordered: true,
+    bordered: false,
   },
 })
 
