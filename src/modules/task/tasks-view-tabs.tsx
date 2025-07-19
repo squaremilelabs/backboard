@@ -27,7 +27,7 @@ export function TasksViewTabs() {
   const taskCounts = getTaskCounts(scope?.tasks ?? [])
 
   return (
-    <Tabs orientation="horizontal" className="p-16 pt-0">
+    <Tabs orientation="horizontal">
       <TabList className="flex items-center gap-16 border-b">
         {VIEWS.map((view) => {
           const isActive = currentView === view.key
@@ -38,7 +38,9 @@ export function TasksViewTabs() {
               href={`/scope/${scopeId}${view.path}`}
               className={twm(
                 "flex cursor-pointer items-center gap-8 px-16 py-4 text-neutral-400",
-                isActive ? "border-b-2 border-neutral-600 font-semibold text-neutral-600" : ""
+                isActive ? "border-b-2 border-neutral-600 font-semibold text-neutral-600" : "",
+                "!outline-0",
+                "focus-visible:border-yellow-600"
               )}
             >
               <Icon icon={view.icon} size="sm" />

@@ -49,6 +49,10 @@ html {
   *, ::after, ::before, ::backdrop, ::file-selector-button {
     @apply border-neutral-200;
   }
+
+  * {
+    @apply outline-yellow-600;
+  }
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

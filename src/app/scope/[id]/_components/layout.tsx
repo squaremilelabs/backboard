@@ -11,15 +11,20 @@ import { TasksViewTabs } from "@/modules/task/tasks-view-tabs"
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={twm("grid h-dvh max-h-dvh w-dvw max-w-dvw grid-cols-[auto_1fr]", "divide-x")}>
+    <div
+      className={twm(
+        "relative flex h-dvh max-h-dvh w-dvw max-w-dvw flex-row items-stretch",
+        "divide-x overflow-auto"
+      )}
+    >
       <Sidebar />
-      <div className="grid grid-rows-[auto_auto_1fr]">
-        <Header />
-        <main className="grid grid-rows-[auto_1fr] pt-0">
+      <main className="relative flex w-full flex-col gap-8">
+        <div className="sticky top-0 z-10 flex w-full flex-col bg-neutral-50/30 backdrop-blur-2xl">
+          <Header />
           <TasksViewTabs />
-          {children}
-        </main>
-      </div>
+        </div>
+        <div className="relative flex w-full flex-col gap-8 p-16 pt-8">{children}</div>
+      </main>
     </div>
   )
 }
@@ -33,7 +38,8 @@ export function Sidebar() {
         "overflow-hidden",
         "transition-all",
         "w-0 md:grid",
-        "grid-rows-[auto_1fr]"
+        "grid-rows-[auto_1fr]",
+        "sticky top-0 h-dvh"
       )}
     >
       <div className="flex h-50 items-center gap-8 border-b p-16">
@@ -54,7 +60,7 @@ function Header() {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("sidebar-open", true)
 
   return (
-    <header className="flex h-50 w-full items-center gap-16 px-16">
+    <header className="flex h-50 w-full items-center gap-16 p-16">
       {/* NavTrigger for Desktop (opens sidebar) */}
       <div
         className={twm(
@@ -84,7 +90,7 @@ function NavTrigger({ onPress }: { onPress: () => void }) {
       className={twm("flex cursor-pointer items-center gap-4 hover:opacity-80")}
       onPress={onPress}
     >
-      <Icon icon="menu" className="text-neutral-400" />
+      <Icon icon="double-chevron" className="-rotate-90 text-neutral-400" />
     </Button>
   )
 }
