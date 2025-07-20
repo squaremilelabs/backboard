@@ -1,0 +1,3 @@
+[submodule "smui"]
+	path = smui
+	url = https://github.com/squaremilelabs/smui.git
