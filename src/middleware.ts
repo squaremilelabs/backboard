@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
 
-const isProtectedRoute = createRouteMatcher(["/scope(.*)"])
+const isProtectedRoute = createRouteMatcher(["/inbox(.*)"])
 
 export const config = {
   matcher: [

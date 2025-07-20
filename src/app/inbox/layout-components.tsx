@@ -5,9 +5,9 @@ import { SignedIn, UserButton } from "@clerk/nextjs"
 import { useSessionStorageUtility } from "@/lib/utils/storage-utility"
 import { twm } from "@/lib/utils/tailwind"
 import { Icon } from "@/lib/primitives/icon"
-import { ScopeHeader } from "@/modules/scope/scope-header"
-import { ScopeNavList } from "@/modules/scope/scope-nav-list"
-import { TasksViewTabs } from "@/modules/task/tasks-view-tabs"
+import { InboxHeader } from "@/modules/inbox/inbox-header"
+import { InboxNavList } from "@/modules/inbox/inbox-nav-list"
+import { InboxViewTabs } from "@/modules/inbox/inbox-view-tabs"
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +21,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <main className="relative flex w-full flex-col gap-8">
         <div className="sticky top-0 z-10 flex w-full flex-col bg-neutral-50/30 backdrop-blur-2xl">
           <Header />
-          <TasksViewTabs />
+          <InboxViewTabs />
         </div>
         <div className="relative flex w-full flex-col gap-8 p-16 pt-8">{children}</div>
       </main>
@@ -43,14 +43,14 @@ export function Sidebar() {
       )}
     >
       <div className="flex h-50 items-center gap-8 border-b p-16">
-        <h1 className="font-semibold text-neutral-600">Backboard</h1>
+        <h1 className="font-semibold text-yellow-600">Backboard</h1>
         <div className="grow" />
         <Button className="cursor-pointer hover:opacity-80" onPress={() => setSidebarOpen(false)}>
           <Icon icon="double-chevron" className="rotate-90 text-neutral-400" />
         </Button>
       </div>
       <div className="p-16">
-        <ScopeNavList />
+        <InboxNavList />
       </div>
     </nav>
   )
@@ -60,7 +60,7 @@ function Header() {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("sidebar-open", true)
 
   return (
-    <header className="flex h-50 w-full items-center gap-16 p-16">
+    <header className="flex h-50 w-full items-center gap-8 p-16">
       {/* NavTrigger for Desktop (opens sidebar) */}
       <div
         className={twm(
@@ -75,7 +75,7 @@ function Header() {
         <NavTrigger onPress={() => {}} />
       </div>
       <div className="grow truncate">
-        <ScopeHeader />
+        <InboxHeader />
       </div>
       <SignedIn>
         <UserButton />
@@ -90,7 +90,7 @@ function NavTrigger({ onPress }: { onPress: () => void }) {
       className={twm("flex cursor-pointer items-center gap-4 hover:opacity-80")}
       onPress={onPress}
     >
-      <Icon icon="double-chevron" className="-rotate-90 text-neutral-400" />
+      <Icon icon="double-chevron" className="-rotate-90 text-yellow-600" />
     </Button>
   )
 }

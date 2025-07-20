@@ -2,13 +2,12 @@ import {
   ArchiveIcon,
   ChevronDownIcon,
   ChevronsDownIcon,
-  CircleArrowOutUpLeftIcon,
   CircleCheckBigIcon,
   Clock4Icon,
-  ClockFadingIcon,
   CrosshairIcon,
+  DownloadIcon,
   GripVerticalIcon,
-  ListCheckIcon,
+  InboxIcon,
   LoaderIcon,
   LucideIcon,
   LucideProps,
@@ -27,10 +26,9 @@ export type IconKey =
   | "plus"
   | "archive"
   | "due"
-  | "defer"
-  | "defer_fade"
+  | "snooze"
   | "complete"
-  | "current"
+  | "inbox"
   | "return"
   | "loader"
   | "x"
@@ -46,11 +44,10 @@ const ICON_MAP: Record<IconKey, LucideIcon> = {
   "plus": PlusIcon,
   "archive": ArchiveIcon,
   "due": CrosshairIcon,
-  "defer": Clock4Icon,
-  "defer_fade": ClockFadingIcon,
+  "snooze": Clock4Icon,
   "complete": CircleCheckBigIcon,
-  "current": ListCheckIcon,
-  "return": CircleArrowOutUpLeftIcon,
+  "inbox": InboxIcon,
+  "return": DownloadIcon,
   "loader": LoaderIcon,
   "x": XIcon,
   "menu": MenuIcon,
@@ -65,9 +62,9 @@ export const iconVariants = twv({
   base: "",
   variants: {
     size: {
-      sm: "size-16 max-w-16 max-h-16 min-w-16 min-h-16",
-      md: "size-20 max-w-20 max-h-20 min-w-20 min-h-20",
-      lg: "size-24 max-w-24 max-h-24 min-w-24 min-h-24",
+      sm: "size-14 max-w-14 max-h-14 min-w-14 min-h-14",
+      md: "size-16 max-w-16 max-h-16 min-w-16 min-h-16",
+      lg: "size-20 max-w-20 max-h-20 min-w-20 min-h-20",
     },
   },
   defaultVariants: {

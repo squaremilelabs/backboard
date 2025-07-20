@@ -51,7 +51,21 @@ html {
   }
 
   * {
-    @apply outline-yellow-600;
+    @apply outline-yellow-500;
+  }
+}
+
+@layer components {
+  .react-aria-DropIndicator {
+    &[data-drop-target] {
+      height: 2px;
+      background: var(--color-yellow-500);
+    }
+  
+    @supports not selector(:has(.foo)) {
+      /* Undo gap in browsers that don't support :has */
+      margin-bottom: -2px;
+    }
   }
 }
 

@@ -3,7 +3,6 @@
 import { Webhook } from "svix"
 import { headers } from "next/headers"
 import { WebhookEvent } from "@clerk/nextjs/server"
-import prisma from "@/database/prisma"
 
 export async function POST(req: Request) {
   const SIGNING_SECRET = process.env.CLERK_WEBHOOK_SIGNING_SECRET
@@ -57,21 +56,21 @@ export async function POST(req: Request) {
 
   try {
     if (eventType === "user.created" || eventType === "user.updated") {
-      console.log("Processing user event")
-      const user = evt.data
-      await prisma.user.upsert({
-        where: {
-          id: user.id,
-        },
-        update: {
-          clerk_data: JSON.parse(JSON.stringify(user)),
-        },
-        create: {
-          id: user.id,
-          clerk_data: JSON.parse(JSON.stringify(user)),
-        },
-      })
-      console.log(`User ${user.id} upserted into database`)
+      // console.log("Processing user event")
+      // const user = evt.data
+      // await prisma.user.upsert({
+      //   where: {
+      //     id: user.id,
+      //   },
+      //   update: {
+      //     clerk_data: JSON.parse(JSON.stringify(user)),
+      //   },
+      //   create: {
+      //     id: user.id,
+      //     clerk_data: JSON.parse(JSON.stringify(user)),
+      //   },
+      // })
+      // console.log(`User ${user.id} upserted into database`)
     }
   } catch (error) {
     console.error("Error: Could not process webhook:", error)
