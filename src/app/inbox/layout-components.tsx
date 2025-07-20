@@ -18,12 +18,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       )}
     >
       <Sidebar />
-      <main className="relative flex w-full flex-col gap-8">
+      <main className="relative flex w-full flex-col">
         <div className="sticky top-0 z-10 flex w-full flex-col bg-neutral-50/30 backdrop-blur-2xl">
           <Header />
           <InboxViewTabs />
         </div>
-        <div className="relative flex w-full flex-col gap-8 p-16 pt-8">{children}</div>
+        <div className="relative flex w-full flex-col">{children}</div>
       </main>
     </div>
   )

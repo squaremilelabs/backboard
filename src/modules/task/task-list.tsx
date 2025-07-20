@@ -23,49 +23,51 @@ export function TaskList({
   const isReorderable = view === "inbox" || !view
 
   const { dragAndDropHooks } = useDragAndDrop({
-    isDisabled: !isReorderable,
     getItems: (keys) => {
       return [...keys].map((key) => ({
         "text/plain": tasks.find((task) => task.id === key)?.title ?? key.toString(),
       }))
     },
-    onReorder: (e) => {
-      const currentOrder = [...tasks].map((task) => task.id)
-      let newOrder: string[] = []
+    onReorder: isReorderable
+      ? (e) => {
+          const currentOrder = [...tasks].map((task) => task.id)
+          let newOrder: string[] = []
 
-      const targetTaskId = e.target.key as string
-      const droppedTaskIds = [...e.keys] as string[]
+          const targetTaskId = e.target.key as string
+          const droppedTaskIds = [...e.keys] as string[]
 
-      // Remove droppedTaskIds from currentOrder first
-      const filteredOrder = currentOrder.filter((id) => !droppedTaskIds.includes(id))
-      const targetIdx = filteredOrder.indexOf(targetTaskId)
+          // Remove droppedTaskIds from currentOrder first
+          const filteredOrder = currentOrder.filter((id) => !droppedTaskIds.includes(id))
+          const targetIdx = filteredOrder.indexOf(targetTaskId)
 
-      if (e.target.dropPosition === "before") {
-        // Insert dropped tasks before the target task
-        newOrder = [
-          ...filteredOrder.slice(0, targetIdx),
-          ...droppedTaskIds,
-          ...filteredOrder.slice(targetIdx),
-        ]
-      } else if (e.target.dropPosition === "after") {
-        // Insert dropped tasks after the target task
-        newOrder = [
-          ...filteredOrder.slice(0, targetIdx + 1),
-          ...droppedTaskIds,
-          ...filteredOrder.slice(targetIdx + 1),
-        ]
-      }
-      updateInbox({ id: inboxId, task_order: newOrder })
-    },
-    renderDragPreview: () => {
+          if (e.target.dropPosition === "before") {
+            // Insert dropped tasks before the target task
+            newOrder = [
+              ...filteredOrder.slice(0, targetIdx),
+              ...droppedTaskIds,
+              ...filteredOrder.slice(targetIdx),
+            ]
+          } else if (e.target.dropPosition === "after") {
+            // Insert dropped tasks after the target task
+            newOrder = [
+              ...filteredOrder.slice(0, targetIdx + 1),
+              ...droppedTaskIds,
+              ...filteredOrder.slice(targetIdx + 1),
+            ]
+          }
+          updateInbox({ id: inboxId, task_order: newOrder })
+        }
+      : undefined,
+    renderDragPreview: (items) => {
+      const label = items.length === 1 ? items[0]["text/plain"] : `${items.length} tasks`
       return (
         <div
           className={twm(
             "flex w-fit items-center px-8 py-4 text-sm font-semibold",
-            "bg-yellow-600 text-yellow-50"
+            "bg-neutral-200 text-sm"
           )}
         >
-          Reorder
+          {label}
         </div>
       )
     },
@@ -76,7 +78,7 @@ export function TaskList({
       aria-label="Task List"
       items={tasks ?? []}
       selectedKeys={selectedTaskIds}
-      dragAndDropHooks={dragAndDropHooks}
+      dragAndDropHooks={isReorderable ? dragAndDropHooks : undefined}
       onSelectionChange={(selection) =>
         setSelectedTaskIds(
           selection === "all"
@@ -85,44 +87,49 @@ export function TaskList({
         )
       }
       selectionMode="multiple"
-      className="divide-y not-data-empty:border data-empty:bg-neutral-100"
+      className="divide-y"
       renderEmptyState={() => (
-        <div className="flex h-100 items-center justify-center text-sm font-medium">ZERO</div>
+        <div className="flex justify-center p-16 text-sm font-medium text-neutral-400">zero</div>
       )}
     >
-      {(task) => <TaskListItem task={task} isReorderable={isReorderable} />}
+      {(task) => <TaskListItem task={task} />}
     </GridList>
   )
 }
 
-function TaskListItem({ task, isReorderable }: { task: Task; isReorderable?: boolean }) {
+function TaskListItem({ task }: { task: Task }) {
   return (
     <GridListItem
       id={task.id}
       textValue={task.title}
       className={twm(
         "flex items-center gap-8 px-16 py-8",
-        "bg-neutral-0 data-selected:bg-neutral-100"
+        "bg-neutral-0 data-selected:bg-neutral-50"
       )}
     >
-      {isReorderable && (
-        <Button slot="drag">
-          <Icon icon="drag-handle" className="text-neutral-400" />
-        </Button>
+      {({ isSelected, allowsDragging }) => (
+        <>
+          {allowsDragging && (
+            <Button slot="drag">
+              <Icon
+                icon="drag-handle"
+                className={isSelected ? "text-yellow-600" : "text-neutral-400"}
+              />
+            </Button>
+          )}
+          <Checkbox
+            slot="selection"
+            aria-label="Checkbox"
+            className={twm("cursor-pointer hover:opacity-70")}
+          >
+            <Icon
+              icon={isSelected ? "checkbox-checked" : "checkbox-blank"}
+              className={isSelected ? "text-yellow-600" : "text-neutral-400"}
+            />
+          </Checkbox>
+          <p>{task.title}</p>
+        </>
       )}
-      <Checkbox
-        slot="selection"
-        aria-label="Checkbox"
-        className={twm("cursor-pointer hover:opacity-70")}
-      >
-        {({ isSelected }) => (
-          <Icon
-            icon={isSelected ? "checkbox-checked" : "checkbox-blank"}
-            className={isSelected ? "text-neutral-950" : "text-neutral-400"}
-          />
-        )}
-      </Checkbox>
-      <p>{task.title}</p>
     </GridListItem>
   )
 }

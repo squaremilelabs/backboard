@@ -1,4 +1,4 @@
-import { Inter as FontSans, Inconsolata as FontMono, Domine as FontSerif } from "next/font/google"
+import { Inter as FontSans, Inconsolata as FontMono, Faustina as FontSerif } from "next/font/google"
 
 export const fontSans = FontSans({
   subsets: ["latin"],

@@ -3,7 +3,6 @@ import { useState } from "react"
 import { useParams } from "next/navigation"
 import { InboxView } from "../inbox/inbox-view-tabs"
 import { TaskCreateForm } from "./task-create-form"
-import { TaskActions } from "./task-actions"
 import { TaskList } from "./task-list"
 
 export function TaskPage() {
@@ -13,12 +12,8 @@ export function TaskPage() {
   const isInboxView = view === "inbox" || !view
 
   return (
-    <div className="flex max-h-full flex-col gap-8 overflow-auto">
-      {selectedTaskIds.length > 0 ? (
-        <TaskActions selectedTaskIds={selectedTaskIds} setSelectedTaskIds={setSelectedTaskIds} />
-      ) : (
-        isInboxView && <TaskCreateForm />
-      )}
+    <div className="flex max-h-full flex-col overflow-auto">
+      {isInboxView && <TaskCreateForm />}
       <TaskList selectedTaskIds={selectedTaskIds} setSelectedTaskIds={setSelectedTaskIds} />
     </div>
   )
