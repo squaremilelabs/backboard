@@ -1,9 +1,9 @@
 import { Button, Group } from "react-aria-components"
 import { useArchiveTasks } from "./data-tasks"
-import { Icon } from "@/lib/primitives/icon"
-import { twm } from "@/lib/utils/tailwind"
+import { Icon } from "@/lib/components/icon"
+import { cn } from "~/smui/utils"
 
-const actionButtonClassName = twm(
+const actionButtonClassName = cn(
   "flex items-center gap-8 px-16",
   "font-medium",
   "hover:opacity-70 cursor-pointer"

@@ -1,11 +1,11 @@
 "use client"
 import { Button, Checkbox, GridList, GridListItem, useDragAndDrop } from "react-aria-components"
 import { useParams } from "next/navigation"
-import { InboxView } from "../inbox/inbox-view-tabs"
-import { useUpdateInbox } from "../inbox/data-inbox"
+import { InboxView } from "./inbox-view-tabs"
+import { useUpdateInbox } from "./data-inbox"
 import { useCurrentViewInboxTasks } from "./data-tasks"
-import { Icon } from "@/lib/primitives/icon"
-import { twm } from "@/lib/utils/tailwind"
+import { Icon } from "@/lib/components/icon"
+import { cn } from "~/smui/utils"
 import { Task } from "@/database/types"
 
 export function TaskList({
@@ -62,7 +62,7 @@ export function TaskList({
       const label = items.length === 1 ? items[0]["text/plain"] : `${items.length} tasks`
       return (
         <div
-          className={twm(
+          className={cn(
             "flex w-fit items-center px-8 py-4 text-sm font-semibold",
             "bg-neutral-200 text-sm"
           )}
@@ -102,7 +102,7 @@ function TaskListItem({ task }: { task: Task }) {
     <GridListItem
       id={task.id}
       textValue={task.title}
-      className={twm(
+      className={cn(
         "flex items-center gap-8 px-16 py-8",
         "bg-neutral-0 data-selected:bg-neutral-50"
       )}
@@ -120,7 +120,7 @@ function TaskListItem({ task }: { task: Task }) {
           <Checkbox
             slot="selection"
             aria-label="Checkbox"
-            className={twm("cursor-pointer hover:opacity-70")}
+            className={cn("cursor-pointer hover:opacity-70")}
           >
             <Icon
               icon={isSelected ? "checkbox-checked" : "checkbox-blank"}

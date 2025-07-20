@@ -1,6 +1,6 @@
 import { id } from "@instantdb/react"
 import { useMutation } from "@tanstack/react-query"
-import { useInstantUserId } from "../auth/instant-clerk"
+import { useInstantUserId } from "@/lib/auth/instant-clerk"
 import { db } from "@/database/db"
 
 export function useCreateInbox() {

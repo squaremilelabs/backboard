@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import { useParams } from "next/navigation"
-import { InboxView } from "../inbox/inbox-view-tabs"
+import { InboxView } from "./inbox-view-tabs"
 import { TaskCreateForm } from "./task-create-form"
 import { TaskList } from "./task-list"
 

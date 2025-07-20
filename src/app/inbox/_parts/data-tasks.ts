@@ -1,9 +1,9 @@
 import { useParams } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
 import { id } from "@instantdb/react"
-import { useInboxById } from "../inbox/data-inbox"
-import { InboxView } from "../inbox/inbox-view-tabs"
-import { useInstantUserId } from "../auth/instant-clerk"
+import { useInboxById } from "./data-inbox"
+import { InboxView } from "./inbox-view-tabs"
+import { useInstantUserId } from "@/lib/auth/instant-clerk"
 import { Task } from "@/database/types"
 import { db } from "@/database/db"
 

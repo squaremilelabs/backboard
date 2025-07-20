@@ -1,7 +1,7 @@
 import { Tab, TabList, Tabs } from "react-aria-components"
 import { useParams } from "next/navigation"
-import { twm } from "@/lib/utils/tailwind"
-import { Icon, IconKey } from "@/lib/primitives/icon"
+import { cn } from "~/smui/utils"
+import { Icon, IconKey } from "@/lib/components/icon"
 
 export type InboxView = "inbox" | "snoozed" | "complete" | "archive"
 
@@ -23,7 +23,7 @@ export function InboxViewTabs() {
             <Tab
               key={view.key}
               href={`/inbox/${currentInboxId}/${view.slug}`}
-              className={twm(
+              className={cn(
                 "flex cursor-pointer items-center gap-8 px-16 py-4 text-neutral-400",
                 isActive ? "border-b-2 border-neutral-600 font-semibold text-neutral-600" : "",
                 "!outline-0",

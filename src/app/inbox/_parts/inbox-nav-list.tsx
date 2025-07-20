@@ -1,7 +1,7 @@
 import { Form, Input, ListBox, ListBoxItem, TextField } from "react-aria-components"
 import { useParams } from "next/navigation"
 import { useCreateInbox, useActiveInboxes } from "./data-inbox"
-import { twm } from "@/lib/utils/tailwind"
+import { cn } from "~/smui/utils"
 
 export function InboxNavList() {
   const params = useParams<{ id: string }>()
@@ -21,7 +21,7 @@ export function InboxNavList() {
             <ListBoxItem
               id={item.id}
               textValue={item.title}
-              className={twm(
+              className={cn(
                 "px-8 py-4",
                 isActive
                   ? "bg-neutral-200 font-medium text-neutral-950"

@@ -19,7 +19,7 @@ import {
   XIcon,
 } from "lucide-react"
 import { VariantProps } from "tailwind-variants"
-import { twv } from "../utils/tailwind"
+import { tv } from "~/smui/utils"
 
 export type IconKey =
   | "drag-handle"
@@ -58,7 +58,7 @@ const ICON_MAP: Record<IconKey, LucideIcon> = {
   "checkbox-indeterminate": SquareMinusIcon,
 }
 
-export const iconVariants = twv({
+export const iconVariants = tv({
   base: "",
   variants: {
     size: {

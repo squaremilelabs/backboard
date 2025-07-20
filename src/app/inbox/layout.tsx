@@ -1,4 +1,4 @@
-import { Layout as AppLayout } from "./layout-components"
+import { Layout as AppLayout } from "./_parts/layout"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return <AppLayout>{children}</AppLayout>

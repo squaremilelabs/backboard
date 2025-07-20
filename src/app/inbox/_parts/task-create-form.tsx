@@ -2,8 +2,8 @@
 import { Button, Form, Input, TextField } from "react-aria-components"
 import { useParams } from "next/navigation"
 import { useCreateTask } from "./data-tasks"
-import { Icon } from "@/lib/primitives/icon"
-import { twm } from "@/lib/utils/tailwind"
+import { Icon } from "@/lib/components/icon"
+import { cn } from "~/smui/utils"
 
 export function TaskCreateForm() {
   const { id: inboxId } = useParams<{ id: string }>()
@@ -20,7 +20,7 @@ export function TaskCreateForm() {
   return (
     <Form
       onSubmit={handleSubmit}
-      className={twm(
+      className={cn(
         "group flex items-center gap-8 border-b px-16 py-8",
         "focus-within:bg-neutral-0 bg-neutral-100",
         "hover:bg-neutral-0"

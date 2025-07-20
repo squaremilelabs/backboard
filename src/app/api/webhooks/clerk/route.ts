@@ -56,21 +56,9 @@ export async function POST(req: Request) {
 
   try {
     if (eventType === "user.created" || eventType === "user.updated") {
-      // console.log("Processing user event")
-      // const user = evt.data
-      // await prisma.user.upsert({
-      //   where: {
-      //     id: user.id,
-      //   },
-      //   update: {
-      //     clerk_data: JSON.parse(JSON.stringify(user)),
-      //   },
-      //   create: {
-      //     id: user.id,
-      //     clerk_data: JSON.parse(JSON.stringify(user)),
-      //   },
-      // })
-      // console.log(`User ${user.id} upserted into database`)
+      // Handle user creation or update
+      console.log("Handling user event:", evt.data)
+      // You can add your logic here, e.g., updating a database or sending a notification
     }
   } catch (error) {
     console.error("Error: Could not process webhook:", error)

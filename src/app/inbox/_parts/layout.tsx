@@ -2,17 +2,17 @@
 
 import { Button } from "react-aria-components"
 import { SignedIn, UserButton } from "@clerk/nextjs"
-import { useSessionStorageUtility } from "@/lib/utils/storage-utility"
-import { twm } from "@/lib/utils/tailwind"
-import { Icon } from "@/lib/primitives/icon"
-import { InboxHeader } from "@/modules/inbox/inbox-header"
-import { InboxNavList } from "@/modules/inbox/inbox-nav-list"
-import { InboxViewTabs } from "@/modules/inbox/inbox-view-tabs"
+import { InboxHeader } from "./inbox-header"
+import { InboxNavList } from "./inbox-nav-list"
+import { InboxViewTabs } from "./inbox-view-tabs"
+import { useSessionStorageUtility } from "@/lib/utils/use-storage-utility"
+import { cn } from "~/smui/utils"
+import { Icon } from "@/lib/components/icon"
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className={twm(
+      className={cn(
         "relative flex h-dvh max-h-dvh w-dvw max-w-dvw flex-row items-stretch",
         "divide-x overflow-auto"
       )}
@@ -33,7 +33,7 @@ export function Sidebar() {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("sidebar-open", true)
   return (
     <nav
-      className={twm(
+      className={cn(
         sidebarOpen ? "md:w-350" : "w-0",
         "overflow-hidden",
         "transition-all",
@@ -63,7 +63,7 @@ function Header() {
     <header className="flex h-50 w-full items-center gap-8 p-16">
       {/* NavTrigger for Desktop (opens sidebar) */}
       <div
-        className={twm(
+        className={cn(
           "hidden md:block",
           sidebarOpen ? "!hidden" : "opacity-100 transition-opacity starting:opacity-0"
         )}
@@ -87,7 +87,7 @@ function Header() {
 function NavTrigger({ onPress }: { onPress: () => void }) {
   return (
     <Button
-      className={twm("flex cursor-pointer items-center gap-4 hover:opacity-80")}
+      className={cn("flex cursor-pointer items-center gap-4 hover:opacity-80")}
       onPress={onPress}
     >
       <Icon icon="double-chevron" className="-rotate-90 text-yellow-600" />

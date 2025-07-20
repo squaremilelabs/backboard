@@ -1,3 +1,3 @@
-import { TaskPage } from "@/modules/task/task-page"
+import { TaskPage } from "../../_parts/task-page"
 
 export default TaskPage
