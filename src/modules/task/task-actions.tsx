@@ -5,7 +5,7 @@ import { twm } from "@/lib/utils/tailwind"
 
 const actionButtonClassName = twm(
   "flex items-center gap-8 px-16",
-  "font-semibold",
+  "font-medium",
   "hover:opacity-70 cursor-pointer"
 )
 
