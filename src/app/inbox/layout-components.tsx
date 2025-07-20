@@ -49,7 +49,7 @@ export function Sidebar() {
           <Icon icon="double-chevron" className="rotate-90 text-neutral-400" />
         </Button>
       </div>
-      <div className="p-16">
+      <div className="max-h-full overflow-auto p-8">
         <InboxNavList />
       </div>
     </nav>

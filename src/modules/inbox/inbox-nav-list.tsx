@@ -8,12 +8,12 @@ export function InboxNavList() {
   const { inboxes } = useActiveInboxes()
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col">
       <ListBox
         aria-label="Scope List"
         items={inboxes}
         dependencies={[inboxes, params.id]}
-        className="flex flex-col gap-2"
+        className="flex flex-col gap-4"
       >
         {(item) => {
           const isActive = item.id === params.id
@@ -24,12 +24,12 @@ export function InboxNavList() {
               className={twm(
                 "px-8 py-4",
                 isActive
-                  ? "bg-neutral-200 text-neutral-950"
+                  ? "bg-neutral-200 font-medium text-neutral-950"
                   : "text-neutral-500 hover:bg-neutral-100"
               )}
               href={`/inbox/${item.id}`}
             >
-              <p className="truncate font-medium">{item.title}</p>
+              <p className="truncate">{item.title}</p>
             </ListBoxItem>
           )
         }}

@@ -22,14 +22,14 @@ export function TaskCreateForm() {
       onSubmit={handleSubmit}
       className={twm(
         "group flex items-center gap-8 border-b px-16 py-8",
-        "focus-within:bg-neutral-0 bg-neutral-100 focus-within:border-b-2",
+        "focus-within:bg-neutral-0 bg-neutral-100",
         "hover:bg-neutral-0"
       )}
     >
       <Button type="submit">
         <Icon icon="plus" />
       </Button>
-      <TextField aria-label="Title" className="grow" name="title" autoFocus>
+      <TextField aria-label="Title" className="grow" name="title">
         <Input
           className="w-full placeholder-neutral-400 !outline-0
             not-group-focus-within:text-neutral-400"

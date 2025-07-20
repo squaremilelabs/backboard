@@ -87,7 +87,7 @@ export function TaskList({
         )
       }
       selectionMode="multiple"
-      className="divide-y"
+      className="divide-y not-data-empty:border-b"
       renderEmptyState={() => (
         <div className="flex justify-center p-16 text-sm font-medium text-neutral-400">zero</div>
       )}
