@@ -10,6 +10,7 @@ import { updateInbox } from "@/database/models/inbox"
 import { TextField, TextFieldInput, TextFieldTextArea } from "~/smui/text-field/components"
 import { FieldLabel } from "~/smui/field/components"
 
+// TODO: Separate
 export function InboxHeader() {
   const { id: inboxId } = useCurrentInboxView()
   const inboxQuery = db.useQuery({
@@ -43,7 +44,7 @@ export function InboxHeader() {
           {inbox?.title ?? "-"}
         </Button>
         <Popover
-          placement="right top"
+          placement="bottom start"
           classNames={{
             content: ["w-400", "bg-neutral-0/30 backdrop-blur-lg border-2", "p-16"],
           }}

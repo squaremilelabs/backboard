@@ -19,6 +19,8 @@ export function TaskCreateForm() {
     if (!account) return
     const formData = new FormData(formRef.current!)
     const title = formData.get("title") as string
+    if (!title) return
+    if (!title.trim()) return
     createTask({
       title,
       inbox_id: inboxId,
@@ -40,7 +42,7 @@ export function TaskCreateForm() {
       ref={formRef}
       onSubmit={handleSubmit}
       className={cn(
-        "group flex items-center gap-8 border-b px-16 py-8",
+        "group flex items-center gap-8 border-b px-12 py-6",
         "focus-within:bg-neutral-0 bg-neutral-100",
         "text-neutral-400 focus-within:text-neutral-950",
         "hover:bg-neutral-0"

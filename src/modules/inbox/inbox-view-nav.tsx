@@ -68,9 +68,9 @@ export function InboxViewNav() {
         dependencies={[currentView]}
         dragAndDropHooks={dragAndDropHooks}
         classNames={{
-          base: ["flex flex-row w-full items-center gap-16 border-b"],
+          base: ["flex flex-row w-full items-center border-b"],
           item: [
-            "flex items-center gap-8 px-16 py-4",
+            "flex items-center gap-8 px-24 py-4",
             "not-data-selected:text-neutral-400",
             "not-data-selected:hover:bg-neutral-100",
             "data-selected:border-b-2",
@@ -175,9 +175,9 @@ function TaskSnoozeModal({
               className={cn(
                 "flex size-40 items-center justify-center",
                 "data-disabled:text-neutral-300",
-                `not-data-disabled:cursor-pointer not-data-disabled:hover:bg-yellow-600
+                `not-data-disabled:cursor-pointer not-data-disabled:hover:bg-yellow-500
                 not-data-disabled:hover:text-yellow-50`,
-                "data-selected:bg-yellow-600 data-selected:text-yellow-50"
+                "data-selected:bg-yellow-500 data-selected:text-yellow-50"
               )}
             />
           )}
@@ -185,7 +185,7 @@ function TaskSnoozeModal({
       </Calendar>
       <Button
         onPress={handleSomedaySelect}
-        className="cursor-pointer border p-8 text-neutral-400 hover:bg-yellow-600
+        className="cursor-pointer border p-8 text-neutral-400 hover:bg-yellow-500
           hover:text-yellow-50"
       >
         Someday

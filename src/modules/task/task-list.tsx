@@ -13,6 +13,7 @@ import { formatDate } from "@/lib/utils/date-utils"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
 import { TextField, TextFieldInput, TextFieldTextArea } from "~/smui/text-field/components"
 import { FieldLabel } from "~/smui/field/components"
+import { Checkbox } from "~/smui/checkbox/components"
 
 export function TaskList() {
   const { id: inboxId, view: inboxView } = useCurrentInboxView()
@@ -53,8 +54,8 @@ export function TaskList() {
           "flex items-start",
           "gap-6 px-12 py-6 !outline-0",
           "bg-neutral-0 data-selected:bg-neutral-50",
-          "focus-visible:border-l-4 focus-visible:border-l-neutral-500",
-          "data-selected:border-l-4 data-selected:border-l-yellow-600",
+          "focus-visible:border-l-4 focus-visible:border-l-neutral-400",
+          "data-selected:border-l-4 data-selected:border-l-yellow-500",
         ],
       }}
     >
@@ -64,6 +65,17 @@ export function TaskList() {
             <Button slot="drag" className="text-neutral-400">
               <Icon icon={<GripVerticalIcon />} />
             </Button>
+            <Checkbox
+              slot="selection"
+              classNames={{
+                icon: "size-16",
+                base: [
+                  "h-20 flex items-center text-neutral-400 cursor-pointer",
+                  "data-selected:text-yellow-600",
+                  "hover:not-data-selected:text-neutral-600",
+                ],
+              }}
+            />
             <TaskTitle task={task} />
             <div className="grow" />
             <p className="text-sm leading-20">{getDisplayedDate(task)}</p>
@@ -152,7 +164,7 @@ function TaskTitle({ task }: { task: Task }) {
     <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
       <Button className="cursor-pointer truncate text-left hover:underline">{task.title}</Button>
       <Popover
-        placement="right top"
+        placement="bottom start"
         classNames={{
           content: ["w-400", "bg-neutral-0/30 backdrop-blur-lg border-2", "p-16"],
         }}
