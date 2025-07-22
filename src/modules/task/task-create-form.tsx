@@ -1,14 +1,15 @@
 "use client"
+
 import { Button, Form, Input, TextField } from "react-aria-components"
-import { useParams } from "next/navigation"
 import { useRef } from "react"
+import { useCurrentInboxView } from "../inbox/inbox-views"
 import { Icon } from "@/lib/components/icon"
 import { cn } from "~/smui/utils"
 import { createTask } from "@/database/models/task"
 import { useInstantAccount } from "@/modules/auth/instant-auth"
 
 export function TaskCreateForm() {
-  const { id: inboxId } = useParams<{ id: string }>()
+  const { id: inboxId, view: inboxView } = useCurrentInboxView()
   const account = useInstantAccount()
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -17,12 +18,20 @@ export function TaskCreateForm() {
     if (!account) return
     const formData = new FormData(formRef.current!)
     const title = formData.get("title") as string
-    createTask({ title, inbox_id: inboxId, inbox_state: "open" })
+    createTask({
+      title,
+      inbox_id: inboxId,
+      inbox_state: inboxView === "snoozed" ? "snoozed" : "open",
+    })
       .then(() => formRef.current?.reset())
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error("Failed to create task:", error)
       })
+  }
+
+  if (inboxView !== "open" && inboxView !== "snoozed") {
+    return null
   }
 
   return (

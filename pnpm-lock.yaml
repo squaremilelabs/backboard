@@ -14,6 +14,9 @@ importers:
       '@instantdb/react':
         specifier: ^0.20.9
         version: 0.20.9(react@19.1.0)
+      '@internationalized/date':
+        specifier: ^3.8.2
+        version: 3.8.2
       '@prisma/client':
         specifier: 6.3.1
         version: 6.3.1(prisma@6.3.1(typescript@5.8.3))(typescript@5.8.3)

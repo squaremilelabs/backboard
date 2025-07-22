@@ -11,36 +11,37 @@ const _schema = i.schema({
     $users: i.entity({
       email: i.string().unique().indexed(),
     }),
+    accounts: i.entity({
+      inbox_order: i.json(), // array of inbox IDs (strings)
+    }),
     inboxes: i.entity({
-      title: i.string().indexed(),
       created_at: i.date().indexed(),
+      title: i.string().indexed(),
       content: i.string().optional(),
-      task_order: i.json(), // array of task IDs
+      open_task_order: i.json(), // array of task IDs (strings)
       is_archived: i.boolean(),
     }),
     tasks: i.entity({
+      created_at: i.date().indexed(),
       title: i.string().indexed(),
       content: i.string().optional(),
-      created_at: i.date().indexed(),
-      due_date: i.date().optional().indexed(),
-      snooze_date: i.date().optional().indexed(),
-      snooze_indefinite: i.boolean().optional(),
-      completed_date: i.date().optional().indexed(),
-      archived_date: i.date().optional().indexed(),
+      inbox_state: i.string(), // "open", "snoozed", "archived" (validated in permissions)
+      snooze_date: i.date().optional(),
+      archive_date: i.date().optional(),
     }),
   },
   links: {
-    user_inboxes: {
-      forward: { on: "inboxes", has: "one", label: "owner" },
-      reverse: { on: "$users", has: "many", label: "inboxes" },
-    },
-    user_tasks: {
-      forward: { on: "tasks", has: "one", label: "owner" },
-      reverse: { on: "$users", has: "many", label: "tasks" },
+    user_accounts: {
+      forward: { on: "accounts", has: "one", label: "user", required: true, onDelete: "cascade" },
+      reverse: { on: "$users", has: "one", label: "account" },
     },
     inbox_tasks: {
-      forward: { on: "inboxes", has: "many", label: "tasks" },
-      reverse: { on: "tasks", has: "one", label: "inbox", onDelete: "cascade" },
+      forward: { on: "tasks", has: "one", label: "inbox", required: true, onDelete: "cascade" },
+      reverse: { on: "inboxes", has: "many", label: "tasks" },
+    },
+    account_inboxes: {
+      forward: { on: "inboxes", has: "one", label: "owner", required: true, onDelete: "cascade" },
+      reverse: { on: "accounts", has: "many", label: "inboxes" },
     },
   },
   rooms: {},

@@ -1,7 +1,7 @@
 import { Button, Group } from "react-aria-components"
-import { useArchiveTasks } from "./data-tasks"
 import { Icon } from "@/lib/components/icon"
 import { cn } from "~/smui/utils"
+import { updateManyTasks } from "@/database/models/task"
 
 const actionButtonClassName = cn(
   "flex items-center gap-8 px-16",
@@ -16,10 +16,10 @@ export function TaskActions({
   selectedTaskIds: string[]
   setSelectedTaskIds: (ids: string[]) => void
 }) {
-  const { mutate: archiveTasks } = useArchiveTasks()
   const handleArchive = () => {
-    archiveTasks(selectedTaskIds)
-    setSelectedTaskIds([])
+    updateManyTasks(selectedTaskIds, { inbox_state: "archived" }).then(() => {
+      setSelectedTaskIds([])
+    })
   }
 
   return (

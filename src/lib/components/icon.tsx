@@ -13,6 +13,7 @@ import {
   LucideProps,
   MenuIcon,
   PlusIcon,
+  SparkleIcon,
   SquareCheckIcon,
   SquareIcon,
   SquareMinusIcon,
@@ -28,6 +29,7 @@ export type IconKey =
   | "due"
   | "snooze"
   | "complete"
+  | "open"
   | "inbox"
   | "return"
   | "loader"
@@ -44,6 +46,7 @@ const ICON_MAP: Record<IconKey, LucideIcon> = {
   "plus": PlusIcon,
   "archive": ArchiveIcon,
   "due": CrosshairIcon,
+  "open": SparkleIcon,
   "snooze": Clock4Icon,
   "complete": CircleCheckBigIcon,
   "inbox": InboxIcon,

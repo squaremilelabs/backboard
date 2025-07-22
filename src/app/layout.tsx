@@ -1,14 +1,15 @@
 import { fontsClassName } from "@/styles/fonts"
-import Providers from "@/app/providers"
+import Providers from "@/modules/root/providers"
 import "@/styles/index.css"
-import { InstantSignInWithClerk } from "@/lib/auth/instant-clerk"
+import { InstantSignInWithClerk } from "@/modules/auth/instant-auth"
+import { AppLayout } from "@/modules/root/layout"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={fontsClassName} suppressHydrationWarning>
       <body>
         <Providers>
-          {children}
+          <AppLayout>{children}</AppLayout>
           <InstantSignInWithClerk />
         </Providers>
       </body>

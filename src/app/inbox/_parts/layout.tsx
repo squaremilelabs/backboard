@@ -2,12 +2,12 @@
 
 import { Button } from "react-aria-components"
 import { SignedIn, UserButton } from "@clerk/nextjs"
-import { InboxHeader } from "./inbox-header"
 import { InboxNavList } from "./inbox-nav-list"
-import { InboxViewTabs } from "./inbox-view-tabs"
 import { useSessionStorageUtility } from "@/lib/utils/use-storage-utility"
 import { cn } from "~/smui/utils"
 import { Icon } from "@/lib/components/icon"
+import { InboxViewNav } from "@/modules/inbox/inbox-view-nav"
+import { InboxHeader } from "@/modules/inbox/inbox-header"
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +21,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <main className="relative flex w-full flex-col">
         <div className="sticky top-0 z-10 flex w-full flex-col bg-neutral-50/30 backdrop-blur-2xl">
           <Header />
-          <InboxViewTabs />
+          <InboxViewNav />
         </div>
         <div className="relative flex w-full flex-col">{children}</div>
       </main>

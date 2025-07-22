@@ -1,5 +1,2 @@
-import { Layout as AppLayout } from "./_parts/layout"
-
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return <AppLayout>{children}</AppLayout>
-}
+import { InboxLayout } from "@/modules/inbox/inbox-layout"
+export default InboxLayout
