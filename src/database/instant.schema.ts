@@ -26,8 +26,8 @@ const _schema = i.schema({
       title: i.string().indexed(),
       content: i.string().optional(),
       inbox_state: i.string(), // "open", "snoozed", "archived" (validated in permissions)
-      snooze_date: i.date().optional(),
-      archive_date: i.date().optional(),
+      snooze_date: i.date().indexed().optional(),
+      archive_date: i.date().indexed().optional(),
     }),
   },
   links: {

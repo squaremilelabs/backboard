@@ -28,7 +28,9 @@ export function createTask(data: TaskCreateParams) {
       title: data.title,
       content: data.content ?? null,
       inbox_state: data.inbox_state,
+      // @ts-expect-error instantdb issue?
       snooze_date: data.snooze_date,
+      // @ts-expect-error instantdb issue?
       archive_date: data.inbox_state === "archived" ? now : null,
       created_at: now,
     }),

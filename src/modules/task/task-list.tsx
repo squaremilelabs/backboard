@@ -92,7 +92,12 @@ function useTaskListQuery() {
           "inbox.id": inboxId,
           "inbox_state": taskInboxState,
         },
-        order: { created_at: "desc" },
+        order:
+          inboxView === "snoozed"
+            ? { snooze_date: "asc" }
+            : inboxView === "archive"
+              ? { archive_date: "desc" }
+              : undefined,
         limit: inboxView === "archive" ? 30 : undefined,
       },
     },
