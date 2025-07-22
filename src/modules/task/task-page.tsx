@@ -12,11 +12,13 @@ export function TaskPage() {
 
   return (
     <div className="flex flex-col">
-      {isTaskListView && (
+      {isTaskListView ? (
         <>
           <TaskCreateForm />
           <TaskList />
         </>
+      ) : (
+        <div className="flex items-center p-16 font-semibold text-neutral-500">coming soon</div>
       )}
     </div>
   )

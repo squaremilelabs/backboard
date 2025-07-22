@@ -98,7 +98,7 @@ export function InboxNavList() {
             textValue={inbox.title}
             className={cn(
               classNames.item,
-              isSelected && "!bg-neutral-200 font-medium text-neutral-950"
+              isSelected && "!bg-neutral-200 font-medium text-neutral-950",
             )}
             href={`/inbox/${inbox.id}`}
           >
