@@ -2,11 +2,12 @@
 
 import { Button, Form, Input, TextField } from "react-aria-components"
 import { useRef } from "react"
+import { PlusIcon } from "lucide-react"
 import { useCurrentInboxView } from "../inbox/inbox-views"
-import { Icon } from "@/lib/components/icon"
 import { cn } from "~/smui/utils"
 import { createTask } from "@/database/models/task"
 import { useInstantAccount } from "@/modules/auth/instant-auth"
+import { Icon } from "~/smui/icon/components"
 
 export function TaskCreateForm() {
   const { id: inboxId, view: inboxView } = useCurrentInboxView()
@@ -41,11 +42,12 @@ export function TaskCreateForm() {
       className={cn(
         "group flex items-center gap-8 border-b px-16 py-8",
         "focus-within:bg-neutral-0 bg-neutral-100",
+        "text-neutral-400 focus-within:text-neutral-950",
         "hover:bg-neutral-0"
       )}
     >
       <Button type="submit">
-        <Icon icon="plus" />
+        <Icon icon={<PlusIcon />} />
       </Button>
       <TextField aria-label="Title" className="grow" name="title">
         <Input
