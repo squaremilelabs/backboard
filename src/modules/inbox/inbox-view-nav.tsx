@@ -11,7 +11,13 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { useState } from "react"
-import { INBOX_VIEW_TO_STATE_MAP, INBOX_VIEWS, InboxView, useCurrentInboxView } from "./inbox-views"
+import {
+  INBOX_VIEW_TO_STATE_MAP,
+  INBOX_VIEWS,
+  InboxView,
+  useCurrentInboxView,
+  useInboxViewCounts,
+} from "./inbox-views"
 import { Icon } from "~/smui/icon/components"
 import { ListBox, ListBoxItem } from "~/smui/list-box/components"
 import { Task, TaskUpdateManyParams, updateManyTasks } from "@/database/models/task"
@@ -21,6 +27,7 @@ import { cn } from "~/smui/utils"
 
 export function InboxViewNav() {
   const currentView = useCurrentInboxView()
+  const viewCounts = useInboxViewCounts()
 
   const [snoozeModalOpen, setSnoozeModalOpen] = useState(false)
   const [pendingTaskIds, setPendingTaskIds] = useState<string[]>([])
@@ -89,7 +96,9 @@ export function InboxViewNav() {
               textValue={item.title}
               href={`/inbox/${currentView.id}/${item.key}`}
             >
-              <p>{item.title}</p>
+              <p>
+                {item.title} {!!viewCounts[item.key] && ` – ${viewCounts[item.key]}`}
+              </p>
             </ListBoxItem>
           )
         }}
