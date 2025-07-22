@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.25.3",
+    "@instantdb/admin": "^0.20.10",
     "@instantdb/react": "^0.20.9",
     "@internationalized/date": "^3.8.2",
     "@prisma/client": "6.3.1",

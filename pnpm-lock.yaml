@@ -11,6 +11,9 @@ importers:
       '@clerk/nextjs':
         specifier: ^6.25.3
         version: 6.25.3(next@15.4.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@instantdb/admin':
+        specifier: ^0.20.10
+        version: 0.20.10
       '@instantdb/react':
         specifier: ^0.20.9
         version: 0.20.9(react@19.1.0)
@@ -388,6 +391,12 @@ packages:
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [win32]
+
+  '@instantdb/admin@0.20.10':
+    resolution: {integrity: sha512-PyBYpRmsb+ujPWCWHwDNbRP3kMVr7L6B3wesJ9M4zeSBJ5vTTPcKkVG48MRbrSbI/XmwKEefRiDp14Os3+ymwg==}
+
+  '@instantdb/core@0.20.10':
+    resolution: {integrity: sha512-qFdPFuhAk7xv16MHqSp4B5SXGHGF18jllR48zjsetgM7AnAd05CbqR/SLSTkAQB/9RwBeFxbIfDNj3bXrEZhCw==}
 
   '@instantdb/core@0.20.9':
     resolution: {integrity: sha512-Aw5CVJX6WfX5dEEfyjV0x/lJWT2by3D5iCmYdOT0iQBZCyCjoqMVbUwQTiwYhK7eQehJ5jJV1XmUs+EbXNpZyA==}
@@ -3648,6 +3657,15 @@ snapshots:
 
   '@img/sharp-win32-x64@0.34.3':
     optional: true
+
+  '@instantdb/admin@0.20.10':
+    dependencies:
+      '@instantdb/core': 0.20.10
+
+  '@instantdb/core@0.20.10':
+    dependencies:
+      mutative: 1.2.0
+      uuid: 11.1.0
 
   '@instantdb/core@0.20.9':
     dependencies:
