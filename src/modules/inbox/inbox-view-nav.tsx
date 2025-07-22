@@ -89,7 +89,6 @@ export function InboxViewNav() {
               textValue={item.title}
               href={`/inbox/${currentView.id}/${item.key}`}
             >
-              <Icon icon={<item.Icon />} />
               <p>{item.title}</p>
             </ListBoxItem>
           )

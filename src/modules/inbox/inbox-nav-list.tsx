@@ -1,6 +1,6 @@
 "use client"
 
-import { GripVertical, InboxIcon } from "lucide-react"
+import { GripVertical } from "lucide-react"
 import { isTextDropItem, useDragAndDrop } from "react-aria-components"
 import { useInstantAccount } from "../auth/instant-auth"
 import { useCurrentInboxView } from "./inbox-views"
@@ -98,14 +98,14 @@ export function InboxNavList() {
             textValue={inbox.title}
             className={cn(
               classNames.item,
-              isSelected && "!bg-neutral-200 font-medium text-neutral-950",
+              isSelected && "!bg-neutral-200 font-medium text-neutral-950"
             )}
             href={`/inbox/${inbox.id}`}
           >
             <Button slot="drag">
               <Icon icon={<GripVertical />} variants={{ size: "sm" }} />
             </Button>
-            <Icon icon={<InboxIcon />} />
+            {/* <Icon icon={<InboxIcon />} /> */}
             <p className="grow truncate">{inbox.title}</p>
             {openTaskCount > 0 && (
               <span className="px-4 text-sm font-bold text-yellow-600">{openTaskCount}</span>
