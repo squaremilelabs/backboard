@@ -57,7 +57,7 @@ export function InboxHeader() {
               autoFocus
               classNames={{
                 base: "flex flex-col gap-2",
-                input: "w-full p-8 border",
+                input: "w-full p-8 border bg-neutral-0",
                 field: {
                   label: "text-sm font-semibold text-neutral-700",
                 },
@@ -76,7 +76,7 @@ export function InboxHeader() {
               defaultValue={inbox?.content}
               classNames={{
                 base: "flex flex-col gap-2",
-                textarea: "w-full p-8 border",
+                textarea: "w-full p-8 border bg-neutral-0",
                 field: {
                   label: "text-sm font-semibold text-neutral-700",
                 },

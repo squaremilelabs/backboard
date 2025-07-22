@@ -49,7 +49,7 @@ export function TaskList() {
       selectionBehavior="replace"
       dragAndDropHooks={dragAndDropHooks}
       classNames={{
-        base: "flex flex-col divide-y not-data-empty:border-b",
+        base: "flex flex-col divide-y divide-neutral-100 not-data-empty:border-b",
         item: [
           "flex items-start",
           "gap-8 px-16 py-8 !outline-0",
@@ -177,7 +177,7 @@ function TaskTitle({ task }: { task: Task }) {
             autoFocus
             classNames={{
               base: "flex flex-col gap-2",
-              input: "w-full p-8 border",
+              input: "w-full p-8 border bg-neutral-0",
               field: {
                 label: "text-sm font-semibold text-neutral-700",
               },
@@ -196,7 +196,7 @@ function TaskTitle({ task }: { task: Task }) {
             defaultValue={task.content}
             classNames={{
               base: "flex flex-col gap-2",
-              textarea: "w-full p-8 border",
+              textarea: "w-full p-8 border bg-neutral-0",
               field: {
                 label: "text-sm font-semibold text-neutral-700",
               },

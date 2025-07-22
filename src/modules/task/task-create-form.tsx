@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Form, Input, TextField } from "react-aria-components"
+import { Form, Input, TextField } from "react-aria-components"
 import { useRef } from "react"
 import { PlusIcon } from "lucide-react"
 import { useCurrentInboxView } from "../inbox/inbox-views"
@@ -48,9 +48,7 @@ export function TaskCreateForm() {
         "hover:bg-neutral-0"
       )}
     >
-      <Button type="submit">
-        <Icon icon={<PlusIcon />} />
-      </Button>
+      <Icon icon={<PlusIcon />} />
       <TextField aria-label="Title" className="grow" name="title">
         <Input
           className="w-full placeholder-neutral-400 !outline-0

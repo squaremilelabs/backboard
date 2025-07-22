@@ -6,13 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
-  },
-  "prisma": {
-    "schema": "src/database/generated/prisma-schema/schema.prisma"
-  },
-  "zenstack": {
-    "schema": "src/database/schema/schema.zmodel"
+    "lint": "next lint",
+    "db:push-schema": "npx instant-cli@latest push schema",
+    "db:push-perms": "npx instant-cli@latest push perms"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.25.3",

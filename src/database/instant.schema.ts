@@ -29,19 +29,36 @@ const _schema = i.schema({
       snooze_date: i.date().indexed().optional(),
       archive_date: i.date().indexed().optional(),
     }),
+    recurring_tasks: i.entity({
+      created_at: i.date().indexed(),
+      title: i.string().indexed(),
+      content: i.string().optional(),
+      frequency: i.json().optional(),
+      is_archived: i.boolean(),
+    }),
   },
   links: {
     user_accounts: {
       forward: { on: "accounts", has: "one", label: "user", required: true, onDelete: "cascade" },
       reverse: { on: "$users", has: "one", label: "account" },
     },
+    account_inboxes: {
+      forward: { on: "inboxes", has: "one", label: "owner", required: true, onDelete: "cascade" },
+      reverse: { on: "accounts", has: "many", label: "inboxes" },
+    },
     inbox_tasks: {
       forward: { on: "tasks", has: "one", label: "inbox", required: true, onDelete: "cascade" },
       reverse: { on: "inboxes", has: "many", label: "tasks" },
     },
-    account_inboxes: {
-      forward: { on: "inboxes", has: "one", label: "owner", required: true, onDelete: "cascade" },
-      reverse: { on: "accounts", has: "many", label: "inboxes" },
+    inbox_recurring_tasks: {
+      forward: {
+        on: "recurring_tasks",
+        has: "one",
+        label: "inbox",
+        required: true,
+        onDelete: "cascade",
+      },
+      reverse: { on: "inboxes", has: "many", label: "recurring_tasks" },
     },
   },
   rooms: {},

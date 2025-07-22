@@ -26,6 +26,12 @@ const rules = {
       "data.inbox_state in ['open', 'snoozed', 'archived']",
     ],
   },
+  recurring_tasks: {
+    allow: {
+      $default: "IS_OWNER_OF_INBOX",
+    },
+    bind: ["IS_OWNER_OF_INBOX", "auth.id in data.ref('inbox.owner.user.id')"],
+  },
 } satisfies InstantRules
 
 export default rules

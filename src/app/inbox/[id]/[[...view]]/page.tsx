@@ -1,3 +1,2 @@
-import { TaskPage } from "@/modules/task/task-page"
-
-export default TaskPage
+import { InboxPage } from "@/modules/inbox/inbox-page"
+export default InboxPage
