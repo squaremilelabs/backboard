@@ -52,7 +52,7 @@ export function TaskList() {
         base: "flex flex-col divide-y not-data-empty:border-b",
         item: [
           "flex items-start",
-          "gap-6 px-12 py-6 !outline-0",
+          "gap-8 px-16 py-8 !outline-0",
           "bg-neutral-0 data-selected:bg-neutral-50",
           "focus-visible:border-l-4 focus-visible:border-l-neutral-400",
           "data-selected:border-l-4 data-selected:border-l-yellow-500",
@@ -63,7 +63,7 @@ export function TaskList() {
         return (
           <GridListItem id={task.id} textValue={task.title} className={classNames.item}>
             <Button slot="drag" className="text-neutral-400">
-              <Icon icon={<GripVerticalIcon />} />
+              <Icon icon={<GripVerticalIcon />} className="!w-fit !min-w-fit" />
             </Button>
             <Checkbox
               slot="selection"
@@ -78,7 +78,7 @@ export function TaskList() {
             />
             <TaskTitle task={task} />
             <div className="grow" />
-            <p className="text-sm leading-20">{getDisplayedDate(task)}</p>
+            <p className="text-sm leading-20 text-neutral-500">{getDisplayedDate(task)}</p>
           </GridListItem>
         )
       }}

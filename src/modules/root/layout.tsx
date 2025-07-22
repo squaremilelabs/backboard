@@ -50,7 +50,7 @@ function Sidebar() {
         <div className="grow" />
         <Icon icon={<ChevronsLeftIcon />} className="text-neutral-600" />
       </Button>
-      <div className="max-h-full grow overflow-auto p-4">
+      <div className="max-h-full grow overflow-auto">
         <InboxNav />
       </div>
       <div className="flex items-center justify-end border-t p-8">
@@ -67,7 +67,7 @@ function Header() {
   return (
     <header
       className={cn(
-        !sidebarOpen ? "flex h-40 min-h-40" : "flex h-40 min-h-40 md:hidden md:h-0",
+        !sidebarOpen ? "flex h-50 min-h-50" : "flex h-50 min-h-50 md:hidden md:h-0",
         // "transition-discrete starting:h-0",
         "overflow-hidden",
         "transition-all",
@@ -104,7 +104,7 @@ function Menu({ children }: { children: React.ReactNode }) {
       <Popover
         placement="bottom start"
         classNames={{
-          content: "p-16 bg-neutral-100/30 backdrop-blur-lg w-350 border-2",
+          content: "bg-neutral-0/10 backdrop-blur-lg w-350 border-2 max-h-300 overflow-auto",
         }}
       >
         <InboxNav />

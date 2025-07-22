@@ -80,9 +80,9 @@ export function InboxNavList() {
       dependencies={[inboxes, currentInboxId, account]}
       dragAndDropHooks={dragAndDropHooks}
       classNames={{
-        base: "flex flex-col gap-4",
+        base: "flex flex-col divide-y",
         item: [
-          "cursor-pointer flex items-center gap-4 px-8 py-4",
+          "cursor-pointer flex items-center gap-4 p-8",
           "text-neutral-500",
           "hover:bg-neutral-100",
           "data-drop-target:outline-2",

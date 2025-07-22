@@ -42,7 +42,7 @@ export function TaskCreateForm() {
       ref={formRef}
       onSubmit={handleSubmit}
       className={cn(
-        "group flex items-center gap-8 px-12 py-6",
+        "group flex items-center gap-8 px-16 py-8",
         "focus-within:bg-neutral-0 focus-within:border-b",
         "text-neutral-400 focus-within:text-neutral-950",
         "hover:bg-neutral-0"

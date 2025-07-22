@@ -3,7 +3,7 @@ import { InboxNavList } from "./inbox-nav-list"
 
 export function InboxNav() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col divide-y">
       <InboxNavList />
       <InboxNavCreateForm />
     </div>
