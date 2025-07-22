@@ -14,8 +14,8 @@ export function TaskPage() {
     <div className="flex flex-col">
       {isTaskListView ? (
         <>
-          <TaskCreateForm />
           <TaskList />
+          <TaskCreateForm />
         </>
       ) : (
         <div className="flex items-center p-16 font-semibold text-neutral-500">coming soon</div>
