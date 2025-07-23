@@ -36,7 +36,7 @@ export function InboxHeader() {
   }
 
   return (
-    <div className="flex w-full truncate p-16">
+    <div className="flex w-full items-center gap-8 truncate p-16">
       <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
         <Button
           className="cursor-pointer truncate text-lg font-semibold text-neutral-700 hover:underline"

@@ -108,7 +108,9 @@ export function InboxNavList() {
             {/* <Icon icon={<InboxIcon />} /> */}
             <p className="grow truncate">{inbox.title}</p>
             {openTaskCount > 0 && (
-              <span className="px-4 text-sm font-bold text-yellow-600">{openTaskCount}</span>
+              <span className="flex w-30 justify-center text-sm font-bold text-yellow-600">
+                {openTaskCount}
+              </span>
             )}
           </GridListItem>
         )

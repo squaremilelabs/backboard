@@ -1,7 +1,8 @@
 "use client"
 import { ChevronsLeftIcon, MenuIcon } from "lucide-react"
-import React from "react"
+import React, { useEffect } from "react"
 import { SignedIn, UserButton } from "@clerk/nextjs"
+import { usePathname } from "next/navigation"
 import { InboxNav } from "../inbox/inbox-nav"
 import { useSessionStorageUtility } from "@/lib/utils/use-storage-utility"
 import { Button } from "~/smui/button/components"
@@ -22,7 +23,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     >
       <Sidebar />
       <Header />
-      <main className={cn("flex w-full flex-col", sidebarOpen && "md:pl-350")}>{children}</main>
+      <main className={cn("flex w-full flex-col", sidebarOpen && "md:pl-300")}>{children}</main>
     </div>
   )
 }
@@ -33,7 +34,7 @@ function Sidebar() {
     <nav
       className={cn(
         sidebarOpen
-          ? "hidden h-0 w-0 md:flex md:h-dvh md:max-h-dvh md:w-350 md:min-w-350"
+          ? "hidden h-0 w-0 md:flex md:h-dvh md:max-h-dvh md:w-300 md:min-w-300"
           : "hidden h-0 w-0",
         // "transition-discrete starting:w-0",
         "overflow-hidden",
@@ -43,7 +44,11 @@ function Sidebar() {
       )}
     >
       <Button
-        className="flex h-50 cursor-pointer items-center gap-8 border-b-2 p-16 hover:opacity-80"
+        className={cn(
+          "flex h-50 items-center gap-8",
+          "border-b-2 p-16",
+          "cursor-pointer hover:bg-neutral-100"
+        )}
         onPress={() => setSidebarOpen(false)}
       >
         <h1 className="font-semibold text-neutral-600">Backboard</h1>
@@ -72,20 +77,21 @@ function Header() {
         "overflow-hidden",
         "transition-all",
         "sticky top-0 z-20 px-16",
-        "bg-neutral-50/30 backdrop-blur-lg"
+        "bg-neutral-50/30 backdrop-blur-lg",
+        "cursor-pointer hover:bg-neutral-100"
       )}
     >
       {/* Sidebar trigger */}
       <Button
         onPress={() => setSidebarOpen(true)}
-        className="hidden grow cursor-pointer items-center gap-8 hover:opacity-80 md:flex"
+        className="hidden grow cursor-pointer items-center gap-8 md:flex"
       >
         <Icon icon={<MenuIcon />} className="text-neutral-600" />
         <h1 className="font-semibold text-neutral-600">Backboard</h1>
       </Button>
       {/* Menu trigger */}
       <Menu>
-        <Button className="flex grow cursor-pointer items-center gap-8 hover:opacity-80 md:hidden">
+        <Button className="flex grow cursor-pointer items-center gap-8 md:hidden">
           <Icon icon={<MenuIcon />} className="text-neutral-600" />
           <h1 className="font-semibold text-neutral-600">Backboard</h1>
         </Button>
@@ -98,13 +104,20 @@ function Header() {
 }
 
 function Menu({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = React.useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
+
   return (
-    <PopoverTrigger>
+    <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
       {children}
       <Popover
         placement="bottom start"
         classNames={{
-          content: "bg-neutral-0/10 backdrop-blur-lg w-350 border-2 max-h-300 overflow-auto",
+          content: "bg-neutral-0/10 backdrop-blur-lg w-300 border-2 max-h-300 overflow-auto",
         }}
       >
         <InboxNav />
