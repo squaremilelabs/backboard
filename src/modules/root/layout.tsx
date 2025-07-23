@@ -43,7 +43,7 @@ function Sidebar() {
       )}
     >
       <Button
-        className="flex h-50 cursor-pointer items-center gap-8 border-b p-16 hover:opacity-80"
+        className="flex h-50 cursor-pointer items-center gap-8 border-b-2 p-16 hover:opacity-80"
         onPress={() => setSidebarOpen(false)}
       >
         <h1 className="font-semibold text-neutral-600">Backboard</h1>
@@ -53,7 +53,7 @@ function Sidebar() {
       <div className="max-h-full grow overflow-auto">
         <InboxNav />
       </div>
-      <div className="flex items-center justify-end border-t p-8">
+      <div className="flex items-center justify-end border p-8">
         <SignedIn>
           <UserButton showName />
         </SignedIn>

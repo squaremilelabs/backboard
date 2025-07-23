@@ -96,9 +96,10 @@ export function InboxViewNav() {
               textValue={item.title}
               href={`/inbox/${currentView.id}/${item.key}`}
             >
-              <p>
-                {item.title} {!!viewCounts[item.key] && ` – ${viewCounts[item.key]}`}
-              </p>
+              <p>{item.title}</p>
+              {!!viewCounts[item.key] && (
+                <span className="text-sm font-semibold">{viewCounts[item.key]}</span>
+              )}
             </ListBoxItem>
           )
         }}
