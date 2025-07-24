@@ -14,6 +14,7 @@ import { Popover, PopoverTrigger } from "~/smui/popover/components"
 import { TextField, TextFieldInput, TextFieldTextArea } from "~/smui/text-field/components"
 import { FieldLabel } from "~/smui/field/components"
 import { Checkbox } from "~/smui/checkbox/components"
+import { cn } from "~/smui/utils"
 
 export function TaskList() {
   const { id: inboxId, view: inboxView } = useCurrentInboxView()
@@ -77,8 +78,14 @@ export function TaskList() {
               }}
             />
             <TaskTitle task={task} />
-            <div className="grow" />
-            <p className="text-sm leading-20 text-neutral-500">{getDisplayedDate(task)}</p>
+            <p
+              className={cn(
+                "min-w-fit text-sm text-neutral-400 uppercase",
+                "leading-20 font-semibold tracking-wide"
+              )}
+            >
+              {getDisplayedDate(task)}
+            </p>
           </GridListItem>
         )
       }}
@@ -107,10 +114,10 @@ function useTaskListQuery() {
         order:
           inboxView === "snoozed"
             ? { snooze_date: "asc" }
-            : inboxView === "archive"
+            : inboxView === "archived"
               ? { archive_date: "desc" }
               : undefined,
-        limit: inboxView === "archive" ? 30 : undefined,
+        limit: inboxView === "archived" ? 30 : undefined,
       },
     },
   })
@@ -136,7 +143,7 @@ function useTaskListQuery() {
     })
   }
 
-  if (inboxView === "archive") {
+  if (inboxView === "archived") {
     result = [...result].sort((left, right) => {
       const leftArchive = left.archive_date ?? 0
       const rightArchive = right.archive_date ?? 0
@@ -162,7 +169,9 @@ function TaskTitle({ task }: { task: Task }) {
   }
   return (
     <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
-      <Button className="cursor-pointer truncate text-left hover:underline">{task.title}</Button>
+      <Button className="grow cursor-pointer truncate text-left hover:underline">
+        {task.title}
+      </Button>
       <Popover
         placement="bottom start"
         classNames={{
@@ -224,11 +233,11 @@ function TaskTitle({ task }: { task: Task }) {
 
 function getDisplayedDate(task: Task): string {
   if (task.inbox_state === "open") {
-    return formatDate(new Date(task.created_at))
+    return formatDate(new Date(task.created_at), { withTime: true })
   }
 
   if (task.inbox_state === "snoozed") {
-    return task.snooze_date ? formatDate(new Date(task.snooze_date)) : "Someday"
+    return task.snooze_date ? "Until " + formatDate(new Date(task.snooze_date)) : "Indefinitely"
   }
 
   if (task.inbox_state === "archived") {

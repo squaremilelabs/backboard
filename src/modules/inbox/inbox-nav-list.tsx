@@ -19,7 +19,7 @@ export function InboxNavList() {
   const { id: currentInboxId } = useCurrentInboxView()
   const inboxQuery = db.useQuery({
     inboxes: {
-      $: { where: { is_archived: false } },
+      $: { where: { "owner.id": account?.id ?? "NO_USER", "is_archived": false } },
       tasks: { $: { where: { inbox_state: "open" } } },
     },
   })

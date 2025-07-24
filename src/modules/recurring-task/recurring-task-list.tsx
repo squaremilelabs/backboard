@@ -1,9 +1,11 @@
+import { format } from "date-fns"
 import { useCurrentInboxView } from "../inbox/inbox-views"
 import { RecurringTaskFormModal } from "./recurring-task-form-modal"
 import { db } from "@/database/db"
 import { RecurringTask } from "@/database/models/recurring_task"
 import { Button } from "~/smui/button/components"
 import { GridList, GridListItem } from "~/smui/grid-list/components"
+import { cn } from "~/smui/utils"
 
 export function RecurringTaskList() {
   const { id: inboxId } = useCurrentInboxView()
@@ -46,7 +48,12 @@ export function RecurringTaskList() {
                 {task.title}
               </Button>
             </RecurringTaskFormModal>
-            <p className="text-sm leading-20 font-semibold text-neutral-400">
+            <p
+              className={cn(
+                "min-w-fit text-sm text-neutral-400 uppercase",
+                "leading-20 font-semibold tracking-wide"
+              )}
+            >
               {getDisplayedFrequency(task)}
             </p>
           </GridListItem>
@@ -97,12 +104,13 @@ function getDisplayedFrequency(task: RecurringTask): string {
       "Fridays",
       "Saturdays",
     ]
-    return `${weekdays[task.frequency.weekday]} - WEEKLY`
+    return `${weekdays[task.frequency.weekday]}`
   }
 
   if (task.frequency?.type === "monthly") {
-    return `Day ${task.frequency.day} - MONTHLY`
+    const dayOfMonth = format(new Date(2020, 1, task.frequency.day), "do")
+    return `Monthly (${dayOfMonth} day)`
   }
 
-  return "DAILY"
+  return "Daily"
 }

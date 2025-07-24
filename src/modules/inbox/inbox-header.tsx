@@ -35,13 +35,22 @@ export function InboxHeader() {
     }).then(() => setOpen(false))
   }
 
+  const handleArchiveToggle = () => {
+    updateInbox(inbox?.id ?? "-", {
+      is_archived: !inbox?.is_archived,
+    }).then(() => setOpen(false))
+  }
+
   return (
     <div className="flex w-full items-center gap-8 truncate p-16">
       <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
-        <Button
-          className="cursor-pointer truncate text-lg font-semibold text-neutral-700 hover:underline"
-        >
-          {inbox?.title ?? "-"}
+        <Button className="flex cursor-pointer items-center gap-8">
+          <h1 className="truncate text-lg font-semibold text-neutral-700 hover:underline">
+            {inbox?.title ?? "-"}
+          </h1>
+          {inbox?.is_archived && (
+            <p className="text-sm font-semibold tracking-wide text-neutral-400">ARCHIVED</p>
+          )}
         </Button>
         <Popover
           placement="bottom start"
@@ -95,6 +104,12 @@ export function InboxHeader() {
               type="submit"
             >
               Save
+            </Button>
+            <Button
+              className="cursor-pointer text-left text-sm text-neutral-400 hover:underline"
+              onPress={handleArchiveToggle}
+            >
+              {inbox?.is_archived ? "Unarchive" : "Archive"}
             </Button>
           </Form>
         </Popover>
