@@ -9,7 +9,7 @@ export const INBOX_VIEWS: Array<{ key: InboxView; title: string; Icon: LucideIco
   { key: "open", title: "Open", Icon: InboxIcon },
   { key: "snoozed", title: "Snoozed", Icon: Clock4Icon },
   { key: "recurring", title: "Recurring", Icon: RefreshCwIcon },
-  { key: "archived", title: "Archive", Icon: ArchiveIcon },
+  { key: "archived", title: "Archived", Icon: ArchiveIcon },
 ]
 
 export function useCurrentInboxView() {
