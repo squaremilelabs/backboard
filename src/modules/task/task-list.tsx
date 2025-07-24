@@ -233,11 +233,11 @@ function TaskTitle({ task }: { task: Task }) {
 
 function getDisplayedDate(task: Task): string {
   if (task.inbox_state === "open") {
-    return formatDate(new Date(task.created_at))
+    return formatDate(new Date(task.created_at), { withTime: true })
   }
 
   if (task.inbox_state === "snoozed") {
-    return task.snooze_date ? formatDate(new Date(task.snooze_date)) : "Someday"
+    return task.snooze_date ? "Until " + formatDate(new Date(task.snooze_date)) : "Indefinitely"
   }
 
   if (task.inbox_state === "archived") {
