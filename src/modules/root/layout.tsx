@@ -3,6 +3,7 @@ import { ChevronsLeftIcon, MenuIcon } from "lucide-react"
 import React, { useEffect } from "react"
 import { SignedIn, UserButton } from "@clerk/nextjs"
 import { usePathname } from "next/navigation"
+import Image from "next/image"
 import { InboxNav } from "../inbox/inbox-nav"
 import { useSessionStorageUtility } from "@/lib/utils/use-storage-utility"
 import { Button } from "~/smui/button/components"
@@ -51,6 +52,13 @@ function Sidebar() {
         )}
         onPress={() => setSidebarOpen(false)}
       >
+        <Image
+          src="/images/backboard-logo.svg"
+          alt="Backboard"
+          width={16}
+          height={16}
+          className="shadow-sm"
+        />
         <h1 className="text-canvas-4 font-semibold">Backboard</h1>
         <div className="grow" />
         <Icon icon={<ChevronsLeftIcon />} className="text-canvas-4" />
@@ -87,12 +95,26 @@ function Header() {
         className="hidden grow cursor-pointer items-center gap-8 md:flex"
       >
         <Icon icon={<MenuIcon />} className="text-canvas-4" />
+        <Image
+          src="/images/backboard-logo.svg"
+          alt="Backboard"
+          width={16}
+          height={16}
+          className="shadow-sm"
+        />
         <h1 className="text-canvas-4 font-semibold">Backboard</h1>
       </Button>
       {/* Menu trigger */}
       <Menu>
         <Button className="flex grow cursor-pointer items-center gap-8 md:hidden">
           <Icon icon={<MenuIcon />} className="text-canvas-4" />
+          <Image
+            src="/images/backboard-logo.svg"
+            alt="Backboard"
+            width={16}
+            height={16}
+            className="shadow-sm"
+          />
           <h1 className="text-canvas-4 font-semibold">Backboard</h1>
         </Button>
       </Menu>
