@@ -3,13 +3,13 @@ import { useParams } from "next/navigation"
 import { TaskInboxState } from "@/database/models/task"
 import { db } from "@/database/db"
 
-export type InboxView = "open" | "snoozed" | "recurring" | "archive"
+export type InboxView = "open" | "snoozed" | "recurring" | "archived"
 
 export const INBOX_VIEWS: Array<{ key: InboxView; title: string; Icon: LucideIcon }> = [
   { key: "open", title: "Open", Icon: InboxIcon },
   { key: "snoozed", title: "Snoozed", Icon: Clock4Icon },
-  { key: "archive", title: "Archive", Icon: ArchiveIcon },
   { key: "recurring", title: "Recurring", Icon: RefreshCwIcon },
+  { key: "archived", title: "Archive", Icon: ArchiveIcon },
 ]
 
 export function useCurrentInboxView() {
@@ -27,7 +27,7 @@ export function useCurrentInboxView() {
 export const INBOX_VIEW_TO_STATE_MAP: Record<InboxView, TaskInboxState | null> = {
   open: "open",
   snoozed: "snoozed",
-  archive: "archived",
+  archived: "archived",
   recurring: null,
 }
 
@@ -66,7 +66,7 @@ export function useInboxViewCounts(): Record<InboxView, number | null> {
   return {
     open: openCount,
     snoozed: snoozedCount,
-    archive: null, // Archive count is not calculated here
+    archived: null, // Archive count is not calculated here
     recurring: recurringCount,
   }
 }

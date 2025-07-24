@@ -114,10 +114,10 @@ function useTaskListQuery() {
         order:
           inboxView === "snoozed"
             ? { snooze_date: "asc" }
-            : inboxView === "archive"
+            : inboxView === "archived"
               ? { archive_date: "desc" }
               : undefined,
-        limit: inboxView === "archive" ? 30 : undefined,
+        limit: inboxView === "archived" ? 30 : undefined,
       },
     },
   })
@@ -143,7 +143,7 @@ function useTaskListQuery() {
     })
   }
 
-  if (inboxView === "archive") {
+  if (inboxView === "archived") {
     result = [...result].sort((left, right) => {
       const leftArchive = left.archive_date ?? 0
       const rightArchive = right.archive_date ?? 0

@@ -2,12 +2,12 @@
 
 import { RecurringTaskPage } from "../recurring-task/recurring-task-page"
 import { TaskPage } from "../task/task-page"
-import { useCurrentInboxView } from "./inbox-views"
+import { InboxView, useCurrentInboxView } from "./inbox-views"
 
 export function InboxPage() {
   const { view } = useCurrentInboxView()
 
-  const isTaskListView = ["open", "snoozed", "archive"].includes(view)
+  const isTaskListView = (["open", "snoozed", "archived"] as InboxView[]).includes(view)
   const isRecurringTaskListView = view === "recurring"
 
   if (isTaskListView) {
