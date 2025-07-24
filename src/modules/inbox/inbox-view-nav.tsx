@@ -98,7 +98,9 @@ export function InboxViewNav() {
             >
               <p>{item.title}</p>
               {!!viewCounts[item.key] && (
-                <span className="text-sm font-semibold">{viewCounts[item.key]}</span>
+                <span className={cn("text-sm font-bold", item.key === "open" && "text-primary-4")}>
+                  {viewCounts[item.key]}
+                </span>
               )}
             </ListBoxItem>
           )

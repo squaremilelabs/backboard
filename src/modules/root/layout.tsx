@@ -139,7 +139,7 @@ function Menu({ children }: { children: React.ReactNode }) {
       <Popover
         placement="bottom start"
         classNames={{
-          content: "bg-canvas-0/10 backdrop-blur-lg w-300 border-2 max-h-300 overflow-auto",
+          content: "bg-canvas-0 w-300 border-2 max-h-300 overflow-auto",
         }}
       >
         <InboxNav />
