@@ -30,13 +30,13 @@ export function RecurringTaskList() {
       aria-label="Recurring Task List"
       items={sortedRecurringTasks}
       classNames={{
-        base: "flex flex-col divide-y divide-neutral-100 not-data-empty:border-b",
+        base: "flex flex-col divide-y divide-canvas-1 not-data-empty:border-b",
         item: [
           "flex items-start",
           "gap-8 px-16 py-8 !outline-0",
-          "bg-neutral-0 data-selected:bg-neutral-50",
-          "focus-visible:border-l-4 focus-visible:border-l-neutral-400",
-          "data-selected:border-l-4 data-selected:border-l-yellow-500",
+          "bg-canvas-0 data-selected:bg-canvas-0",
+          "focus-visible:border-l-4 focus-visible:border-l-canvas-3",
+          "data-selected:border-l-4 data-selected:border-l-primary-3",
         ],
       }}
     >
@@ -50,7 +50,7 @@ export function RecurringTaskList() {
             </RecurringTaskFormModal>
             <p
               className={cn(
-                "min-w-fit text-sm text-neutral-400 uppercase",
+                "min-w-fit text-sm text-canvas-3 uppercase",
                 "leading-20 font-semibold tracking-wide"
               )}
             >

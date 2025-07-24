@@ -78,11 +78,11 @@ export function InboxViewNav() {
           base: ["flex flex-row w-full items-center border-b"],
           item: [
             "flex items-center gap-8 px-24 py-4",
-            "not-data-selected:text-neutral-400",
-            "not-data-selected:hover:bg-neutral-100",
+            "not-data-selected:text-canvas-3",
+            "not-data-selected:hover:bg-canvas-1",
             "data-selected:border-b-2",
-            "data-selected:border-neutral-600",
-            "data-selected:text-neutral-950",
+            "data-selected:border-canvas-4",
+            "data-selected:text-canvas-6",
             "data-selected:font-medium",
             "data-drop-target:outline-2",
           ],
@@ -154,13 +154,13 @@ function TaskSnoozeModal({
         overlay: [
           "fixed inset-0 z-60 h-dvh w-dvw",
           "flex flex-col items-center pt-[10dvh]",
-          "bg-neutral-100/30 backdrop-blur-xs",
+          "bg-canvas-1/30 backdrop-blur-xs",
         ],
-        modal: ["bg-neutral-0 border"],
+        modal: ["bg-canvas-0 border"],
         content: ["p-16", "flex flex-col gap-16", "w-350"],
       }}
     >
-      <Heading slot="title" className="text-lg font-medium text-yellow-600">
+      <Heading slot="title" className="text-lg font-medium text-primary-4">
         {title}
       </Heading>
       <Calendar
@@ -184,10 +184,10 @@ function TaskSnoozeModal({
               date={date}
               className={cn(
                 "flex size-40 items-center justify-center",
-                "data-disabled:text-neutral-300",
-                `not-data-disabled:cursor-pointer not-data-disabled:hover:bg-yellow-500
-                not-data-disabled:hover:text-yellow-50`,
-                "data-selected:bg-yellow-500 data-selected:text-yellow-50"
+                "data-disabled:text-canvas-3",
+                `not-data-disabled:cursor-pointer not-data-disabled:hover:bg-primary-3
+                not-data-disabled:hover:text-primary-1`,
+                "data-selected:bg-primary-3 data-selected:text-primary-1"
               )}
             />
           )}
@@ -195,8 +195,8 @@ function TaskSnoozeModal({
       </Calendar>
       <Button
         onPress={handleSomedaySelect}
-        className="cursor-pointer border p-8 text-neutral-400 hover:bg-yellow-500
-          hover:text-yellow-50"
+        className="cursor-pointer border p-8 text-canvas-3 hover:bg-primary-3
+          hover:text-primary-1"
       >
         Someday
       </Button>

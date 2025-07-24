@@ -50,20 +50,20 @@ export function TaskList() {
       selectionBehavior="replace"
       dragAndDropHooks={dragAndDropHooks}
       classNames={{
-        base: "flex flex-col divide-y divide-neutral-100 not-data-empty:border-b",
+        base: "flex flex-col divide-y divide-canvas-1 not-data-empty:border-b",
         item: [
           "flex items-start",
           "gap-8 px-16 py-8 !outline-0",
-          "bg-neutral-0 data-selected:bg-neutral-50",
-          "focus-visible:border-l-4 focus-visible:border-l-neutral-400",
-          "data-selected:border-l-4 data-selected:border-l-yellow-500",
+          "bg-canvas-0 data-selected:bg-canvas-0",
+          "focus-visible:border-l-4 focus-visible:border-l-canvas-3",
+          "data-selected:border-l-4 data-selected:border-l-primary-3",
         ],
       }}
     >
       {(task, classNames) => {
         return (
           <GridListItem id={task.id} textValue={task.title} className={classNames.item}>
-            <Button slot="drag" className="text-neutral-400">
+            <Button slot="drag" className="text-canvas-3">
               <Icon icon={<GripVerticalIcon />} className="!w-fit !min-w-fit" />
             </Button>
             <Checkbox
@@ -71,16 +71,16 @@ export function TaskList() {
               classNames={{
                 icon: "size-16",
                 base: [
-                  "h-20 flex items-center text-neutral-400 cursor-pointer",
-                  "data-selected:text-yellow-600",
-                  "hover:not-data-selected:text-neutral-600",
+                  "h-20 flex items-center text-canvas-3 cursor-pointer",
+                  "data-selected:text-primary-4",
+                  "hover:not-data-selected:text-canvas-4",
                 ],
               }}
             />
             <TaskTitle task={task} />
             <p
               className={cn(
-                "min-w-fit text-sm text-neutral-400 uppercase",
+                "min-w-fit text-sm text-canvas-3 uppercase",
                 "leading-20 font-semibold tracking-wide"
               )}
             >
@@ -175,7 +175,7 @@ function TaskTitle({ task }: { task: Task }) {
       <Popover
         placement="bottom start"
         classNames={{
-          content: ["w-400", "bg-neutral-0/30 backdrop-blur-lg border-2", "p-16"],
+          content: ["w-400", "bg-canvas-0/30 backdrop-blur-lg border-2", "p-16"],
         }}
       >
         <Form onSubmit={onSubmit} className="flex flex-col gap-8">
@@ -186,9 +186,9 @@ function TaskTitle({ task }: { task: Task }) {
             autoFocus
             classNames={{
               base: "flex flex-col gap-2",
-              input: "w-full p-8 border bg-neutral-0",
+              input: "w-full p-8 border bg-canvas-0",
               field: {
-                label: "text-sm font-semibold text-neutral-700",
+                label: "text-sm font-semibold text-canvas-5",
               },
             }}
           >
@@ -205,9 +205,9 @@ function TaskTitle({ task }: { task: Task }) {
             defaultValue={task.content}
             classNames={{
               base: "flex flex-col gap-2",
-              textarea: "w-full p-8 border bg-neutral-0",
+              textarea: "w-full p-8 border bg-canvas-0",
               field: {
-                label: "text-sm font-semibold text-neutral-700",
+                label: "text-sm font-semibold text-canvas-5",
               },
             }}
           >
@@ -219,7 +219,7 @@ function TaskTitle({ task }: { task: Task }) {
             )}
           </TextField>
           <Button
-            className="cursor-pointer bg-neutral-200 p-8 font-medium text-neutral-950
+            className="cursor-pointer bg-canvas-2 p-8 font-medium text-canvas-6
               hover:opacity-80"
             type="submit"
           >

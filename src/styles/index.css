@@ -36,8 +36,8 @@
 }
 
 html {
-  @apply bg-neutral-50;
-  @apply text-neutral-950;
+  @apply bg-canvas-0;
+  @apply text-canvas-6;
   @apply box-border;
   @apply font-sans;
   @apply text-md;
@@ -47,11 +47,11 @@ html {
 @layer base {
   /*  As of Tailwind V4, border-color defaulted to currentColor. Modified here. */
   *, ::after, ::before, ::backdrop, ::file-selector-button {
-    @apply border-neutral-200;
+    @apply border-canvas-2;
   }
 
   * {
-    @apply outline-yellow-500;
+    @apply outline-primary-3;
   }
 }
 
@@ -59,7 +59,7 @@ html {
   .react-aria-DropIndicator {
     &[data-drop-target] {
       height: 2px;
-      background: var(--color-yellow-500);
+      background: var(--color-primary-3);
     }
   
     @supports not selector(:has(.foo)) {

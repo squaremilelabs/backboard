@@ -45,17 +45,17 @@ export function InboxHeader() {
     <div className="flex w-full items-center gap-8 truncate p-16">
       <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
         <Button className="flex cursor-pointer items-center gap-8">
-          <h1 className="truncate text-lg font-semibold text-neutral-700 hover:underline">
+          <h1 className="truncate text-lg font-semibold text-canvas-5 hover:underline">
             {inbox?.title ?? "-"}
           </h1>
           {inbox?.is_archived && (
-            <p className="text-sm font-semibold tracking-wide text-neutral-400">ARCHIVED</p>
+            <p className="text-sm font-semibold tracking-wide text-canvas-3">ARCHIVED</p>
           )}
         </Button>
         <Popover
           placement="bottom start"
           classNames={{
-            content: ["w-400", "bg-neutral-0/30 backdrop-blur-lg border-2", "p-16"],
+            content: ["w-400", "bg-canvas-0/30 backdrop-blur-lg border-2", "p-16"],
           }}
         >
           <Form onSubmit={onSubmit} className="flex flex-col gap-8">
@@ -66,9 +66,9 @@ export function InboxHeader() {
               autoFocus
               classNames={{
                 base: "flex flex-col gap-2",
-                input: "w-full p-8 border bg-neutral-0",
+                input: "w-full p-8 border bg-canvas-0",
                 field: {
-                  label: "text-sm font-semibold text-neutral-700",
+                  label: "text-sm font-semibold text-canvas-5",
                 },
               }}
             >
@@ -85,9 +85,9 @@ export function InboxHeader() {
               defaultValue={inbox?.content}
               classNames={{
                 base: "flex flex-col gap-2",
-                textarea: "w-full p-8 border bg-neutral-0",
+                textarea: "w-full p-8 border bg-canvas-0",
                 field: {
-                  label: "text-sm font-semibold text-neutral-700",
+                  label: "text-sm font-semibold text-canvas-5",
                 },
               }}
             >
@@ -99,14 +99,14 @@ export function InboxHeader() {
               )}
             </TextField>
             <Button
-              className="cursor-pointer bg-neutral-200 p-8 font-medium text-neutral-950
+              className="cursor-pointer bg-canvas-2 p-8 font-medium text-canvas-6
                 hover:opacity-80"
               type="submit"
             >
               Save
             </Button>
             <Button
-              className="cursor-pointer text-left text-sm text-neutral-400 hover:underline"
+              className="cursor-pointer text-left text-sm text-canvas-3 hover:underline"
               onPress={handleArchiveToggle}
             >
               {inbox?.is_archived ? "Unarchive" : "Archive"}

@@ -47,13 +47,13 @@ function Sidebar() {
         className={cn(
           "flex h-50 items-center gap-8",
           "border-b-2 p-16",
-          "cursor-pointer hover:bg-neutral-100"
+          "cursor-pointer hover:bg-canvas-1"
         )}
         onPress={() => setSidebarOpen(false)}
       >
-        <h1 className="font-semibold text-neutral-600">Backboard</h1>
+        <h1 className="font-semibold text-canvas-4">Backboard</h1>
         <div className="grow" />
-        <Icon icon={<ChevronsLeftIcon />} className="text-neutral-600" />
+        <Icon icon={<ChevronsLeftIcon />} className="text-canvas-4" />
       </Button>
       <div className="max-h-full grow overflow-auto">
         <InboxNav />
@@ -77,8 +77,8 @@ function Header() {
         "overflow-hidden",
         "transition-all",
         "sticky top-0 z-20 px-16",
-        "bg-neutral-50/30 backdrop-blur-lg",
-        "cursor-pointer hover:bg-neutral-100"
+        "bg-canvas-0/30 backdrop-blur-lg",
+        "cursor-pointer hover:bg-canvas-1"
       )}
     >
       {/* Sidebar trigger */}
@@ -86,14 +86,14 @@ function Header() {
         onPress={() => setSidebarOpen(true)}
         className="hidden grow cursor-pointer items-center gap-8 md:flex"
       >
-        <Icon icon={<MenuIcon />} className="text-neutral-600" />
-        <h1 className="font-semibold text-neutral-600">Backboard</h1>
+        <Icon icon={<MenuIcon />} className="text-canvas-4" />
+        <h1 className="font-semibold text-canvas-4">Backboard</h1>
       </Button>
       {/* Menu trigger */}
       <Menu>
         <Button className="flex grow cursor-pointer items-center gap-8 md:hidden">
-          <Icon icon={<MenuIcon />} className="text-neutral-600" />
-          <h1 className="font-semibold text-neutral-600">Backboard</h1>
+          <Icon icon={<MenuIcon />} className="text-canvas-4" />
+          <h1 className="font-semibold text-canvas-4">Backboard</h1>
         </Button>
       </Menu>
       <SignedIn>
@@ -117,7 +117,7 @@ function Menu({ children }: { children: React.ReactNode }) {
       <Popover
         placement="bottom start"
         classNames={{
-          content: "bg-neutral-0/10 backdrop-blur-lg w-300 border-2 max-h-300 overflow-auto",
+          content: "bg-canvas-0/10 backdrop-blur-lg w-300 border-2 max-h-300 overflow-auto",
         }}
       >
         <InboxNav />

@@ -83,8 +83,8 @@ export function InboxNavList() {
         base: "flex flex-col divide-y",
         item: [
           "cursor-pointer flex items-center gap-4 p-8",
-          "text-neutral-500",
-          "hover:bg-neutral-100",
+          "text-canvas-00",
+          "hover:bg-canvas-1",
           "data-drop-target:outline-2",
         ],
       }}
@@ -98,7 +98,7 @@ export function InboxNavList() {
             textValue={inbox.title}
             className={cn(
               classNames.item,
-              isSelected && "!bg-neutral-200 font-medium text-neutral-950"
+              isSelected && "!bg-canvas-2 font-medium text-canvas-6"
             )}
             href={`/inbox/${inbox.id}`}
           >
@@ -108,7 +108,7 @@ export function InboxNavList() {
             {/* <Icon icon={<InboxIcon />} /> */}
             <p className="grow truncate">{inbox.title}</p>
             {openTaskCount > 0 && (
-              <span className="flex w-30 justify-center text-sm font-bold text-yellow-600">
+              <span className="flex w-30 justify-center text-sm font-bold text-primary-4">
                 {openTaskCount}
               </span>
             )}

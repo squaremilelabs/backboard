@@ -117,9 +117,9 @@ export function RecurringTaskFormModal({
           overlay: [
             "fixed inset-0 z-60 h-dvh w-dvw",
             "flex flex-col items-center pt-[10dvh]",
-            "bg-neutral-100/30 backdrop-blur-xs",
+            "bg-canvas-1/30 backdrop-blur-xs",
           ],
-          modal: ["bg-neutral-0 border"],
+          modal: ["bg-canvas-0 border"],
           content: ["p-16", "flex flex-col gap-16", "w-400"],
         }}
       >
@@ -132,9 +132,9 @@ export function RecurringTaskFormModal({
             autoFocus
             classNames={{
               base: "flex flex-col gap-2",
-              input: "w-full p-8 border bg-neutral-0",
+              input: "w-full p-8 border bg-canvas-0",
               field: {
-                label: "text-sm font-semibold text-neutral-700",
+                label: "text-sm font-semibold text-canvas-5",
               },
             }}
           >
@@ -152,9 +152,9 @@ export function RecurringTaskFormModal({
             onChange={(value) => setValues({ ...values, content: value })}
             classNames={{
               base: "flex flex-col gap-2",
-              textarea: "w-full p-8 border bg-neutral-0",
+              textarea: "w-full p-8 border bg-canvas-0",
               field: {
-                label: "text-sm font-semibold text-neutral-700",
+                label: "text-sm font-semibold text-canvas-5",
               },
             }}
           >
@@ -166,7 +166,7 @@ export function RecurringTaskFormModal({
             )}
           </TextField>
           <div className="flex flex-col gap-2">
-            <span className="text-sm font-semibold text-neutral-700">Frequency</span>
+            <span className="text-sm font-semibold text-canvas-5">Frequency</span>
             <ToggleButtonGroup
               selectedKeys={[values.frequency.type]}
               selectionMode="single"
@@ -178,9 +178,9 @@ export function RecurringTaskFormModal({
                 base: "flex items-center gap-4",
                 button: [
                   "grow p-4 border text-sm",
-                  "cursor-pointer hover:bg-neutral-100",
-                  "data-selected:bg-neutral-400",
-                  "data-selected:text-neutral-50",
+                  "cursor-pointer hover:bg-canvas-1",
+                  "data-selected:bg-canvas-3",
+                  "data-selected:text-canvas-0",
                   "data-selected:font-medium",
                 ],
               }}
@@ -215,9 +215,9 @@ export function RecurringTaskFormModal({
                   icon: "size-16",
                 },
                 field: {
-                  label: "text-sm font-semibold text-neutral-700",
+                  label: "text-sm font-semibold text-canvas-5",
                 },
-                popover: "w-(--trigger-width) bg-neutral-0 border",
+                popover: "w-(--trigger-width) bg-canvas-0 border",
               }}
             >
               {(_, classNames) => (
@@ -232,9 +232,9 @@ export function RecurringTaskFormModal({
                       classNames={{
                         base: [],
                         item: [
-                          "cursor-pointer hover:bg-neutral-100",
+                          "cursor-pointer hover:bg-canvas-1",
                           "px-8 py-4",
-                          "data-selected:bg-neutral-400 data-selected:text-neutral-50 data-selected:font-medium",
+                          "data-selected:bg-canvas-3 data-selected:text-canvas-0 data-selected:font-medium",
                         ],
                       }}
                     >
@@ -263,18 +263,18 @@ export function RecurringTaskFormModal({
               minValue={1}
               maxValue={31}
             >
-              <Label className={"text-sm font-semibold text-neutral-700"}>Day of Month</Label>
+              <Label className={"text-sm font-semibold text-canvas-5"}>Day of Month</Label>
               <Group className="flex items-stretch">
                 <Button
                   slot="decrement"
-                  className="cursor-pointer border bg-neutral-200 px-4 hover:opacity-80"
+                  className="cursor-pointer border bg-canvas-2 px-4 hover:opacity-80"
                 >
                   <Icon icon={<MinusIcon />} />
                 </Button>
                 <Input className="w-100 border p-4 text-center" />
                 <Button
                   slot="increment"
-                  className="cursor-pointer border bg-neutral-200 px-4 hover:opacity-80"
+                  className="cursor-pointer border bg-canvas-2 px-4 hover:opacity-80"
                 >
                   <Icon icon={<PlusIcon />} />
                 </Button>
@@ -282,7 +282,7 @@ export function RecurringTaskFormModal({
             </NumberField>
           )}
           <Button
-            className="cursor-pointer bg-neutral-200 p-8 font-medium text-neutral-950
+            className="cursor-pointer bg-canvas-2 p-8 font-medium text-canvas-6
               hover:opacity-80"
             type="submit"
           >
@@ -290,7 +290,7 @@ export function RecurringTaskFormModal({
           </Button>
           {existingTask ? (
             <Button
-              className="cursor-pointer text-left text-sm text-neutral-400 hover:underline"
+              className="cursor-pointer text-left text-sm text-canvas-3 hover:underline"
               onPress={handleArchive}
             >
               Archive
