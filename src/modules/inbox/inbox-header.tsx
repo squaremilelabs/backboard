@@ -45,11 +45,11 @@ export function InboxHeader() {
     <div className="flex w-full items-center gap-8 truncate p-16">
       <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
         <Button className="flex cursor-pointer items-center gap-8">
-          <h1 className="truncate text-lg font-semibold text-canvas-5 hover:underline">
+          <h1 className="text-canvas-5 truncate text-lg font-semibold hover:underline">
             {inbox?.title ?? "-"}
           </h1>
           {inbox?.is_archived && (
-            <p className="text-sm font-semibold tracking-wide text-canvas-3">ARCHIVED</p>
+            <p className="text-canvas-3 text-sm font-semibold tracking-wide">ARCHIVED</p>
           )}
         </Button>
         <Popover
@@ -99,14 +99,13 @@ export function InboxHeader() {
               )}
             </TextField>
             <Button
-              className="cursor-pointer bg-canvas-2 p-8 font-medium text-canvas-6
-                hover:opacity-80"
+              className="bg-canvas-2 text-canvas-6 cursor-pointer p-8 font-medium hover:opacity-80"
               type="submit"
             >
               Save
             </Button>
             <Button
-              className="cursor-pointer text-left text-sm text-canvas-3 hover:underline"
+              className="text-canvas-3 cursor-pointer text-left text-sm hover:underline"
               onPress={handleArchiveToggle}
             >
               {inbox?.is_archived ? "Unarchive" : "Archive"}

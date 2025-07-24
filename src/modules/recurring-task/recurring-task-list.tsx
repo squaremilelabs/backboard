@@ -50,7 +50,7 @@ export function RecurringTaskList() {
             </RecurringTaskFormModal>
             <p
               className={cn(
-                "min-w-fit text-sm text-canvas-3 uppercase",
+                "text-canvas-3 min-w-fit text-sm uppercase",
                 "leading-20 font-semibold tracking-wide"
               )}
             >

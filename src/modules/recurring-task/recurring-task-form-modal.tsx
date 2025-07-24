@@ -166,7 +166,7 @@ export function RecurringTaskFormModal({
             )}
           </TextField>
           <div className="flex flex-col gap-2">
-            <span className="text-sm font-semibold text-canvas-5">Frequency</span>
+            <span className="text-canvas-5 text-sm font-semibold">Frequency</span>
             <ToggleButtonGroup
               selectedKeys={[values.frequency.type]}
               selectionMode="single"
@@ -263,18 +263,18 @@ export function RecurringTaskFormModal({
               minValue={1}
               maxValue={31}
             >
-              <Label className={"text-sm font-semibold text-canvas-5"}>Day of Month</Label>
+              <Label className={"text-canvas-5 text-sm font-semibold"}>Day of Month</Label>
               <Group className="flex items-stretch">
                 <Button
                   slot="decrement"
-                  className="cursor-pointer border bg-canvas-2 px-4 hover:opacity-80"
+                  className="bg-canvas-2 cursor-pointer border px-4 hover:opacity-80"
                 >
                   <Icon icon={<MinusIcon />} />
                 </Button>
                 <Input className="w-100 border p-4 text-center" />
                 <Button
                   slot="increment"
-                  className="cursor-pointer border bg-canvas-2 px-4 hover:opacity-80"
+                  className="bg-canvas-2 cursor-pointer border px-4 hover:opacity-80"
                 >
                   <Icon icon={<PlusIcon />} />
                 </Button>
@@ -282,15 +282,14 @@ export function RecurringTaskFormModal({
             </NumberField>
           )}
           <Button
-            className="cursor-pointer bg-canvas-2 p-8 font-medium text-canvas-6
-              hover:opacity-80"
+            className="bg-canvas-2 text-canvas-6 cursor-pointer p-8 font-medium hover:opacity-80"
             type="submit"
           >
             Save
           </Button>
           {existingTask ? (
             <Button
-              className="cursor-pointer text-left text-sm text-canvas-3 hover:underline"
+              className="text-canvas-3 cursor-pointer text-left text-sm hover:underline"
               onPress={handleArchive}
             >
               Archive

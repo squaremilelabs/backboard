@@ -96,10 +96,7 @@ export function InboxNavList() {
           <GridListItem
             id={inbox.id}
             textValue={inbox.title}
-            className={cn(
-              classNames.item,
-              isSelected && "!bg-canvas-2 font-medium text-canvas-6"
-            )}
+            className={cn(classNames.item, isSelected && "!bg-canvas-1 text-canvas-6 font-medium")}
             href={`/inbox/${inbox.id}`}
           >
             <Button slot="drag">
@@ -108,7 +105,7 @@ export function InboxNavList() {
             {/* <Icon icon={<InboxIcon />} /> */}
             <p className="grow truncate">{inbox.title}</p>
             {openTaskCount > 0 && (
-              <span className="flex w-30 justify-center text-sm font-bold text-primary-4">
+              <span className="text-primary-4 flex w-30 justify-center text-sm font-bold">
                 {openTaskCount}
               </span>
             )}

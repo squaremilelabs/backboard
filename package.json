@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --fix",
     "db:push-schema": "npx instant-cli@latest push schema",
     "db:push-perms": "npx instant-cli@latest push perms"
   },

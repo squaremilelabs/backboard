@@ -80,7 +80,7 @@ export function TaskList() {
             <TaskTitle task={task} />
             <p
               className={cn(
-                "min-w-fit text-sm text-canvas-3 uppercase",
+                "text-canvas-3 min-w-fit text-sm uppercase",
                 "leading-20 font-semibold tracking-wide"
               )}
             >
@@ -219,8 +219,7 @@ function TaskTitle({ task }: { task: Task }) {
             )}
           </TextField>
           <Button
-            className="cursor-pointer bg-canvas-2 p-8 font-medium text-canvas-6
-              hover:opacity-80"
+            className="bg-canvas-2 text-canvas-6 cursor-pointer p-8 font-medium hover:opacity-80"
             type="submit"
           >
             Save

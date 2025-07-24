@@ -16,7 +16,7 @@ export function RecurringTaskPage() {
           className={cn(
             "flex items-center",
             "gap-8 px-16 py-8",
-            "cursor-pointer hover:bg-canvas-1",
+            "hover:bg-canvas-1 cursor-pointer",
             "text-canvas-3"
           )}
         >

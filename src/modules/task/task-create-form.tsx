@@ -45,14 +45,13 @@ export function TaskCreateForm() {
         "group flex items-center gap-8 px-16 py-8",
         "focus-within:bg-canvas-0 focus-within:border-b",
         "text-canvas-3 focus-within:text-canvas-6",
-        "hover:bg-canvas-0"
+        "hover:bg-canvas-1"
       )}
     >
       <Icon icon={<PlusIcon />} />
       <TextField aria-label="Title" className="grow" name="title">
         <Input
-          className="w-full placeholder-canvas-3 !outline-0
-            not-group-focus-within:text-canvas-3"
+          className="placeholder-canvas-3 not-group-focus-within:text-canvas-3 w-full !outline-0"
           placeholder="Add"
         />
       </TextField>

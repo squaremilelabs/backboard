@@ -160,7 +160,7 @@ function TaskSnoozeModal({
         content: ["p-16", "flex flex-col gap-16", "w-350"],
       }}
     >
-      <Heading slot="title" className="text-lg font-medium text-primary-4">
+      <Heading slot="title" className="text-primary-4 text-lg font-medium">
         {title}
       </Heading>
       <Calendar
@@ -184,9 +184,9 @@ function TaskSnoozeModal({
               date={date}
               className={cn(
                 "flex size-40 items-center justify-center",
-                "data-disabled:text-canvas-3",
-                `not-data-disabled:cursor-pointer not-data-disabled:hover:bg-primary-3
-                not-data-disabled:hover:text-primary-1`,
+                "data-disabled:text-canvas-2",
+                `not-data-disabled:hover:bg-primary-3 not-data-disabled:hover:text-primary-1
+                not-data-disabled:cursor-pointer`,
                 "data-selected:bg-primary-3 data-selected:text-primary-1"
               )}
             />
@@ -195,8 +195,7 @@ function TaskSnoozeModal({
       </Calendar>
       <Button
         onPress={handleSomedaySelect}
-        className="cursor-pointer border p-8 text-canvas-3 hover:bg-primary-3
-          hover:text-primary-1"
+        className="text-canvas-3 hover:bg-primary-3 hover:text-primary-1 cursor-pointer border p-8"
       >
         Someday
       </Button>

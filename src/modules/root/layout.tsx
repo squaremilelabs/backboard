@@ -47,11 +47,11 @@ function Sidebar() {
         className={cn(
           "flex h-50 items-center gap-8",
           "border-b-2 p-16",
-          "cursor-pointer hover:bg-canvas-1"
+          "hover:bg-canvas-1 cursor-pointer"
         )}
         onPress={() => setSidebarOpen(false)}
       >
-        <h1 className="font-semibold text-canvas-4">Backboard</h1>
+        <h1 className="text-canvas-4 font-semibold">Backboard</h1>
         <div className="grow" />
         <Icon icon={<ChevronsLeftIcon />} className="text-canvas-4" />
       </Button>
@@ -78,7 +78,7 @@ function Header() {
         "transition-all",
         "sticky top-0 z-20 px-16",
         "bg-canvas-0/30 backdrop-blur-lg",
-        "cursor-pointer hover:bg-canvas-1"
+        "hover:bg-canvas-1 cursor-pointer"
       )}
     >
       {/* Sidebar trigger */}
@@ -87,13 +87,13 @@ function Header() {
         className="hidden grow cursor-pointer items-center gap-8 md:flex"
       >
         <Icon icon={<MenuIcon />} className="text-canvas-4" />
-        <h1 className="font-semibold text-canvas-4">Backboard</h1>
+        <h1 className="text-canvas-4 font-semibold">Backboard</h1>
       </Button>
       {/* Menu trigger */}
       <Menu>
         <Button className="flex grow cursor-pointer items-center gap-8 md:hidden">
           <Icon icon={<MenuIcon />} className="text-canvas-4" />
-          <h1 className="font-semibold text-canvas-4">Backboard</h1>
+          <h1 className="text-canvas-4 font-semibold">Backboard</h1>
         </Button>
       </Menu>
       <SignedIn>
