@@ -83,8 +83,9 @@ export function InboxNavList() {
         base: "flex flex-col divide-y",
         item: [
           "cursor-pointer flex items-center gap-4 p-8",
-          "text-canvas-00",
+          "text-canvas-3",
           "hover:bg-canvas-1",
+          "hover:text-canvas-5",
           "data-drop-target:outline-2",
         ],
       }}
