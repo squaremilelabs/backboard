@@ -1,7 +1,33 @@
 
 :root {
+  /* Canvas Colors */
+  --color-canvas-0: oklch(1 0 0);
+  --color-canvas-1: oklch(0.97 0 0);
+  --color-canvas-2: oklch(0.922 0 0);
+  --color-canvas-3: oklch(0.708 0 0);
+  --color-canvas-4: oklch(0.556 0 0);
+  --color-canvas-5: oklch(0.439 0 0);
+  --color-canvas-6: oklch(0.145 0 0);
+
+  --color-primary-1: oklch(94.93% 0.05 101.86);
+  --color-primary-2: oklch(89.80% 0.09 99.10);
+  --color-primary-3: var();
+  --color-primary-4: var();
+  --color-primary-5: var();
+
+  --color-secondary-1: var();
+  --color-secondary-2: var();
+  --color-secondary-3: var();
+  --color-secondary-4: var();
+  --color-secondary-5: var();
+
+  --color-danger-1: var();
+  --color-danger-2: var();
+  --color-danger-3: var();
+  --color-danger-4: var();
+  --color-danger-5: var();
   /* BACKBOARD NEUTRAL */
-  --bb-neutral-0: #ffffff;
+  --bb-neutral-0: oklch(1 0 0);
   --bb-neutral-50: oklch(0.985 0 0);
   --bb-neutral-100: oklch(0.97 0 0);
   --bb-neutral-200: oklch(0.922 0 0);
@@ -14,7 +40,7 @@
   --bb-neutral-900: oklch(0.205 0 0);
   --bb-neutral-950: oklch(0.145 0 0);
   /* BACKBOARD YELLOW */
-  --bb-yellow-50: oklch(97.94% 0.02 103.14);
+  --bb-primary-50: oklch(97.94% 0.02 103.14);
   --bb-yellow-100: oklch(94.93% 0.05 101.86);
   --bb-yellow-200: oklch(89.80% 0.09 99.10);
   --bb-yellow-300: oklch(83.23% 0.12 96.48);
@@ -65,7 +91,7 @@
 
 .dark {
   /* BACKBOARD NEUTRAL */
-  --bb-neutral-0: #000000;
+  --bb-neutral-0: oklch(0 0 0);
   --bb-neutral-50: oklch(0.145 0 0);
   --bb-neutral-100: oklch(0.205 0 0);
   --bb-neutral-200: oklch(0.269 0 0);
@@ -132,6 +158,34 @@
 }
 
 @theme inline {
+  /* SEMANTIC */
+  --color-canvas-0: var(--bb-neutral-0);
+  --color-canvas-1: var(--bb-neutral-100);
+  --color-canvas-2: var(--bb-neutral-200);
+  --color-canvas-3: var(--bb-neutral-500);
+  --color-canvas-4: var(--bb-neutral-600);
+  --color-canvas-5: var(--bb-neutral-700);
+  --color-canvas-6: var(--bb-neutral-950);
+
+  --color-primary-1: var();
+  --color-primary-2: var();
+  --color-primary-3: var();
+  --color-primary-4: var();
+  --color-primary-5: var();
+
+  --color-secondary-1: var();
+  --color-secondary-2: var();
+  --color-secondary-3: var();
+  --color-secondary-4: var();
+  --color-secondary-5: var();
+
+  --color-danger-1: var();
+  --color-danger-2: var();
+  --color-danger-3: var();
+  --color-danger-4: var();
+  --color-danger-5: var();
+
+  /* LITERAL */
   --color-neutral-0: var(--bb-neutral-0);
   --color-neutral-50: var(--bb-neutral-50);
   --color-neutral-100: var(--bb-neutral-100);
