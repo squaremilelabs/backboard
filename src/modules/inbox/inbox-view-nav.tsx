@@ -98,7 +98,9 @@ export function InboxViewNav() {
             >
               <p>{item.title}</p>
               {!!viewCounts[item.key] && (
-                <span className={cn("text-sm font-semibold", item.key === "open" && "text-primary-4")}>
+                <span
+                  className={cn("text-sm font-semibold", item.key === "open" && "text-primary-4")}
+                >
                   {viewCounts[item.key]}
                 </span>
               )}
