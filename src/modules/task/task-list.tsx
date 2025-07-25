@@ -78,6 +78,7 @@ export function TaskList() {
               }}
             />
             <TaskTitle task={task} />
+            <div className="grow" />
             <p
               className={cn(
                 "text-canvas-3 min-w-fit text-sm uppercase",
@@ -169,9 +170,7 @@ function TaskTitle({ task }: { task: Task }) {
   }
   return (
     <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
-      <Button className="grow cursor-pointer truncate text-left hover:underline">
-        {task.title}
-      </Button>
+      <Button className="cursor-pointer truncate text-left hover:underline">{task.title}</Button>
       <Popover
         placement="bottom start"
         classNames={{
