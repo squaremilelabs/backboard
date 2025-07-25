@@ -29,11 +29,17 @@ export async function GET() {
 
     const recurringTasks = query.recurring_tasks as Array<RecurringTask & { inbox: { id: string } }>
 
+    const currentDayOfWeek = new Date().getUTCDay()
+
     const dailyTasks = recurringTasks.filter((task) => {
-      return task.frequency.type === "daily"
+      if (task.frequency.type !== "daily") return false
+      if (currentDayOfWeek === 0 || currentDayOfWeek === 6) {
+        // If it's a weekend and the task skips weekends, skip it
+        if (task.frequency.skip_weekends) return false
+      }
+      return true
     })
 
-    const currentDayOfWeek = new Date().getUTCDay()
     const weeklyTasks = recurringTasks.filter((task) => {
       if (task.frequency.type !== "weekly") return false
       return task.frequency.weekday === currentDayOfWeek
