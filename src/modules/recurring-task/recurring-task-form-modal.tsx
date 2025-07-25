@@ -16,6 +16,7 @@ import { ListBox, ListBoxItem } from "~/smui/list-box/components"
 import { ToggleButton, ToggleButtonGroup } from "~/smui/toggle-button/components"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
+import { Checkbox } from "~/smui/checkbox/components"
 
 export function RecurringTaskFormModal({
   existingTask,
@@ -200,6 +201,24 @@ export function RecurringTaskFormModal({
               )}
             </ToggleButtonGroup>
           </div>
+          {values.frequency.type === "daily" && (
+            <Checkbox
+              isSelected={values.frequency.skip_weekends === true}
+              onChange={(value) =>
+                setValues({ ...values, frequency: { type: "daily", skip_weekends: value } })
+              }
+              classNames={{
+                base: [
+                  "flex items-center py-4 gap-4 cursor-pointer text-canvas-4",
+                  "data-selected:text-canvas-6",
+                  "hover:text-canvas-4",
+                ],
+                icon: "size-20",
+              }}
+            >
+              Skip weekends
+            </Checkbox>
+          )}
           {values.frequency.type === "weekly" && (
             <Select
               selectedKey={values.frequency.weekday}

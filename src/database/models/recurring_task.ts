@@ -16,6 +16,7 @@ interface BaseRecurringTaskFrequency {
 
 interface DailyRecurringTaskFrequency extends BaseRecurringTaskFrequency {
   type: "daily"
+  skip_weekends?: boolean
 }
 
 interface WeeklyRecurringTaskFrequency extends BaseRecurringTaskFrequency {

@@ -88,6 +88,13 @@ const sortRecurringTasks = (tasks: RecurringTask[]) => {
       if (leftDay !== rightDay) return leftDay - rightDay
     }
 
+    // If daily, put skip_weekends=false before skip_weekends=true
+    if (left.frequency?.type === "daily" && right.frequency?.type === "daily") {
+      const leftSkip = left.frequency.skip_weekends ? 1 : 0
+      const rightSkip = right.frequency.skip_weekends ? 1 : 0
+      if (leftSkip !== rightSkip) return leftSkip - rightSkip
+    }
+
     // Tie breaker: created_at ascending
     return new Date(left.created_at).getTime() - new Date(right.created_at).getTime()
   })
@@ -110,6 +117,10 @@ function getDisplayedFrequency(task: RecurringTask): string {
   if (task.frequency?.type === "monthly") {
     const dayOfMonth = format(new Date(2020, 1, task.frequency.day), "do")
     return `Monthly (${dayOfMonth} day)`
+  }
+
+  if (task.frequency?.type === "daily" && task.frequency.skip_weekends) {
+    return "Weekdays"
   }
 
   return "Daily"

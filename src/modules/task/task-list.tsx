@@ -236,7 +236,7 @@ function getDisplayedDate(task: Task): string {
   }
 
   if (task.inbox_state === "snoozed") {
-    return task.snooze_date ? "Until " + formatDate(new Date(task.snooze_date)) : "Indefinitely"
+    return task.snooze_date ? "Until " + formatDate(new Date(task.snooze_date)) : "Someday"
   }
 
   if (task.inbox_state === "archived") {
