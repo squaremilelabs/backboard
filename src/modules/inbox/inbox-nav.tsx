@@ -124,7 +124,11 @@ export function InboxNavList() {
             <Button slot="drag">
               <Icon icon={<GripVertical />} variants={{ size: "sm" }} />
             </Button>
-            <EmojiIcon emoji={inbox?.emoji ?? null} variants={{ size: "sm" }} />
+            <EmojiIcon
+              emoji={inbox?.emoji ?? null}
+              variants={{ size: "sm" }}
+              className={isSelected ? "opacity-100" : "opacity-70"}
+            />
             <p className="grow truncate">{inbox.title}</p>
             {openTaskCount > 0 && (
               <span className="text-primary-4 flex w-30 justify-center text-sm font-bold">
