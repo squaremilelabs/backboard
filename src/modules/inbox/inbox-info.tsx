@@ -43,7 +43,10 @@ export function InboxTitle() {
   return (
     <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
       <Button className="flex cursor-pointer items-center gap-8">
-        <h1 className="text-canvas-5 truncate text-lg font-semibold hover:underline">
+        <h1
+          className="text-canvas-5 dark:text-canvas-7 truncate text-lg font-semibold
+            hover:underline"
+        >
           {inbox?.title ?? "-"}
         </h1>
         {inbox?.is_archived && (
