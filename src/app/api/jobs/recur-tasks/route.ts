@@ -16,7 +16,8 @@ export async function GET() {
       recurring_tasks: {
         $: {
           where: {
-            is_archived: false,
+            "is_archived": false,
+            "inbox.is_archived": false,
           },
         },
         inbox: {

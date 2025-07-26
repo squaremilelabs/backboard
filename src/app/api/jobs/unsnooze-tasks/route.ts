@@ -15,8 +15,9 @@ export async function GET() {
       tasks: {
         $: {
           where: {
-            inbox_state: "snoozed",
-            snooze_date: { $lte: now },
+            "inbox_state": "snoozed",
+            "snooze_date": { $lte: now },
+            "inbox.is_archived": false,
           },
           fields: ["id"],
         },

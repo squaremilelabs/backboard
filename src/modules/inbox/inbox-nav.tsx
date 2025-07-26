@@ -23,7 +23,7 @@ import { EmojiIcon } from "@/lib/components/emoji"
 export function InboxNav() {
   return (
     <div className="flex h-full flex-col">
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2">
         <InboxNavList />
         <InboxNavCreateInput />
       </div>
@@ -97,9 +97,9 @@ export function InboxNavList() {
       dependencies={[inboxes, currentInboxId, account]}
       dragAndDropHooks={dragAndDropHooks}
       classNames={{
-        base: "flex flex-col",
+        base: "flex flex-col gap-2",
         item: [
-          "cursor-pointer flex items-center gap-4 p-8",
+          "cursor-pointer flex items-center gap-4 px-8 py-6",
           "text-canvas-3",
           "hover:bg-canvas-1",
           "hover:text-canvas-5",
@@ -160,7 +160,7 @@ export function InboxNavCreateInput() {
       ref={formRef}
       onSubmit={onSubmit}
       className={cn(
-        "group flex items-center gap-4 p-8",
+        "group flex items-center gap-4 px-8 py-6",
         "focus-within:bg-canvas-0",
         "text-canvas-3 focus-within:text-canvas-7",
         "hover:bg-canvas-1"
