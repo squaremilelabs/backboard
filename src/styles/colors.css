@@ -28,18 +28,18 @@
 
 .dark {
   --canvas-0: oklch(0.145 0 0);
-  --canvas-1: oklch(0.439 0 0);
-  --canvas-2: oklch(0.556 0 0);
-  --canvas-3: oklch(0.708 0 0);
-  --canvas-4: oklch(0.922 0 0);
-  --canvas-5: oklch(0.97 0 0);
-  --canvas-6: oklch(1 0 0);
+  --canvas-1: oklch(0.205 0 0);
+  --canvas-2: oklch(0.269 0 0);
+  --canvas-3: oklch(0.556 0 0);
+  --canvas-4: oklch(0.556 0 0);
+  --canvas-5: oklch(0.556 0 0);
+  --canvas-6: oklch(0.985 0 0);
 
-  --primary-1: oklch(50.50% 0.09 67.44);
+  --primary-1: oklch(27.10% 0.05 53.29);
   --primary-2: oklch(61.31% 0.11 77.38);
   --primary-3: oklch(71.00% 0.13 86.56);
-  --primary-4: oklch(89.80% 0.09 99.10);
-  --primary-5: oklch(94.93% 0.05 101.86);
+  --primary-4: oklch(61.31% 0.11 77.38);
+  --primary-5: oklch(61.31% 0.11 77.38);
 
   --secondary-1: oklch(44.68% 0.08 242.77);
   --secondary-2: oklch(52.00% 0.09 241.32);
