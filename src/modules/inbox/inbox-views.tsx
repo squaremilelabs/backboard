@@ -130,7 +130,7 @@ export function InboxViewTabs() {
         classNames={{
           base: ["flex flex-row w-full items-center border-b"],
           item: [
-            "flex items-center gap-8 px-24 py-8 text-sm",
+            "flex items-center gap-8 px-24 py-6 text-sm",
             "not-data-selected:text-canvas-3",
             "not-data-selected:hover:bg-canvas-1",
             "data-selected:border-b-2",
