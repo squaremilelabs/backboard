@@ -18,6 +18,7 @@ import { Inbox } from "@/database/models/inbox"
 import { Task, updateManyTasks } from "@/database/models/task"
 import { GridList, GridListItem } from "~/smui/grid-list/components"
 import { cn } from "~/smui/utils"
+import { EmojiIcon } from "@/lib/components/emoji"
 
 export function InboxNav() {
   return (
@@ -123,6 +124,7 @@ export function InboxNavList() {
             <Button slot="drag">
               <Icon icon={<GripVertical />} variants={{ size: "sm" }} />
             </Button>
+            <EmojiIcon emoji={inbox?.emoji ?? null} variants={{ size: "sm" }} />
             <p className="grow truncate">{inbox.title}</p>
             {openTaskCount > 0 && (
               <span className="text-primary-4 flex w-30 justify-center text-sm font-bold">

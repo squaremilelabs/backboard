@@ -1,3 +1,5 @@
+"use client"
+
 import React from "react"
 import { InboxTitle } from "./inbox-info"
 import { InboxViewTabs } from "./inbox-views"

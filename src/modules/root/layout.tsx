@@ -45,7 +45,7 @@ function AppSidebar() {
     >
       <Button
         className={cn(
-          "flex h-50 items-center gap-8",
+          "flex h-45 items-center gap-8",
           "border-b p-16",
           "hover:bg-canvas-1 cursor-pointer"
         )}
@@ -83,8 +83,7 @@ function AppHeader() {
   return (
     <header
       className={cn(
-        !sidebarOpen ? "flex h-50 min-h-50" : "flex h-50 min-h-50 md:hidden md:h-0",
-        // "transition-discrete starting:h-0",
+        !sidebarOpen ? "flex h-45 min-h-45" : "flex h-45 min-h-45 md:hidden md:h-0",
         "overflow-hidden",
         "transition-all",
         "px-16",
