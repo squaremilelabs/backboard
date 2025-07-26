@@ -17,7 +17,7 @@ const _schema = i.schema({
     inboxes: i.entity({
       created_at: i.date().indexed(),
       title: i.string().indexed(),
-      emoji: i.string().optional(), // EmojiClickData
+      emoji: i.string().optional(),
       content: i.string().optional(),
       open_task_order: i.json(), // array of task IDs (strings)
       is_archived: i.boolean(),
