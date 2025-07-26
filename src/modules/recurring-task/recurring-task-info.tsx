@@ -211,7 +211,7 @@ export function RecurringTaskModal({
               classNames={{
                 base: [
                   "flex items-center py-4 gap-4 cursor-pointer text-canvas-4",
-                  "data-selected:text-canvas-6",
+                  "data-selected:text-canvas-7",
                   "hover:text-canvas-4",
                 ],
                 icon: "size-20",
@@ -302,7 +302,7 @@ export function RecurringTaskModal({
             </NumberField>
           )}
           <Button
-            className="bg-canvas-2 text-canvas-6 cursor-pointer p-8 font-medium hover:opacity-80"
+            className="bg-canvas-2 text-canvas-7 cursor-pointer p-8 font-medium hover:opacity-80"
             type="submit"
           >
             Save

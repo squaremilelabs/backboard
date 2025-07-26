@@ -9,7 +9,7 @@ import { createTask } from "@/database/models/task"
 import { useInstantAccount } from "@/modules/account/instant-account"
 import { Icon } from "~/smui/icon/components"
 
-export function TaskCreateForm() {
+export function TaskCreateInput() {
   const { id: inboxId, view: inboxView } = useCurrentInboxView()
   const account = useInstantAccount()
   const formRef = useRef<HTMLFormElement>(null)
@@ -44,7 +44,7 @@ export function TaskCreateForm() {
       className={cn(
         "group flex items-center gap-8 px-16 py-8",
         "focus-within:bg-canvas-0 focus-within:border-b",
-        "text-canvas-3 focus-within:text-canvas-6",
+        "text-canvas-3 focus-within:text-canvas-7",
         "hover:bg-canvas-1"
       )}
     >

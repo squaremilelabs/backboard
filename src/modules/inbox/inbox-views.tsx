@@ -135,7 +135,7 @@ export function InboxViewTabs() {
             "not-data-selected:hover:bg-canvas-1",
             "data-selected:border-b-2",
             "data-selected:border-canvas-4",
-            "data-selected:text-canvas-6",
+            "data-selected:text-canvas-7",
             "data-selected:font-medium",
             "data-drop-target:outline-2",
           ],

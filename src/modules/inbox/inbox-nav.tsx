@@ -22,7 +22,7 @@ import { cn } from "~/smui/utils"
 export function InboxNav() {
   return (
     <div className="flex h-full flex-col">
-      <div className="flex flex-col divide-y">
+      <div className="flex flex-col">
         <InboxNavList />
         <InboxNavCreateInput />
       </div>
@@ -96,7 +96,7 @@ export function InboxNavList() {
       dependencies={[inboxes, currentInboxId, account]}
       dragAndDropHooks={dragAndDropHooks}
       classNames={{
-        base: "flex flex-col divide-y",
+        base: "flex flex-col",
         item: [
           "cursor-pointer flex items-center gap-4 p-8",
           "text-canvas-3",
@@ -113,13 +113,16 @@ export function InboxNavList() {
           <GridListItem
             id={inbox.id}
             textValue={inbox.title}
-            className={cn(classNames.item, isSelected && "!bg-canvas-1 text-canvas-6 font-medium")}
+            className={cn(
+              classNames.item,
+              "font-medium",
+              isSelected && "!bg-canvas-1 text-canvas-7 font-semibold"
+            )}
             href={`/inbox/${inbox.id}`}
           >
             <Button slot="drag">
               <Icon icon={<GripVertical />} variants={{ size: "sm" }} />
             </Button>
-            {/* <Icon icon={<InboxIcon />} /> */}
             <p className="grow truncate">{inbox.title}</p>
             {openTaskCount > 0 && (
               <span className="text-primary-4 flex w-30 justify-center text-sm font-bold">
@@ -150,14 +153,21 @@ export function InboxNavCreateInput() {
     <Form
       ref={formRef}
       onSubmit={onSubmit}
-      aria-label="Create Inbox"
-      className="flex items-center gap-8 p-8 focus-within:outline-2"
+      className={cn(
+        "group flex items-center gap-4 p-8",
+        "focus-within:bg-canvas-0",
+        "text-canvas-3 focus-within:text-canvas-7",
+        "hover:bg-canvas-1"
+      )}
     >
-      <Icon icon={<PlusIcon />} />
+      <Icon icon={<PlusIcon />} variants={{ size: "md" }} />
       <TextField
         name="title"
         aria-label="Title"
-        classNames={{ base: "w-full", input: "w-full !outline-0" }}
+        classNames={{
+          base: "w-full",
+          input: "placeholder-canvas-3 not-group-focus-within:text-canvas-3 w-full !outline-0",
+        }}
       >
         {(_, classNames) => <TextFieldInput placeholder="Add" className={classNames.input} />}
       </TextField>

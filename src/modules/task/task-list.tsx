@@ -219,7 +219,7 @@ function TaskTitle({ task }: { task: Task }) {
             )}
           </TextField>
           <Button
-            className="bg-canvas-2 text-canvas-6 cursor-pointer p-8 font-medium hover:opacity-80"
+            className="bg-canvas-2 text-canvas-7 cursor-pointer p-8 font-medium hover:opacity-80"
             type="submit"
           >
             Save

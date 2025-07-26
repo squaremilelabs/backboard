@@ -17,7 +17,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
       className={cn(
-        "relative h-dvh w-dvw transition-discrete",
+        "relative h-dvh w-dvw",
         sidebarOpen
           ? ["flex flex-col divide-y-2", "md:flex md:flex-row md:items-start md:divide-x-2"]
           : "flex flex-col divide-y-2"
@@ -38,7 +38,6 @@ function AppSidebar() {
         sidebarOpen
           ? "hidden h-0 w-0 md:flex md:h-dvh md:max-h-dvh md:w-300 md:min-w-300"
           : "hidden h-0 w-0",
-        // "transition-discrete starting:w-0",
         "overflow-hidden",
         "transition-all",
         "flex-col",
@@ -141,10 +140,11 @@ function AppMenu({ children }: { children: React.ReactNode }) {
       <Popover
         placement="bottom start"
         classNames={{
-          content: "bg-canvas-0 w-300 border-2 max-h-300 overflow-auto",
+          content: "bg-canvas-0 w-350 border-2 max-h-[80dvh] overflow-auto",
         }}
       >
         <InboxNav />
+        <AppRoadmapLinks />
       </Popover>
     </PopoverTrigger>
   )
@@ -155,8 +155,8 @@ function AppRoadmapLinks() {
     <div className="flex flex-col gap-8 px-8 py-16">
       <Link
         className={cn(
-          "flex items-center gap-2",
-          "text-canvas-3 hover:text-canvas-6 cursor-pointer"
+          "flex items-center gap-2 text-sm",
+          "text-canvas-3 hover:text-canvas-7 cursor-pointer"
         )}
         href="https://squaremilelabs.notion.site/Backboard-Roadmap-23baece5ba1180b59daec44a563d2e86"
         target="_blank"
@@ -166,8 +166,8 @@ function AppRoadmapLinks() {
       </Link>
       <Link
         className={cn(
-          "flex items-center gap-2",
-          "text-canvas-3 hover:text-canvas-6 cursor-pointer"
+          "flex items-center gap-2 text-sm",
+          "text-canvas-3 hover:text-canvas-7 cursor-pointer"
         )}
         href="https://squaremilelabs.notion.site/23baece5ba11803880f7cb252029167e"
         target="_blank"
