@@ -25,9 +25,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     >
       <AppSidebar />
       <AppHeader />
-      <main className={cn("flex w-full flex-col", sidebarOpen ? "md:pl-300" : "mt-50")}>
-        {children}
-      </main>
+      <main className={cn("flex w-full flex-col", sidebarOpen && "md:pl-300")}>{children}</main>
     </div>
   )
 }
@@ -89,7 +87,7 @@ function AppHeader() {
         // "transition-discrete starting:h-0",
         "overflow-hidden",
         "transition-all",
-        "fixed top-0 z-20 w-dvw px-16",
+        "px-16",
         "bg-canvas-0/30 backdrop-blur-lg",
         "hover:bg-canvas-1 cursor-pointer"
       )}
