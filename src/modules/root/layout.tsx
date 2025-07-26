@@ -46,7 +46,7 @@ function AppSidebar() {
       <Button
         className={cn(
           "flex h-50 items-center gap-8",
-          "border-b-2 p-16",
+          "border-b p-16",
           "hover:bg-canvas-1 cursor-pointer"
         )}
         onPress={() => setSidebarOpen(false)}
