@@ -3,7 +3,7 @@
 import { Form } from "react-aria-components"
 import { useState } from "react"
 import { EmojiClickData } from "emoji-picker-react"
-import { InboxIcon } from "lucide-react"
+import { ListIcon } from "lucide-react"
 import { useCurrentInboxView } from "./inbox-views"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
 import { db } from "@/database/db"
@@ -53,7 +53,7 @@ export function InboxTitle() {
     <div className="flex items-center gap-8">
       <EmojiPicker
         selected={inbox?.emoji ?? null}
-        FallbackIcon={InboxIcon}
+        FallbackIcon={ListIcon}
         onSelectionChange={handleEmojiChange}
         iconVariants={{ size: "lg" }}
         iconClassName="text-canvas-3"
