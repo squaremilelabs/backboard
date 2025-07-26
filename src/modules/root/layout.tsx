@@ -1,5 +1,10 @@
 "use client"
-import { ChevronsLeftIcon, ExternalLinkIcon, MenuIcon } from "lucide-react"
+import {
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+  ChevronsUpDownIcon,
+  ExternalLinkIcon,
+} from "lucide-react"
 import React, { useEffect } from "react"
 import { SignedIn, UserButton } from "@clerk/nextjs"
 import { usePathname } from "next/navigation"
@@ -96,7 +101,7 @@ function AppHeader() {
         onPress={() => setSidebarOpen(true)}
         className="hidden grow cursor-pointer items-center gap-8 md:flex"
       >
-        <Icon icon={<MenuIcon />} className="text-canvas-4" />
+        <Icon icon={<ChevronsRightIcon />} className="text-canvas-4" />
         <Image
           src="/images/backboard-logo.svg"
           alt="Backboard"
@@ -109,7 +114,7 @@ function AppHeader() {
       {/* Menu trigger */}
       <AppMenu>
         <Button className="flex grow cursor-pointer items-center gap-8 md:hidden">
-          <Icon icon={<MenuIcon />} className="text-canvas-4" />
+          <Icon icon={<ChevronsUpDownIcon />} className="text-canvas-4" />
           <Image
             src="/images/backboard-logo.svg"
             alt="Backboard"
