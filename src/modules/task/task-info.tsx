@@ -6,7 +6,7 @@ import { PlusIcon } from "lucide-react"
 import { useCurrentInboxView } from "../inbox/inbox-views"
 import { cn } from "~/smui/utils"
 import { createTask } from "@/database/models/task"
-import { useInstantAccount } from "@/modules/auth/instant-auth"
+import { useInstantAccount } from "@/modules/account/instant-account"
 import { Icon } from "~/smui/icon/components"
 
 export function TaskCreateForm() {

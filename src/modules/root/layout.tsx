@@ -1,9 +1,10 @@
 "use client"
-import { ChevronsLeftIcon, MenuIcon } from "lucide-react"
+import { ChevronsLeftIcon, ExternalLinkIcon, MenuIcon } from "lucide-react"
 import React, { useEffect } from "react"
 import { SignedIn, UserButton } from "@clerk/nextjs"
 import { usePathname } from "next/navigation"
 import Image from "next/image"
+import { Link } from "react-aria-components"
 import { InboxNav } from "../inbox/inbox-nav"
 import { useSessionStorageUtility } from "@/lib/utils/use-storage-utility"
 import { Button } from "~/smui/button/components"
@@ -22,14 +23,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           : "flex flex-col divide-y-2"
       )}
     >
-      <Sidebar />
-      <Header />
+      <AppSidebar />
+      <AppHeader />
       <main className={cn("flex w-full flex-col", sidebarOpen && "md:pl-300")}>{children}</main>
     </div>
   )
 }
 
-function Sidebar() {
+function AppSidebar() {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("sidebar-open", true)
   return (
     <nav
@@ -66,6 +67,7 @@ function Sidebar() {
       <div className="max-h-full grow overflow-auto">
         <InboxNav />
       </div>
+      <AppRoadmapLinks />
       <div className="flex items-center justify-end border p-8">
         <SignedIn>
           <UserButton showName />
@@ -75,7 +77,7 @@ function Sidebar() {
   )
 }
 
-function Header() {
+function AppHeader() {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("sidebar-open", true)
   return (
     <header
@@ -105,7 +107,7 @@ function Header() {
         <h1 className="text-canvas-4 font-semibold">Backboard</h1>
       </Button>
       {/* Menu trigger */}
-      <Menu>
+      <AppMenu>
         <Button className="flex grow cursor-pointer items-center gap-8 md:hidden">
           <Icon icon={<MenuIcon />} className="text-canvas-4" />
           <Image
@@ -117,7 +119,7 @@ function Header() {
           />
           <h1 className="text-canvas-4 font-semibold">Backboard</h1>
         </Button>
-      </Menu>
+      </AppMenu>
       <SignedIn>
         <UserButton showName />
       </SignedIn>
@@ -125,7 +127,7 @@ function Header() {
   )
 }
 
-function Menu({ children }: { children: React.ReactNode }) {
+function AppMenu({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = React.useState(false)
   const pathname = usePathname()
 
@@ -145,5 +147,34 @@ function Menu({ children }: { children: React.ReactNode }) {
         <InboxNav />
       </Popover>
     </PopoverTrigger>
+  )
+}
+
+function AppRoadmapLinks() {
+  return (
+    <div className="flex flex-col gap-8 px-8 py-16">
+      <Link
+        className={cn(
+          "flex items-center gap-2",
+          "text-canvas-3 hover:text-canvas-6 cursor-pointer"
+        )}
+        href="https://squaremilelabs.notion.site/Backboard-Roadmap-23baece5ba1180b59daec44a563d2e86"
+        target="_blank"
+      >
+        <Icon icon={<ExternalLinkIcon />} />
+        Roadmap
+      </Link>
+      <Link
+        className={cn(
+          "flex items-center gap-2",
+          "text-canvas-3 hover:text-canvas-6 cursor-pointer"
+        )}
+        href="https://squaremilelabs.notion.site/23baece5ba11803880f7cb252029167e"
+        target="_blank"
+      >
+        <Icon icon={<ExternalLinkIcon />} />
+        Submit Feedback
+      </Link>
+    </div>
   )
 }

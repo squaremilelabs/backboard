@@ -1,7 +1,7 @@
 import { id, init } from "@instantdb/admin"
 import { NextResponse } from "next/server"
 import schema from "@/database/instant.schema"
-import { RecurringTask } from "@/database/models/recurring_task"
+import { RecurringTask } from "@/database/models/recurring-task"
 
 const db = init({
   appId: process.env.NEXT_PUBLIC_INSTANT_APP_ID as string,

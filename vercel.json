@@ -1,11 +1,11 @@
 {
   "crons": [
     { 
-      "path": "/api/jobs/unsnooze_tasks",
+      "path": "/api/jobs/unsnooze-tasks",
       "schedule": "5 6 * * *"
     },
     { 
-      "path": "/api/jobs/recur_tasks",
+      "path": "/api/jobs/recur-tasks",
       "schedule": "5 6 * * *"
     }
   ]

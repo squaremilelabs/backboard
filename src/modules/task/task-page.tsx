@@ -1,6 +1,6 @@
 "use client"
 
-import { TaskCreateForm } from "./task-create-form"
+import { TaskCreateForm } from "./task-info"
 import { TaskList } from "./task-list"
 
 export function TaskPage() {

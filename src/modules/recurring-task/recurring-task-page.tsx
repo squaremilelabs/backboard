@@ -1,7 +1,7 @@
 "use client"
 
 import { PlusIcon } from "lucide-react"
-import { RecurringTaskFormModal } from "./recurring-task-form-modal"
+import { RecurringTaskModal } from "./recurring-task-info"
 import { RecurringTaskList } from "./recurring-task-list"
 import { cn } from "~/smui/utils"
 import { Button } from "~/smui/button/components"
@@ -11,7 +11,7 @@ export function RecurringTaskPage() {
   return (
     <div className="flex flex-col">
       <RecurringTaskList />
-      <RecurringTaskFormModal>
+      <RecurringTaskModal>
         <Button
           className={cn(
             "flex items-center",
@@ -23,7 +23,7 @@ export function RecurringTaskPage() {
           <Icon icon={<PlusIcon />} />
           Add
         </Button>
-      </RecurringTaskFormModal>
+      </RecurringTaskModal>
     </div>
   )
 }

@@ -1,8 +1,8 @@
 import { format } from "date-fns"
 import { useCurrentInboxView } from "../inbox/inbox-views"
-import { RecurringTaskFormModal } from "./recurring-task-form-modal"
+import { RecurringTaskModal } from "./recurring-task-info"
 import { db } from "@/database/db"
-import { RecurringTask } from "@/database/models/recurring_task"
+import { RecurringTask } from "@/database/models/recurring-task"
 import { Button } from "~/smui/button/components"
 import { GridList, GridListItem } from "~/smui/grid-list/components"
 import { cn } from "~/smui/utils"
@@ -43,11 +43,11 @@ export function RecurringTaskList() {
       {(task, classNames) => {
         return (
           <GridListItem id={task.id} textValue={task.title} className={classNames.item}>
-            <RecurringTaskFormModal existingTask={task}>
+            <RecurringTaskModal existingTask={task}>
               <Button className="grow cursor-pointer text-left hover:underline">
                 {task.title}
               </Button>
-            </RecurringTaskFormModal>
+            </RecurringTaskModal>
             <p
               className={cn(
                 "text-canvas-3 min-w-fit text-sm uppercase",

@@ -7,7 +7,7 @@ import { useEffect } from "react"
 import { db } from "@/database/db"
 import { Account, initializeAccount } from "@/database/models/account"
 
-function InstantSignInWithClerkInternal() {
+function InstantAccountListenerInternal() {
   const { getToken } = useAuth()
 
   const signInToInstantWithClerkToken = async () => {
@@ -47,10 +47,10 @@ function InstantSignInWithClerkInternal() {
   return null
 }
 
-export function InstantSignInWithClerk() {
+export function InstantAccountListner() {
   return (
     <SignedIn>
-      <InstantSignInWithClerkInternal />
+      <InstantAccountListenerInternal />
     </SignedIn>
   )
 }

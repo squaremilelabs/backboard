@@ -57,6 +57,7 @@ export function TaskList() {
           "bg-canvas-0 data-selected:bg-canvas-0",
           "focus-visible:border-l-4 focus-visible:border-l-canvas-3",
           "data-selected:border-l-4 data-selected:border-l-primary-3",
+          "hover:bg-canvas-1",
         ],
       }}
     >

@@ -1,9 +1,8 @@
 import { Metadata } from "next"
 import { fontsClassName } from "@/styles/fonts"
 import Providers from "@/modules/root/providers"
-import "@/styles/index.css"
-import { InstantSignInWithClerk } from "@/modules/auth/instant-auth"
 import { AppLayout } from "@/modules/root/layout"
+import "@/styles/index.css"
 
 export const metadata: Metadata = {
   title: {
@@ -37,7 +36,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Providers>
           <AppLayout>{children}</AppLayout>
-          <InstantSignInWithClerk />
         </Providers>
       </body>
     </html>
