@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { Link } from "react-aria-components"
 import { InboxNav } from "../inbox/inbox-nav"
-import { AccountTaskState } from "../account/account-task-state"
+import { TaskTotalCount } from "../task/task-total-count"
 import { useSessionStorageUtility } from "@/lib/utils/use-storage-utility"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
@@ -187,7 +187,7 @@ function AppAccountBadge() {
           "flex items-center gap-8 px-16"
         )}
       >
-        <AccountTaskState />
+        <TaskTotalCount />
         <UserButton />
       </div>
     </SignedIn>
