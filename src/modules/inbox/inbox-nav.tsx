@@ -131,7 +131,7 @@ export function InboxNavList() {
             />
             <p className="grow truncate">{inbox.title}</p>
             {openTaskCount > 0 && (
-              <span className="text-primary-4 flex w-30 justify-center text-sm font-bold">
+              <span className="text-primary-3 flex w-30 justify-center text-sm font-bold">
                 {openTaskCount}
               </span>
             )}

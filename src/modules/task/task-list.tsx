@@ -1,10 +1,10 @@
 import { GripVerticalIcon } from "lucide-react"
 import { Form, useDragAndDrop } from "react-aria-components"
 import { useState } from "react"
-import { INBOX_VIEW_TO_STATE_MAP, useCurrentInboxView } from "../inbox/inbox-views"
+import { useCurrentInboxView } from "../inbox/inbox-views"
+import { useCurrentViewTasks } from "./task-queries"
 import { GridList, GridListItem } from "~/smui/grid-list/components"
-import { db } from "@/database/db"
-import { reorderIds, sortItemsByIdOrder } from "@/lib/utils/list-utils"
+import { reorderIds } from "@/lib/utils/list-utils"
 import { Task, updateTask } from "@/database/models/task"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
@@ -18,7 +18,7 @@ import { cn } from "~/smui/utils"
 
 export function TaskList() {
   const { id: inboxId, view: inboxView } = useCurrentInboxView()
-  const tasks = useTaskListQuery()
+  const tasks = useCurrentViewTasks()
 
   const isReorderable = inboxView === "open"
 
@@ -93,67 +93,6 @@ export function TaskList() {
       }}
     </GridList>
   )
-}
-
-// TODO: Move to own file
-function useTaskListQuery() {
-  const { id: inboxId, view: inboxView } = useCurrentInboxView()
-
-  const inboxQuery = db.useQuery({
-    inboxes: { $: { where: { id: inboxId } } },
-  })
-  const inbox = inboxQuery.data?.inboxes[0]
-
-  const taskInboxState = INBOX_VIEW_TO_STATE_MAP[inboxView] ?? "open"
-
-  const taskQuery = db.useQuery({
-    tasks: {
-      $: {
-        where: {
-          "inbox.id": inboxId,
-          "inbox_state": taskInboxState,
-        },
-        order:
-          inboxView === "snoozed"
-            ? { snooze_date: "asc" }
-            : inboxView === "archived"
-              ? { archive_date: "desc" }
-              : undefined,
-        limit: inboxView === "archived" ? 30 : undefined,
-      },
-    },
-  })
-
-  let result: Task[] = (taskQuery.data?.tasks ?? []) as Task[]
-
-  if (inboxView === "open") {
-    result = sortItemsByIdOrder({
-      items: inbox ? result : [],
-      idOrder: inbox?.open_task_order ?? [],
-      missingIdsPosition: "start",
-      sortMissingIds(left, right) {
-        return right.created_at - left.created_at
-      },
-    })
-  }
-
-  if (inboxView === "snoozed") {
-    result = [...result].sort((left, right) => {
-      const leftSnooze = left.snooze_date ?? new Date(2100, 1, 1).getTime()
-      const rightSnooze = right.snooze_date ?? new Date(2100, 1, 1).getTime()
-      return leftSnooze - rightSnooze
-    })
-  }
-
-  if (inboxView === "archived") {
-    result = [...result].sort((left, right) => {
-      const leftArchive = left.archive_date ?? 0
-      const rightArchive = right.archive_date ?? 0
-      return rightArchive - leftArchive
-    })
-  }
-
-  return result
 }
 
 function TaskTitle({ task }: { task: Task }) {

@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import { fontsClassName } from "@/styles/fonts"
 import Providers from "@/modules/root/providers"
-import { AppLayout } from "@/modules/root/layout"
+import { AppLayout } from "@/modules/root/app-layout"
 import "@/styles/index.css"
 
 export const metadata: Metadata = {

@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { Link } from "react-aria-components"
 import { InboxNav } from "../inbox/inbox-nav"
+import { AccountTaskState } from "../account/account-task-state"
 import { useSessionStorageUtility } from "@/lib/utils/use-storage-utility"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
@@ -20,18 +21,21 @@ import { Popover, PopoverTrigger } from "~/smui/popover/components"
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen] = useSessionStorageUtility("sidebar-open", true)
   return (
-    <div
-      className={cn(
-        "relative h-dvh w-dvw",
-        sidebarOpen
-          ? ["flex flex-col divide-y-2", "md:flex md:flex-row md:items-start md:divide-x-2"]
-          : "flex flex-col divide-y-2"
-      )}
-    >
-      <AppSidebar />
-      <AppHeader />
-      <main className={cn("flex w-full flex-col", sidebarOpen && "md:pl-300")}>{children}</main>
-    </div>
+    <>
+      <div
+        className={cn(
+          "relative h-dvh w-dvw",
+          sidebarOpen
+            ? ["flex flex-col divide-y-2", "md:flex md:flex-row md:items-start md:divide-x-2"]
+            : "flex flex-col divide-y-2"
+        )}
+      >
+        <AppSidebar />
+        <AppHeader />
+        <main className={cn("flex w-full flex-col", sidebarOpen && "md:pl-300")}>{children}</main>
+      </div>
+      <AppAccountBadge />
+    </>
   )
 }
 
@@ -71,14 +75,6 @@ function AppSidebar() {
         <InboxNav />
       </div>
       <AppRoadmapLinks />
-      <div className="flex items-center justify-end border p-8">
-        <SignedIn>
-          <UserButton
-            showName
-            appearance={{ variables: { colorForeground: "var(--color-canvas-6)" } }}
-          />
-        </SignedIn>
-      </div>
     </nav>
   )
 }
@@ -125,12 +121,6 @@ function AppHeader() {
           <h1 className="text-canvas-4 font-semibold">Backboard</h1>
         </Button>
       </AppMenu>
-      <SignedIn>
-        <UserButton
-          showName
-          appearance={{ variables: { colorForeground: "var(--color-canvas-6)" } }}
-        />
-      </SignedIn>
     </header>
   )
 }
@@ -185,5 +175,21 @@ function AppRoadmapLinks() {
         Submit Feedback
       </Link>
     </div>
+  )
+}
+
+function AppAccountBadge() {
+  return (
+    <SignedIn>
+      <div
+        className={cn(
+          "fixed top-0 right-0 z-50 flex h-45 items-center",
+          "flex items-center gap-8 px-16"
+        )}
+      >
+        <AccountTaskState />
+        <UserButton />
+      </div>
+    </SignedIn>
   )
 }
