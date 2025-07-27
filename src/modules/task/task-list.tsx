@@ -144,7 +144,7 @@ function TaskTitle({ task }: { task: Task }) {
             defaultValue={task.content}
             classNames={{
               base: "flex flex-col gap-2",
-              textarea: "w-full p-8 border bg-canvas-0",
+              textarea: "w-full p-8 border bg-canvas-0 resize-none",
               field: {
                 label: "text-sm font-semibold text-canvas-5",
               },
@@ -153,7 +153,7 @@ function TaskTitle({ task }: { task: Task }) {
             {(_, classNames) => (
               <>
                 <FieldLabel className={classNames.field.label}>Content</FieldLabel>
-                <TextFieldTextArea className={classNames.textarea} />
+                <TextFieldTextArea className={classNames.textarea} spellCheck={false} minRows={3} />
               </>
             )}
           </TextField>

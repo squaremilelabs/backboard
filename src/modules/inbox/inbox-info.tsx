@@ -111,7 +111,7 @@ export function InboxTitle() {
               defaultValue={inbox?.content}
               classNames={{
                 base: "flex flex-col gap-2",
-                textarea: "w-full p-8 border bg-canvas-0",
+                textarea: "w-full p-8 border bg-canvas-0 resize-none",
                 field: {
                   label: "text-sm font-semibold text-canvas-5",
                 },
@@ -120,7 +120,11 @@ export function InboxTitle() {
               {(_, classNames) => (
                 <>
                   <FieldLabel className={classNames.field.label}>Content</FieldLabel>
-                  <TextFieldTextArea className={classNames.textarea} />
+                  <TextFieldTextArea
+                    className={classNames.textarea}
+                    spellCheck={false}
+                    minRows={3}
+                  />
                 </>
               )}
             </TextField>
