@@ -7,7 +7,7 @@ import { Button } from "~/smui/button/components"
 import { Tooltip } from "~/smui/tooltip/components"
 
 export function AccountTaskState() {
-  const { tasks, isLoading } = useAccountOpenTasks()
+  const { tasks } = useAccountOpenTasks()
 
   // const openTaskCount = 0
   const openTaskCount = tasks?.length || 0
@@ -20,10 +20,10 @@ export function AccountTaskState() {
           "border-2 text-sm font-semibold",
           openTaskCount > 0 &&
             "border-primary-4 from-primary-3 to-primary-5 text-canvas-0 bg-gradient-to-br",
-          openTaskCount === 0 && "bg-canvas-1 text-canvas-4"
+          openTaskCount === 0 && "bg-canvas-1 dark:bg-canvas-2 text-canvas-4"
         )}
       >
-        {isLoading ? <>-</> : openTaskCount > 0 ? <>{openTaskCount}</> : <>0</>}
+        {openTaskCount}
       </Button>
       <Tooltip
         offset={8}

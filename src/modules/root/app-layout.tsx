@@ -67,7 +67,7 @@ function AppSidebar() {
           height={16}
           className="shadow-sm"
         />
-        <h1 className="text-canvas-4 font-semibold">Backboard</h1>
+        <h1 className="text-canvas-4 dark:text-canvas-6 font-semibold">Backboard</h1>
         <div className="grow" />
         <Icon icon={<ChevronsLeftIcon />} className="text-canvas-4" />
       </Button>
@@ -105,7 +105,7 @@ function AppHeader() {
           height={16}
           className="shadow-sm"
         />
-        <h1 className="text-canvas-4 font-semibold">Backboard</h1>
+        <h1 className="text-canvas-4 dark:text-canvas-6 font-semibold">Backboard</h1>
       </Button>
       {/* Menu trigger */}
       <AppMenu>
@@ -118,7 +118,7 @@ function AppHeader() {
             height={16}
             className="shadow-sm"
           />
-          <h1 className="text-canvas-4 font-semibold">Backboard</h1>
+          <h1 className="text-canvas-4 dark:text-canvas-6 font-semibold">Backboard</h1>
         </Button>
       </AppMenu>
     </header>
