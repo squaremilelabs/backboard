@@ -38,7 +38,7 @@ export function TaskTotalCount() {
           width={width}
           height={height}
           className="fixed top-0 left-0 !z-50"
-          numberOfPieces={300}
+          numberOfPieces={500}
           gravity={0.4}
           run={runConfetti}
           recycle={false}
