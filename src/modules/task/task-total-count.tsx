@@ -15,20 +15,23 @@ import { Tooltip } from "~/smui/tooltip/components"
 export function TaskTotalCount() {
   const { tasks, isLoading } = useAccountOpenTasks()
   const { width, height } = useWindowSize()
-  const [runConfetti, setRunConfetti] = useState(false)
-  // const openTaskCount = 0
+  const [isConfettiOn, setIsConfettiOn] = useState(false)
   const openTaskCount = tasks?.length || 0
 
   return (
     <TooltipTrigger delay={0} closeDelay={500}>
       <Button
-        onPress={openTaskCount === 0 && !isLoading ? () => setRunConfetti(true) : undefined}
+        onPress={openTaskCount === 0 && !isLoading ? () => setIsConfettiOn(true) : undefined}
         className={cn(
           "flex min-w-30 items-center justify-center rounded-full px-8 py-1",
           "border-2 text-sm font-semibold",
           openTaskCount > 0 &&
             "border-primary-4 from-primary-3 to-primary-5 text-canvas-0 bg-gradient-to-br",
-          openTaskCount === 0 && "bg-canvas-1 dark:bg-canvas-2 text-canvas-4"
+          openTaskCount === 0 && [
+            "bg-canvas-1 dark:bg-canvas-2 text-canvas-4",
+            "hover:text-primary-4 hover:border-primary-4 cursor-pointer",
+          ],
+          isConfettiOn && "!text-primary-1 !bg-primary-4 !border-primary-4 !animate-bounce"
         )}
       >
         {openTaskCount}
@@ -40,11 +43,11 @@ export function TaskTotalCount() {
           className="fixed top-0 left-0 !z-50"
           numberOfPieces={500}
           gravity={0.4}
-          run={runConfetti}
+          run={isConfettiOn}
           recycle={false}
           onConfettiComplete={(confetti) => {
             confetti?.reset()
-            setRunConfetti(false)
+            setIsConfettiOn(false)
           }}
         />,
         document.body
@@ -53,8 +56,11 @@ export function TaskTotalCount() {
         offset={8}
         placement="left"
         className={cn(
-          "bg-canvas-0 text-sm font-semibold",
-          openTaskCount > 0 ? "text-primary-5" : openTaskCount === 0 && "text-canvas-7",
+          "text-sm font-semibold",
+          openTaskCount === 0 &&
+            `from-primary-5 to-primary-3 inline-block bg-gradient-to-br bg-clip-text
+            text-transparent`,
+          openTaskCount > 0 && "text-canvas-4",
           "tracking-wide"
         )}
       >

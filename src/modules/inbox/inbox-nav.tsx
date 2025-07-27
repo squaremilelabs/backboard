@@ -23,7 +23,7 @@ import { EmojiIcon } from "@/lib/components/emoji"
 export function InboxNav() {
   return (
     <div className="flex h-full flex-col">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 p-2">
         <InboxNavList />
         <InboxNavCreateInput />
       </div>
@@ -99,6 +99,7 @@ export function InboxNavList() {
       classNames={{
         base: "flex flex-col gap-2",
         item: [
+          "group",
           "cursor-pointer flex items-center gap-4 px-8 py-6",
           "text-canvas-3",
           "hover:bg-canvas-1",
@@ -117,7 +118,7 @@ export function InboxNavList() {
             className={cn(
               classNames.item,
               "font-medium",
-              isSelected && "!bg-canvas-1 text-canvas-7 font-semibold"
+              isSelected && ["!bg-canvas-1 text-canvas-7 font-semibold"]
             )}
             href={`/inbox/${inbox.id}`}
           >
@@ -127,11 +128,11 @@ export function InboxNavList() {
             <EmojiIcon
               emoji={inbox?.emoji ?? null}
               variants={{ size: "sm" }}
-              className={isSelected ? "opacity-100" : "opacity-70"}
+              className={isSelected ? "opacity-100" : "opacity-70 group-hover:opacity-100"}
             />
             <p className="grow truncate">{inbox.title}</p>
             {openTaskCount > 0 && (
-              <span className="text-primary-3 flex w-30 justify-center text-sm font-bold">
+              <span className={cn("text-primary-4 flex w-30 justify-center text-sm font-bold")}>
                 {openTaskCount}
               </span>
             )}

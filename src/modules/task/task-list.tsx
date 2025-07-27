@@ -50,13 +50,13 @@ export function TaskList() {
       selectionBehavior="replace"
       dragAndDropHooks={dragAndDropHooks}
       classNames={{
-        base: "flex flex-col divide-y divide-canvas-1 not-data-empty:border-b",
+        base: "flex flex-col divide-y divide-canvas-2 not-data-empty:border-b",
         item: [
           "group flex items-start",
           "gap-8 px-16 py-8 !outline-0",
           "bg-canvas-0 data-selected:bg-canvas-0",
           "focus-visible:border-l-4 focus-visible:border-l-canvas-3",
-          "data-selected:border-l-4 data-selected:border-l-primary-3",
+          "data-selected:border-l-4 data-selected:border-l-primary-4",
           "hover:bg-canvas-1",
         ],
       }}
@@ -64,7 +64,7 @@ export function TaskList() {
       {(task, classNames) => {
         return (
           <GridListItem id={task.id} textValue={task.title} className={classNames.item}>
-            <Button slot="drag" className="text-canvas-3 group-data-selected:text-primary-4">
+            <Button slot="drag" className="text-canvas-3">
               <Icon icon={<GripVerticalIcon />} className="!w-fit !min-w-fit" />
             </Button>
             <Checkbox
@@ -73,7 +73,7 @@ export function TaskList() {
                 icon: "size-16",
                 base: [
                   "h-20 flex items-center text-canvas-3 cursor-pointer",
-                  "data-selected:text-primary-4",
+                  "data-selected:text-primary-5",
                   "hover:not-data-selected:text-canvas-4",
                 ],
               }}

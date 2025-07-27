@@ -87,7 +87,6 @@ function AppHeader() {
         !sidebarOpen ? "flex h-45 min-h-45" : "flex h-45 min-h-45 md:hidden md:h-0",
         "overflow-hidden",
         "transition-all",
-        "px-16",
         "bg-canvas-0/30 backdrop-blur-lg",
         "hover:bg-canvas-1 cursor-pointer"
       )}
@@ -95,7 +94,7 @@ function AppHeader() {
       {/* Sidebar trigger */}
       <Button
         onPress={() => setSidebarOpen(true)}
-        className="hidden grow cursor-pointer items-center gap-8 md:flex"
+        className="hidden grow cursor-pointer items-center gap-8 px-16 md:flex"
       >
         <Icon icon={<ChevronsRightIcon />} className="text-canvas-4" />
         <Image
@@ -109,7 +108,7 @@ function AppHeader() {
       </Button>
       {/* Menu trigger */}
       <AppMenu>
-        <Button className="flex grow cursor-pointer items-center gap-8 md:hidden">
+        <Button className="flex grow cursor-pointer items-center gap-8 px-16 md:hidden">
           <Icon icon={<ChevronsUpDownIcon />} className="text-canvas-4" />
           <Image
             src="/images/backboard-logo.svg"
