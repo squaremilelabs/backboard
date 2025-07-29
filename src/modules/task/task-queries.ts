@@ -1,6 +1,6 @@
 import { INBOX_VIEW_TO_STATE_MAP, useCurrentInboxView } from "../inbox/inbox-views"
 import { db } from "@/database/db"
-import { sortItemsByIdOrder } from "@/lib/utils/list-utils"
+import { sortItemsByIdOrder } from "@/common/utils/list-utils"
 import { Task } from "@/database/models/task"
 
 export function useCurrentViewTasks() {

@@ -1,13 +1,18 @@
 import { useDragAndDrop } from "react-aria-components"
 import { useCurrentInboxView } from "../inbox-views"
 import { InboxListItem } from "./inbox-list-item"
-import { InboxListCreateInput } from "./inbox-list-create-input"
-import { Inbox, useInboxQuery } from "@/database/models/inbox"
+import { createInbox, Inbox, useInboxQuery } from "@/database/models/inbox"
 import { useAuth } from "@/modules/auth/use-auth"
 import { Task, updateManyTasks } from "@/database/models/task"
-import { processDropItems, reorderIds, sortItemsByIdOrder } from "@/lib/utils/list-utils"
+import {
+  processDropItems,
+  processItemKeys,
+  reorderIds,
+  sortItemsByIdOrder,
+} from "@/common/utils/list-utils"
 import { updateAccount } from "@/database/models/account"
 import { ListBox } from "~/smui/list-box/components"
+import { CreateField } from "@/common/components/create-field"
 
 export function InboxList() {
   const { instantAccount: account } = useAuth()
@@ -30,11 +35,7 @@ export function InboxList() {
   })
 
   const { dragAndDropHooks } = useDragAndDrop({
-    getItems: (keys) => {
-      return [...keys].map((key) => ({
-        "db/inbox": JSON.stringify(inboxes?.find((inbox) => inbox.id === key)),
-      }))
-    },
+    getItems: (keys) => processItemKeys(keys, inboxes, "db/inbox"),
     acceptedDragTypes: ["db/task", "db/inbox"],
     shouldAcceptItemDrop: (_, types) => types.has("db/task"),
     onItemDrop: async (e) => {
@@ -57,12 +58,15 @@ export function InboxList() {
   })
 
   const { id: inboxId } = useCurrentInboxView()
+  const onCreate = async (title: string) => {
+    if (account) createInbox({ owner_id: account.id, title })
+  }
 
   return (
     <div className="flex flex-col p-2">
       <ListBox
         aria-label="Inbox List"
-        variants={{ variant: "nav-list" }}
+        variants={{ variant: "flat" }}
         selectedKeys={[inboxId]}
         selectionMode="single"
         items={inboxes}
@@ -70,7 +74,7 @@ export function InboxList() {
       >
         {(inbox, classNames) => <InboxListItem inbox={inbox} className={classNames.item} />}
       </ListBox>
-      <InboxListCreateInput />
+      <CreateField onSubmit={onCreate} />
     </div>
   )
 }

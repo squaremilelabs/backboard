@@ -5,7 +5,7 @@ import { Icon } from "~/smui/icon/components"
 import { TextField, TextFieldInput } from "~/smui/text-field/components"
 import { TextFieldClassNames } from "~/smui/text-field/variants"
 
-export function CreateInput({
+export function CreateField({
   onSubmit,
   classNames,
 }: {

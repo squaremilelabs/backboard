@@ -1,4 +1,4 @@
-import { DropItem, isTextDropItem } from "react-aria-components"
+import { DropItem, isTextDropItem, Key } from "react-aria-components"
 
 export function reorderIds({
   prevOrder,
@@ -62,6 +62,19 @@ export function sortItemsByIdOrder<T extends object & { id: string }>({
   }
 
   return sortedItems
+}
+
+export function processItemKeys<T extends { id: string }>(
+  keys: Set<Key>,
+  items: T[],
+  type: string
+) {
+  const ids = [...keys]
+  return ids.map((id) => {
+    return {
+      [type]: JSON.stringify(items.find((item) => item.id === id)),
+    }
+  })
 }
 
 export async function processDropItems<T>(items: DropItem[], type: string) {

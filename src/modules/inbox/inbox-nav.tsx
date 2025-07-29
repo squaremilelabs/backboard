@@ -11,13 +11,13 @@ import { TextField, TextFieldInput } from "~/smui/text-field/components"
 import { createInbox, useInboxQuery } from "@/database/models/inbox"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
-import { reorderIds, sortItemsByIdOrder } from "@/lib/utils/list-utils"
+import { reorderIds, sortItemsByIdOrder } from "@/common/utils/list-utils"
 import { updateAccount } from "@/database/models/account"
 import { Inbox } from "@/database/models/inbox"
 import { Task, updateManyTasks } from "@/database/models/task"
 import { GridList, GridListItem } from "~/smui/grid-list/components"
 import { cn } from "~/smui/utils"
-import { EmojiIcon } from "@/lib/components/emoji"
+import { EmojiIcon } from "@/common/components/emoji"
 
 export function InboxNav() {
   return (

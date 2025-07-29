@@ -11,7 +11,7 @@ import { Button } from "~/smui/button/components"
 import { updateInbox } from "@/database/models/inbox"
 import { TextField, TextFieldInput, TextFieldTextArea } from "~/smui/text-field/components"
 import { FieldLabel } from "~/smui/field/components"
-import { EmojiPicker } from "@/lib/components/emoji"
+import { EmojiPicker } from "@/common/components/emoji"
 
 export function InboxTitle() {
   const { id: inboxId } = useCurrentInboxView()
