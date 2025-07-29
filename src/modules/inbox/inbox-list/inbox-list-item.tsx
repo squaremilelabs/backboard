@@ -25,8 +25,8 @@ export function InboxListItem({
       {({ allowsDragging }) => (
         <>
           {allowsDragging && (
-            <Button slot="drag" className="cursor-move">
-              <Icon icon={<GripVerticalIcon />} variants={{ size: "sm" }} />
+            <Button slot="drag" className="text-neutral-muted-text">
+              <Icon icon={<GripVerticalIcon />} />
             </Button>
           )}
           {inbox?.emoji ? (

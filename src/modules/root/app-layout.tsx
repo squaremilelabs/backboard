@@ -10,7 +10,6 @@ import { SignedIn, UserButton } from "@clerk/nextjs"
 import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { Link } from "react-aria-components"
-import { InboxNav } from "../inbox/inbox-nav"
 import { TaskTotalCount } from "../task/task-total-count"
 import { InboxList } from "../inbox/inbox-list"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
@@ -74,7 +73,6 @@ function AppSidebar() {
       </Button>
       <div className="max-h-full grow overflow-auto">
         <InboxList />
-        <InboxNav />
       </div>
       <AppRoadmapLinks />
     </nav>
@@ -143,7 +141,7 @@ function AppMenu({ children }: { children: React.ReactNode }) {
           content: "bg-canvas-0 w-350 border-2 max-h-[80dvh] overflow-auto",
         }}
       >
-        <InboxNav />
+        <InboxList />
         <AppRoadmapLinks />
       </Popover>
     </PopoverTrigger>

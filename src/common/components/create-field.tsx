@@ -4,13 +4,16 @@ import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { TextField, TextFieldInput } from "~/smui/text-field/components"
 import { TextFieldClassNames } from "~/smui/text-field/variants"
+import { ClassValue } from "~/smui/utils"
 
 export function CreateField({
   onSubmit,
+  placeholder = "Add",
   classNames,
 }: {
+  placeholder?: string
   onSubmit: (value: string) => Promise<void>
-  classNames?: TextFieldClassNames
+  classNames?: Partial<TextFieldClassNames & { icon: ClassValue }>
 }) {
   const [value, setValue] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -19,11 +22,15 @@ export function CreateField({
     if (event.key === "Enter" && !!value.trim()) {
       onSubmit(value.trim()).then(() => setValue(""))
     }
+    if (event.key === "Escape") {
+      setValue("")
+      inputRef.current?.blur()
+    }
   }
 
   return (
     <TextField
-      aria-label="Add by Title"
+      aria-label="Create Field"
       value={value}
       onChange={setValue}
       onKeyDown={onKeyDown}
@@ -31,25 +38,27 @@ export function CreateField({
         ...classNames,
         base: [
           "flex items-stretch w-full",
-          "flex gap-4",
-          "px-8",
+          "gap-4 px-8",
           "focus-within:outline-2 rounded-sm",
-          "w-full",
           classNames?.base,
         ],
         input: ["py-6 !outline-0 w-full", classNames?.input],
       }}
     >
-      {(_, classNames) => (
+      {(_, innerClassNames) => (
         <>
           <Button
             excludeFromTabOrder
             onPress={() => inputRef.current?.focus()}
             className={"!outline-0"}
           >
-            <Icon icon={<PlusIcon />} />
+            <Icon icon={<PlusIcon />} className={classNames?.icon} />
           </Button>
-          <TextFieldInput forwardRef={inputRef} className={classNames.input} placeholder="Add" />
+          <TextFieldInput
+            placeholder={placeholder}
+            forwardRef={inputRef}
+            className={innerClassNames.input}
+          />
         </>
       )}
     </TextField>

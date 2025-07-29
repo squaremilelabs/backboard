@@ -1,7 +1,7 @@
 import { useDragAndDrop } from "react-aria-components"
 import { useCurrentInboxView } from "../inbox-views"
 import { InboxListItem } from "./inbox-list-item"
-import { createInbox, Inbox, useInboxQuery } from "@/database/models/inbox"
+import { createInbox, useInboxQuery } from "@/database/models/inbox"
 import { useAuth } from "@/modules/auth/use-auth"
 import { Task, updateManyTasks } from "@/database/models/task"
 import {
@@ -16,7 +16,7 @@ import { CreateField } from "@/common/components/create-field"
 
 export function InboxList() {
   const { instantAccount: account } = useAuth()
-  const inboxQuery = useInboxQuery<Inbox & { tasks: Task[] }>(
+  const inboxQuery = useInboxQuery<{ tasks: Task[] }>(
     account
       ? {
           $: { where: { "owner.id": account.id, "is_archived": false } },
@@ -71,6 +71,12 @@ export function InboxList() {
         selectionMode="single"
         items={inboxes}
         dragAndDropHooks={dragAndDropHooks}
+        classNames={{
+          item: [
+            "font-medium data-selected:font-semibold",
+            "opacity-70 data-selected:opacity-100 hover:opacity-100",
+          ],
+        }}
       >
         {(inbox, classNames) => <InboxListItem inbox={inbox} className={classNames.item} />}
       </ListBox>
