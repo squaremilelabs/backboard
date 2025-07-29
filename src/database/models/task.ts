@@ -1,5 +1,6 @@
-import { id } from "@instantdb/react"
+import { id, InstaQLParams } from "@instantdb/react"
 import { db } from "../db"
+import { AppSchema } from "../instant.schema"
 
 export type Task = {
   id: string
@@ -81,4 +82,21 @@ export function updateManyTasks(ids: string[], data: TaskUpdateManyParams) {
       data.inbox_id ? db.tx.inboxes[data.inbox_id].link({ tasks: ids }) : null,
     ].filter((txn) => txn !== null)
   )
+}
+
+export type TaskQueryParams = InstaQLParams<AppSchema>["tasks"]
+
+export function useTaskQuery<T extends Task = Task>(
+  params: TaskQueryParams | null
+): {
+  data: T[] | undefined
+  isLoading: boolean
+  error: { message: string } | undefined
+} {
+  const { data, isLoading, error } = db.useQuery(params ? { tasks: params } : null)
+  return {
+    data: data?.tasks as T[],
+    isLoading,
+    error,
+  }
 }

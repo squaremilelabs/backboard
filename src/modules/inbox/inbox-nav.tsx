@@ -5,11 +5,10 @@ import { PlusIcon } from "lucide-react"
 import { useRef } from "react"
 import { GripVertical } from "lucide-react"
 import { isTextDropItem, useDragAndDrop } from "react-aria-components"
-import { useInstantAccount } from "../account/instant-account"
+import { useAuth } from "../auth/use-auth"
 import { useCurrentInboxView } from "./inbox-views"
 import { TextField, TextFieldInput } from "~/smui/text-field/components"
-import { createInbox } from "@/database/models/inbox"
-import { db } from "@/database/db"
+import { createInbox, useInboxQuery } from "@/database/models/inbox"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { reorderIds, sortItemsByIdOrder } from "@/lib/utils/list-utils"
@@ -32,16 +31,20 @@ export function InboxNav() {
 }
 
 export function InboxNavList() {
-  const account = useInstantAccount()
+  const { instantAccount: account } = useAuth()
   const { id: currentInboxId } = useCurrentInboxView()
-  const inboxQuery = db.useQuery({
-    inboxes: {
-      $: { where: { "owner.id": account?.id ?? "NO_USER", "is_archived": false } },
-      tasks: { $: { where: { inbox_state: "open" } } },
-    },
-  })
+
+  const inboxQuery = useInboxQuery<Inbox & { tasks: Task[] }>(
+    account
+      ? {
+          $: { where: { "owner.id": account?.id ?? "NO_USER", "is_archived": false } },
+          tasks: { $: { where: { inbox_state: "open" } } },
+        }
+      : null
+  )
+
   const inboxes = sortItemsByIdOrder({
-    items: (account ? (inboxQuery.data?.inboxes ?? []) : []) as (Inbox & { tasks: Task[] })[],
+    items: inboxQuery.data ?? [],
     idOrder: account?.inbox_order ?? [],
     missingIdsPosition: "end",
     sortMissingIds: (left, right) => {
@@ -144,7 +147,7 @@ export function InboxNavList() {
 }
 
 export function InboxNavCreateInput() {
-  const account = useInstantAccount()
+  const { instantAccount: account } = useAuth()
   const formRef = useRef<HTMLFormElement>(null)
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {

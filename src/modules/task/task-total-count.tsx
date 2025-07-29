@@ -5,7 +5,7 @@ import Confetti from "react-confetti"
 import { useWindowSize } from "usehooks-ts"
 import { createPortal } from "react-dom"
 import { useState } from "react"
-import { useInstantAccount } from "../account/instant-account"
+import { useAuth } from "../auth/use-auth"
 import { cn } from "~/smui/utils"
 import { db } from "@/database/db"
 import { Task } from "@/database/models/task"
@@ -73,7 +73,7 @@ export function TaskTotalCount() {
 }
 
 export function useAccountOpenTasks() {
-  const account = useInstantAccount()
+  const { instantAccount: account } = useAuth()
 
   const taskQuery = db.useQuery({
     tasks: {

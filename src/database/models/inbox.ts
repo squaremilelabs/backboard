@@ -1,5 +1,6 @@
-import { id } from "@instantdb/react"
+import { id, InstaQLParams } from "@instantdb/react"
 import { db } from "../db"
+import { AppSchema } from "../instant.schema"
 
 export type Inbox = {
   id: string
@@ -50,4 +51,21 @@ export async function updateInbox(id: string, data: InboxUpdateParams) {
       is_archived: data.is_archived,
     }),
   ])
+}
+
+export type InboxQueryParams = InstaQLParams<AppSchema>["inboxes"]
+
+export function useInboxQuery<T extends Inbox = Inbox>(
+  params: InboxQueryParams | null
+): {
+  data: T[] | undefined
+  isLoading: boolean
+  error: { message: string } | undefined
+} {
+  const { data, isLoading, error } = db.useQuery(params ? { inboxes: params } : null)
+  return {
+    data: data?.inboxes as T[],
+    isLoading,
+    error,
+  }
 }

@@ -1,5 +1,7 @@
 import { id } from "@instantdb/react"
+import { InstaQLParams } from "@instantdb/admin"
 import { db } from "../db"
+import { AppSchema } from "../instant.schema"
 
 export type Account = {
   id: string
@@ -22,4 +24,21 @@ export async function updateAccount(id: string, data: AccountUpdateParams) {
       inbox_order: data.inbox_order,
     }),
   ])
+}
+
+export type AccountQueryParams = InstaQLParams<AppSchema>["accounts"]
+
+export function useAccountQuery<T extends Account = Account>(
+  params: AccountQueryParams | null
+): {
+  data: T[] | undefined
+  isLoading: boolean
+  error: { message: string } | undefined
+} {
+  const { data, isLoading, error } = db.useQuery(params ? { accounts: params } : null)
+  return {
+    data: data?.accounts as T[],
+    isLoading,
+    error,
+  }
 }

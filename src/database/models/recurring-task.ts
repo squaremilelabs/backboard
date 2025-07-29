@@ -1,5 +1,7 @@
 import { id } from "@instantdb/react"
+import { InstaQLParams } from "@instantdb/admin"
 import { db } from "../db"
+import { AppSchema } from "../instant.schema"
 
 export type RecurringTask = {
   id: string
@@ -74,4 +76,21 @@ export function updateRecurringTask(id: string, data: RecurringTaskUpdateParams)
       data.inbox_id ? db.tx.inboxes[data.inbox_id].link({ recurring_tasks: id }) : null,
     ].filter((txn) => txn !== null)
   )
+}
+
+export type RecurringTaskQueryParams = InstaQLParams<AppSchema>["recurring_tasks"]
+
+export function useRecurringTaskQuery<T extends RecurringTask = RecurringTask>(
+  params: RecurringTaskQueryParams | null
+): {
+  data: T[] | undefined
+  isLoading: boolean
+  error: { message: string } | undefined
+} {
+  const { data, isLoading, error } = db.useQuery(params ? { recurring_tasks: params } : null)
+  return {
+    data: data?.recurring_tasks as T[],
+    isLoading,
+    error,
+  }
 }

@@ -4,14 +4,14 @@ import { Form, Input, TextField } from "react-aria-components"
 import { useRef } from "react"
 import { PlusIcon } from "lucide-react"
 import { useCurrentInboxView } from "../inbox/inbox-views"
+import { useAuth } from "../auth/use-auth"
 import { cn } from "~/smui/utils"
 import { createTask } from "@/database/models/task"
-import { useInstantAccount } from "@/modules/account/instant-account"
 import { Icon } from "~/smui/icon/components"
 
 export function TaskCreateInput() {
   const { id: inboxId, view: inboxView } = useCurrentInboxView()
-  const account = useInstantAccount()
+  const { instantAccount: account } = useAuth()
   const formRef = useRef<HTMLFormElement>(null)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

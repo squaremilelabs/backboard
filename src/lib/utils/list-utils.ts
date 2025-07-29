@@ -1,3 +1,5 @@
+import { DropItem, isTextDropItem } from "react-aria-components"
+
 export function reorderIds({
   prevOrder,
   droppedIds,
@@ -60,4 +62,12 @@ export function sortItemsByIdOrder<T extends object & { id: string }>({
   }
 
   return sortedItems
+}
+
+export async function processDropItems<T>(items: DropItem[], type: string) {
+  return Promise.all<T>(
+    items.filter(isTextDropItem).map(async (item) => {
+      return JSON.parse(await item.getText(type))
+    })
+  )
 }

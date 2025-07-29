@@ -12,6 +12,7 @@ import Image from "next/image"
 import { Link } from "react-aria-components"
 import { InboxNav } from "../inbox/inbox-nav"
 import { TaskTotalCount } from "../task/task-total-count"
+import { InboxList } from "../inbox/inbox-list"
 import { useSessionStorageUtility } from "@/lib/utils/use-storage-utility"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
@@ -72,6 +73,7 @@ function AppSidebar() {
         <Icon icon={<ChevronsLeftIcon />} className="text-canvas-4" />
       </Button>
       <div className="max-h-full grow overflow-auto">
+        <InboxList />
         <InboxNav />
       </div>
       <AppRoadmapLinks />
