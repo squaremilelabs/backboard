@@ -1,4 +1,4 @@
-import { INBOX_VIEW_TO_STATE_MAP, useCurrentInboxView } from "../inbox/inbox-views"
+import { useCurrentInboxView } from "../inbox/inbox-views"
 import { db } from "@/database/db"
 import { sortItemsByIdOrder } from "@/common/utils/list-utils"
 import { Task } from "@/database/models/task"
@@ -11,14 +11,12 @@ export function useCurrentViewTasks() {
   })
   const inbox = inboxQuery.data?.inboxes[0]
 
-  const taskInboxState = INBOX_VIEW_TO_STATE_MAP[inboxView] ?? "open"
-
   const taskQuery = db.useQuery({
     tasks: {
       $: {
         where: {
           "inbox.id": inboxId,
-          "inbox_state": taskInboxState,
+          "inbox_state": inboxView,
         },
         order:
           inboxView === "snoozed"

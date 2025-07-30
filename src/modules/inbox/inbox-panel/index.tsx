@@ -1,4 +1,5 @@
 "use client"
+
 import { InboxEmojiPicker } from "../inbox-emoji-picker"
 import { TitleContentFields } from "@/common/components/title-content-fields"
 import { panel } from "@/common/components/variants"

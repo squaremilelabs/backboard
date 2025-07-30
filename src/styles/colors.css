@@ -34,20 +34,20 @@
   --neutral-text: var(--neutral-600);
   --neutral-border: var(--neutral-600);
 
-  --neutral-muted-bg: var(--neutral-200);
+  --neutral-muted-bg: var(--neutral-100);
   --neutral-muted-fg: var(--neutral-500);
   --neutral-muted-text: var(--neutral-400);
   --neutral-muted-border: var(--neutral-300);
 
   --primary-bg: var(--primary-500);
   --primary-fg: var(--primary-50);
-  --primary-text: var(--primary-600);
+  --primary-text: var(--primary-500);
   --primary-border: var(--primary-600);
 
   --primary-muted-bg: var(--primary-50);
   --primary-muted-fg: var(--primary-600);
   --primary-muted-text: var(--primary-600);
-  --primary-muted-border: var(--primary-600);
+  --primary-muted-border: var(--primary-200);
 }
 
 .dark {

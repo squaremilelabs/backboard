@@ -2,7 +2,7 @@ import { init } from "@instantdb/admin"
 import { Metadata } from "next"
 import { currentUser } from "@clerk/nextjs/server"
 import schema from "@/database/instant.schema"
-import { InboxPage } from "@/modules/inbox/inbox-page"
+import { InboxPageRouter } from "@/modules/inbox/inbox-page-router"
 import { Inbox } from "@/database/models/inbox"
 
 const db = init({
@@ -33,4 +33,4 @@ export async function generateMetadata({
   return {}
 }
 
-export default InboxPage
+export default InboxPageRouter

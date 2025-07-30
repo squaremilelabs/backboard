@@ -1,17 +1,17 @@
 "use client"
 
 import { RecurringTaskPage } from "../recurring-task/recurring-task-page"
-import { TaskPage } from "../task/task-page"
+import { TaskList } from "../task/task-list"
 import { InboxView, useCurrentInboxView } from "./inbox-views"
 
-export function InboxPage() {
+export function InboxPageRouter() {
   const { view } = useCurrentInboxView()
 
   const isTaskListView = (["open", "snoozed", "archived"] as InboxView[]).includes(view)
   const isRecurringTaskListView = view === "recurring"
 
   if (isTaskListView) {
-    return <TaskPage />
+    return <TaskList />
   }
 
   if (isRecurringTaskListView) {
