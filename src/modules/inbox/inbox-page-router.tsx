@@ -1,6 +1,6 @@
 "use client"
 
-import { RecurringTaskPage } from "../recurring-task/recurring-task-page"
+import { RecurringTaskList } from "../recurring-task/recurring-task-list"
 import { TaskList } from "../task/task-list"
 import { InboxView, useCurrentInboxView } from "./inbox-views"
 
@@ -15,6 +15,6 @@ export function InboxPageRouter() {
   }
 
   if (isRecurringTaskListView) {
-    return <RecurringTaskPage />
+    return <RecurringTaskList />
   }
 }

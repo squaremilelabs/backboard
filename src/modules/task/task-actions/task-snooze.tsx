@@ -1,27 +1,26 @@
 "use client"
 import { Calendar, CalendarCell, CalendarGrid, DateValue, Heading } from "react-aria-components"
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
+import { AlarmClockIcon, ChevronLeftIcon, ChevronRightIcon, SunMoonIcon } from "lucide-react"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { Icon } from "~/smui/icon/components"
 import { updateManyTasks } from "@/database/models/task"
-import { Modal } from "~/smui/modal/components"
 import { Button } from "~/smui/button/components"
 import { cn } from "~/smui/utils"
+import { Modal } from "~/smui/modal/components"
+import { panel } from "@/common/components/class-names"
 
 // TODO: Create calendar component in SMUI
-export function TaskSnoozeModal({
+export function TaskSnoozePicker({
   isOpen,
   onOpenChange,
-  pendingTaskIds,
+  selectedTaskIds,
 }: {
   isOpen: boolean
   onOpenChange: (isOpen: boolean) => void
-  pendingTaskIds: string[]
+  selectedTaskIds: string[]
 }) {
-  const title = `Snooze ${pendingTaskIds.length} Task${pendingTaskIds.length > 1 ? "s" : ""} to...`
-
   const handleDateSelect = (date: DateValue) => {
-    updateManyTasks(pendingTaskIds, {
+    updateManyTasks(selectedTaskIds, {
       inbox_state: "snoozed",
       snooze_date: date.toDate(getLocalTimeZone()).getTime(),
       archive_date: null,
@@ -31,7 +30,7 @@ export function TaskSnoozeModal({
   }
 
   const handleSomedaySelect = () => {
-    updateManyTasks(pendingTaskIds, {
+    updateManyTasks(selectedTaskIds, {
       inbox_state: "snoozed",
       snooze_date: null,
       archive_date: null,
@@ -40,31 +39,32 @@ export function TaskSnoozeModal({
     })
   }
 
+  const { base, section } = panel()
+
   return (
     <Modal
       isDismissable
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      variants={{ size: "xs" }}
       classNames={{
-        overlay: [
-          "fixed inset-0 z-60 h-dvh w-dvw",
-          "flex flex-col items-center pt-[10dvh]",
-          "bg-canvas-1/30 backdrop-blur-xs",
-        ],
-        modal: ["bg-canvas-0 border"],
-        content: ["p-16", "flex flex-col gap-16", "w-350"],
+        content: ["bg-base-bg border backdrop-blur-xl", "flex flex-col gap-8", base()],
       }}
     >
-      <Heading slot="title" className="text-primary-4 text-lg font-medium">
-        {title}
+      <Heading
+        slot="title"
+        className={cn(section(), "flex items-center gap-8 p-4 px-8 font-medium")}
+      >
+        <Icon icon={<AlarmClockIcon />} />
+        Snooze until...
       </Heading>
       <Calendar
         minValue={today(getLocalTimeZone()).add({ days: 1 })}
-        className="flex flex-col gap-16"
+        className="bg-base-bg flex flex-col gap-4 rounded-sm p-2"
         onChange={handleDateSelect}
         autoFocus
       >
-        <header className="flex items-center gap-16">
+        <header className="flex items-center gap-16 p-4">
           <Button slot="previous" className="cursor-pointer p-8 hover:opacity-70">
             <Icon icon={<ChevronLeftIcon />} />
           </Button>
@@ -73,15 +73,15 @@ export function TaskSnoozeModal({
             <Icon icon={<ChevronRightIcon />} />
           </Button>
         </header>
-        <CalendarGrid className="w-full">
+        <CalendarGrid className="w-full p-2">
           {(date) => (
             <CalendarCell
               date={date}
               className={cn(
-                "flex size-40 items-center justify-center",
-                "data-disabled:text-canvas-2",
-                `not-data-disabled:hover:bg-primary-3 not-data-disabled:hover:text-primary-1
-                not-data-disabled:cursor-pointer`,
+                "flex size-36 items-center justify-center",
+                "data-disabled:text-neutral-muted-text/30",
+                "not-data-disabled:hover:bg-primary-muted-bg",
+                "not-data-disabled:hover:text-primary-muted-fg not-data-disabled:cursor-pointer",
                 "data-selected:bg-primary-3 data-selected:text-primary-1"
               )}
             />
@@ -90,8 +90,15 @@ export function TaskSnoozeModal({
       </Calendar>
       <Button
         onPress={handleSomedaySelect}
-        className="text-canvas-3 hover:bg-primary-3 hover:text-primary-1 cursor-pointer border p-8"
+        variants={{ hover: "none" }}
+        className={[
+          section(),
+          "flex items-center justify-center gap-8 p-8",
+          "text-neutral-muted-text hover:text-base-text",
+          "hover:bg-base-bg",
+        ]}
       >
+        <Icon icon={<SunMoonIcon />} />
         Someday
       </Button>
     </Modal>

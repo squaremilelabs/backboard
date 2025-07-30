@@ -23,15 +23,14 @@ export function TaskTotalCount() {
       <Button
         onPress={openTaskCount === 0 && !isLoading ? () => setIsConfettiOn(true) : undefined}
         className={cn(
-          "flex min-w-30 items-center justify-center rounded-full px-8 py-1",
-          "border-2 text-sm font-semibold",
-          openTaskCount > 0 &&
-            "border-primary-4 from-primary-3 to-primary-5 text-canvas-0 bg-gradient-to-br",
+          "flex items-center justify-center rounded-sm px-8 py-2",
+          "border text-sm font-semibold",
+          openTaskCount > 0 && "bg-primary-bg text-primary-fg border-primary-border",
           openTaskCount === 0 && [
-            "bg-canvas-1 dark:bg-canvas-2 text-canvas-4",
-            "hover:text-primary-4 hover:border-primary-4 cursor-pointer",
+            "bg-neutral-muted-bg text-neutral-muted-fg",
+            "hover:bg-primary-bg hover:text-primary-fg hover:border-primary-border cursor-pointer",
           ],
-          isConfettiOn && "!text-primary-1 !bg-primary-4 !border-primary-4 !animate-bounce"
+          isConfettiOn && "!bg-primary-bg !text-primary-fg !border-primary-border !animate-bounce"
         )}
       >
         {openTaskCount}
@@ -57,10 +56,8 @@ export function TaskTotalCount() {
         placement="left"
         className={cn(
           "text-sm font-semibold",
-          openTaskCount === 0 &&
-            `from-primary-5 to-primary-3 inline-block bg-gradient-to-br bg-clip-text
-            text-transparent`,
-          openTaskCount > 0 && "text-canvas-4",
+          openTaskCount === 0 && "text-primary-text",
+          openTaskCount > 0 && "text-neutral-text",
           "tracking-wide"
         )}
       >

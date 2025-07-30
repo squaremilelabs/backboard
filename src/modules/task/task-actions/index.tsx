@@ -7,12 +7,13 @@ import {
   LucideIcon,
   Trash2Icon,
 } from "lucide-react"
-import { useState } from "react"
-import { TaskInboxState, updateManyTasks } from "@/database/models/task"
+import { useRef, useState } from "react"
+import { TaskSnoozePicker } from "./task-snooze"
+import { deleteManyTasks, TaskInboxState, updateManyTasks } from "@/database/models/task"
 import { Button, ButtonGroup, ButtonProps } from "~/smui/button/components"
 import { Tooltip, TooltipTrigger } from "~/smui/tooltip/components"
 import { Icon } from "~/smui/icon/components"
-import { palette, PaletteVariant } from "@/common/components/class-names"
+import { label, palette, PaletteVariant } from "@/common/components/class-names"
 import { Modal } from "~/smui/modal/components"
 
 export type TaskActionButonProps = {
@@ -43,6 +44,11 @@ export function TaskActionBar(props: TaskActionButonProps) {
     >
       {(_) => (
         <>
+          {props.selectedTaskIds.length > 1 ? (
+            <span className={label({ class: "text-neutral-text px-8" })}>
+              {props.selectedTaskIds.length} Selected
+            </span>
+          ) : null}
           {displayedActions.map((action) => {
             if (action === "todo") return <TaskTodoActionButton key={action} {...props} />
             if (action === "snooze") return <TaskSnoozeActionButton key={action} {...props} />
@@ -70,7 +76,7 @@ function TaskActionButton({
 } & ButtonProps) {
   if (display === "icons") {
     return (
-      <TooltipTrigger delay={1000} closeDelay={500}>
+      <TooltipTrigger delay={1000} closeDelay={0}>
         <Button
           {...props}
           variants={{ variant: "action-button-icon" }}
@@ -127,16 +133,23 @@ function TaskTodoActionButton({
 function TaskSnoozeActionButton({
   inboxState,
   display,
-  selectedTaskIds: _,
+  selectedTaskIds,
   onAfterAction: __,
 }: TaskActionButonProps) {
+  const ref = useRef<HTMLButtonElement>(null)
+  const [open, setOpen] = useState(false)
   return (
-    <TaskActionButton
-      label={inboxState === "open" ? `Snooze` : `Reschedule`}
-      Icon={inboxState === "open" ? AlarmClockIcon : ClockArrowUpIcon}
-      display={display}
-      palette="neutral-flat"
-    />
+    <>
+      <TaskActionButton
+        forwardRef={ref}
+        label={inboxState === "open" ? `Snooze` : `Reschedule`}
+        Icon={inboxState === "open" ? AlarmClockIcon : ClockArrowUpIcon}
+        display={display}
+        palette="neutral-flat"
+        onPress={() => setOpen(true)}
+      />
+      <TaskSnoozePicker isOpen={open} onOpenChange={setOpen} selectedTaskIds={selectedTaskIds} />
+    </>
   )
 }
 
@@ -157,7 +170,7 @@ function TaskDoneActionButton({
   }
   return (
     <TaskActionButton
-      label={`Done`}
+      label={"Mark done"}
       Icon={CircleCheckBigIcon}
       display={display}
       onPress={onPress}
@@ -166,12 +179,13 @@ function TaskDoneActionButton({
   )
 }
 
-function TaskDeleteActionButton({
-  display,
-  selectedTaskIds,
-  onAfterAction: __,
-}: TaskActionButonProps) {
+function TaskDeleteActionButton({ display, selectedTaskIds, onAfterAction }: TaskActionButonProps) {
   const [open, setOpen] = useState(false)
+  const onProceed = () => {
+    deleteManyTasks(selectedTaskIds).then(() => {
+      if (onAfterAction) onAfterAction()
+    })
+  }
   return (
     <>
       <TaskActionButton
@@ -186,15 +200,19 @@ function TaskDeleteActionButton({
         onOpenChange={setOpen}
         variants={{ size: "xs" }}
         isDismissable
-        classNames={{ content: ["bg-base-bg p-16 gap-8 border-2 rounded-sm"] }}
+        classNames={{ content: ["bg-base-bg p-16 gap-8 border rounded-sm"] }}
       >
-        <p className="font-medium">
+        <p className="text-lg font-semibold">
           Are you sure you want to delete{" "}
           {selectedTaskIds.length > 1 ? `these ${selectedTaskIds.length} tasks` : "this task"}?
         </p>
-        <span className="text-danger-text text-sm font-medium">This action is irreversible</span>
-        <Button className={["rounded-md p-8 font-semibold", palette({ p: "danger-solid" })]}>
-          Delete
+        <span className="text-danger-text font-medium">This action is irreversible</span>
+        <div className="bg-base-border h-2 w-full" />
+        <Button
+          className={["rounded-md p-8 font-semibold", palette({ p: "danger-solid" })]}
+          onPress={onProceed}
+        >
+          Delete {selectedTaskIds.length} Task{selectedTaskIds.length > 1 ? "s" : ""}
         </Button>
       </Modal>
     </>

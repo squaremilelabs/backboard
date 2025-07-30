@@ -17,16 +17,20 @@ import { ToggleButton, ToggleButtonGroup } from "~/smui/toggle-button/components
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { Checkbox } from "~/smui/checkbox/components"
+import { label } from "@/common/components/class-names"
 
-// TODO: Separate create vs edit components
+// TODO: REFACTOR
 export function RecurringTaskModal({
+  isOpen,
+  onOpenChange,
   existingTask,
   children,
 }: {
+  isOpen: boolean
+  onOpenChange: (isOpen: boolean) => void
   existingTask?: RecurringTask
   children: React.ReactNode
 }) {
-  const [open, setOpen] = useState(false)
   const { id: inboxId } = useCurrentInboxView()
   const [values, setValues] = useState<Pick<RecurringTask, "title" | "content" | "frequency">>({
     title: "",
@@ -87,7 +91,7 @@ export function RecurringTaskModal({
         content: values.content || "",
         frequency: values.frequency,
       }).then(() => {
-        setOpen(false)
+        onOpenChange(false)
       })
     } else {
       createRecurringTask({
@@ -96,7 +100,7 @@ export function RecurringTaskModal({
         content: values.content || "",
         frequency: values.frequency,
       }).then(() => {
-        setOpen(false)
+        onOpenChange(false)
         setValues({ title: "", content: "", frequency: { type: "daily" } })
       })
     }
@@ -105,26 +109,24 @@ export function RecurringTaskModal({
   const handleArchive = () => {
     if (existingTask) {
       updateRecurringTask(existingTask.id, { is_archived: true }).then(() => {
-        setOpen(false)
+        onOpenChange(false)
       })
     }
   }
 
   return (
-    <ModalTrigger isOpen={open} onOpenChange={setOpen}>
+    <ModalTrigger isOpen={isOpen} onOpenChange={onOpenChange}>
       {children}
       <Modal
         isDismissable
+        variants={{ size: "sm" }}
         classNames={{
-          overlay: [
-            "fixed inset-0 z-60 h-dvh w-dvw",
-            "flex flex-col items-center pt-[10dvh]",
-            "bg-canvas-1/30 backdrop-blur-xs",
-          ],
-          modal: ["bg-canvas-0 border"],
-          content: ["p-16", "flex flex-col gap-16", "w-400"],
+          content: ["p-16", "flex flex-col gap-16 border bg-base-bg"],
         }}
       >
+        <p className="text-neutral-muted-text text-sm">
+          🚧 Sorry! Haven&apos;t updated this UI yet!
+        </p>
         <Form className="flex flex-col gap-8" onSubmit={handleSubmit}>
           <TextField
             aria-label="Title"
@@ -134,15 +136,15 @@ export function RecurringTaskModal({
             autoFocus
             classNames={{
               base: "flex flex-col gap-2",
-              input: "w-full p-8 border bg-canvas-0",
+              input: "w-full p-8 border bg-base-bg",
               field: {
-                label: "text-sm font-semibold text-canvas-5",
+                label: "text-sm font-semibold text-neutral-text",
               },
             }}
           >
             {(_, classNames) => (
               <>
-                <FieldLabel className={classNames.field.label}>Title</FieldLabel>
+                <FieldLabel className={label()}>Title</FieldLabel>
                 <TextFieldInput className={classNames.input} />
               </>
             )}
@@ -154,21 +156,21 @@ export function RecurringTaskModal({
             onChange={(value) => setValues({ ...values, content: value })}
             classNames={{
               base: "flex flex-col gap-2",
-              textarea: "w-full p-8 border bg-canvas-0 resize-none",
+              textarea: "w-full p-8 border bg-base-bg resize-none",
               field: {
-                label: "text-sm font-semibold text-canvas-5",
+                label: "text-sm font-semibold text-neutral-text",
               },
             }}
           >
             {(_, classNames) => (
               <>
-                <FieldLabel className={classNames.field.label}>Content</FieldLabel>
+                <FieldLabel className={label()}>Content</FieldLabel>
                 <TextFieldTextArea className={classNames.textarea} spellCheck={false} minRows={3} />
               </>
             )}
           </TextField>
           <div className="flex flex-col gap-2">
-            <span className="text-canvas-5 text-sm font-semibold">Frequency</span>
+            <span className={label()}>Frequency</span>
             <ToggleButtonGroup
               selectedKeys={[values.frequency.type]}
               selectionMode="single"
@@ -180,9 +182,10 @@ export function RecurringTaskModal({
                 base: "flex items-center gap-4",
                 button: [
                   "grow p-4 border text-sm",
-                  "cursor-pointer hover:bg-canvas-1",
-                  "data-selected:bg-canvas-3",
-                  "data-selected:text-canvas-0",
+                  "cursor-pointer hover:bg-neutral-muted-bg/50",
+                  "data-selected:bg-neutral-bg",
+                  "data-selected:text-neutral-fg",
+                  "data-selected:border-neutral-border",
                   "data-selected:font-medium",
                 ],
               }}
@@ -208,13 +211,14 @@ export function RecurringTaskModal({
               onChange={(value) =>
                 setValues({ ...values, frequency: { type: "daily", skip_weekends: value } })
               }
+              variants={{ variant: "reset" }}
               classNames={{
                 base: [
-                  "flex items-center py-4 gap-4 cursor-pointer text-canvas-4",
-                  "data-selected:text-canvas-7",
-                  "hover:text-canvas-4",
+                  "flex items-center py-4 gap-4 cursor-pointer text-neutral-muted-text",
+                  "data-selected:text-neutral-text",
+                  "hover:text-neutral-text",
                 ],
-                icon: "size-20",
+                icon: "size-16",
               }}
             >
               Skip weekends
@@ -230,19 +234,19 @@ export function RecurringTaskModal({
               classNames={{
                 base: "flex flex-col gap-2",
                 button: {
-                  base: "flex items-center p-8 border cursor-pointer",
+                  base: "flex items-center p-8 border bg-base-bg cursor-pointer",
                   value: "text-left grow",
                   icon: "size-16",
                 },
                 field: {
-                  label: "text-sm font-semibold text-canvas-5",
+                  label: "text-sm font-semibold text-neutral-text",
                 },
-                popover: "w-(--trigger-width) bg-canvas-0 border",
+                popover: "w-(--trigger-width) bg-base-bg border",
               }}
             >
               {(_, classNames) => (
                 <>
-                  <FieldLabel className={classNames.field.label}>Day of Week</FieldLabel>
+                  <FieldLabel className={label()}>Day of Week</FieldLabel>
                   <SelectButton classNames={classNames.button}>
                     {({ defaultChildren }) => defaultChildren}
                   </SelectButton>
@@ -252,9 +256,9 @@ export function RecurringTaskModal({
                       classNames={{
                         base: [],
                         item: [
-                          "cursor-pointer hover:bg-canvas-1",
-                          "px-8 py-4",
-                          "data-selected:bg-canvas-3 data-selected:text-canvas-0 data-selected:font-medium",
+                          "cursor-pointer hover:bg-neutral-muted-bg",
+                          "px-8 py-4 text-neutral-muted-text",
+                          "data-selected:bg-neutral-bg data-selected:text-neutral-fg data-selected:font-medium",
                         ],
                       }}
                     >
@@ -283,18 +287,18 @@ export function RecurringTaskModal({
               minValue={1}
               maxValue={31}
             >
-              <Label className={"text-canvas-5 text-sm font-semibold"}>Day of Month</Label>
+              <Label className={label()}>Day of Month</Label>
               <Group className="flex items-stretch">
                 <Button
                   slot="decrement"
-                  className="bg-canvas-2 cursor-pointer border px-4 hover:opacity-80"
+                  className="bg-neutral-muted-bg cursor-pointer border px-4 hover:opacity-80"
                 >
                   <Icon icon={<MinusIcon />} />
                 </Button>
                 <Input className="w-100 border p-4 text-center" />
                 <Button
                   slot="increment"
-                  className="bg-canvas-2 cursor-pointer border px-4 hover:opacity-80"
+                  className="bg-neutral-muted-bg cursor-pointer border px-4 hover:opacity-80"
                 >
                   <Icon icon={<PlusIcon />} />
                 </Button>
@@ -302,14 +306,15 @@ export function RecurringTaskModal({
             </NumberField>
           )}
           <Button
-            className="bg-canvas-2 text-canvas-7 cursor-pointer p-8 font-medium hover:opacity-80"
+            className="bg-neutral-muted-bg text-neutral-muted-fg border-neutral-muted-border
+              cursor-pointer border p-8 font-medium hover:opacity-80"
             type="submit"
           >
             Save
           </Button>
           {existingTask ? (
             <Button
-              className="text-canvas-3 cursor-pointer text-left text-sm hover:underline"
+              className="text-neutral-muted-text cursor-pointer text-left text-sm hover:underline"
               onPress={handleArchive}
             >
               Archive

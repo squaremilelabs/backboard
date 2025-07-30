@@ -18,6 +18,8 @@ import { Icon } from "~/smui/icon/components"
 import { cn } from "~/smui/utils"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
 
+// TODO: Update LAYOUT
+
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen] = useSessionStorageUtility("sidebar-open", true)
   return (
@@ -92,6 +94,7 @@ function AppHeader() {
       <Button
         onPress={() => setSidebarOpen(true)}
         className="hidden grow cursor-pointer items-center gap-8 px-16 md:flex"
+        variants={{ hover: "fill" }}
       >
         <Icon icon={<ChevronsRightIcon />} className="text-canvas-4" />
         <Image
@@ -105,7 +108,10 @@ function AppHeader() {
       </Button>
       {/* Menu trigger */}
       <AppMenu>
-        <Button className="flex grow cursor-pointer items-center gap-8 px-16 md:hidden">
+        <Button
+          className="flex grow cursor-pointer items-center gap-8 px-16 md:hidden"
+          variants={{ hover: "fill" }}
+        >
           <Icon icon={<ChevronsUpDownIcon />} className="text-canvas-4" />
           <Image
             src="/images/backboard-logo.svg"

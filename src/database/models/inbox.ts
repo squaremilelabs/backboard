@@ -55,16 +55,16 @@ export async function updateInbox(id: string, data: InboxUpdateParams) {
 
 export type InboxQueryParams = InstaQLParams<AppSchema>["inboxes"]
 
-export function useInboxQuery<ExtData extends object = object>(
+export function useInboxQuery<T extends Inbox = Inbox>(
   params: InboxQueryParams | null
 ): {
-  data: (Inbox & ExtData)[] | undefined
+  data: T[] | undefined
   isLoading: boolean
   error: { message: string } | undefined
 } {
   const { data, isLoading, error } = db.useQuery(params ? { inboxes: params } : null)
   return {
-    data: data?.inboxes as (Inbox & ExtData)[],
+    data: data?.inboxes as T[],
     isLoading,
     error,
   }

@@ -1,5 +1,5 @@
 import { getTaskStateInfo } from "../task-state"
-import { TaskActionBar } from "../task-action-bar"
+import { TaskActionBar } from "../task-actions"
 import { TitleContentFields } from "@/common/components/title-content-fields"
 import { panel } from "@/common/components/class-names"
 import { Task, updateTask } from "@/database/models/task"

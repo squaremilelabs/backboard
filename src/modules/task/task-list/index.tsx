@@ -2,7 +2,7 @@
 
 import { Selection, useDragAndDrop } from "react-aria-components"
 import { useEffect, useState } from "react"
-import { TaskActionBar } from "../task-action-bar"
+import { TaskActionBar } from "../task-actions"
 import { TaskListItem } from "./task-list-item"
 import { processItemKeys, reorderIds, sortItemsByIdOrder } from "@/common/utils/list-utils"
 import { updateInbox, useInboxQuery } from "@/database/models/inbox"
@@ -63,12 +63,13 @@ export function TaskList() {
   const isTopBarVisible = isBatchActionsVisible || isCreateEnabled
 
   return (
-    <div className="bg-neutral-muted-bg flex h-full flex-col gap-2 rounded-sm border p-2">
+    <div className="bg-neutral-muted-bg flex h-full max-h-full flex-col gap-2 rounded-sm border p-2">
       {isTopBarVisible && (
         <div className={cn("flex h-36 max-h-36 min-h-36 items-stretch")}>
           {isCreateEnabled && !isBatchActionsVisible && (
             <CreateField
               onSubmit={handleCreate}
+              placeholder={inboxView === "snoozed" ? "Add (Someday)" : "Add"}
               classNames={{
                 base: [
                   "py-6 px-8 gap-8 self-stretch",
@@ -99,16 +100,7 @@ export function TaskList() {
         onSelectionChange={onSelectionChange}
         classNames={{ base: "gap-2" }}
         dragAndDropHooks={dragAndDropHooks}
-        renderEmptyState={() => {
-          return (
-            <div
-              className="text-neutral-muted-text flex h-100 w-full items-center justify-center
-                text-sm"
-            >
-              No tasks
-            </div>
-          )
-        }}
+        renderEmptyState={() => <div className="h-36" />}
       >
         {(task, classNames) => <TaskListItem task={task} className={classNames.item} />}
       </GridList>
@@ -149,10 +141,23 @@ function useTaskListTaskQuery() {
       idOrder: inbox?.open_task_order ?? [],
       missingIdsPosition: "start",
       sortMissingIds(left, right) {
-        return left.created_at - right.created_at
+        return right.created_at - left.created_at
       },
     })
-  } else {
-    return tasks
   }
+
+  if (inboxView === "snoozed") {
+    return [...tasks].sort((left, right) => {
+      // Sort snoozed tasks by snooze date, then by created date (both are number, timestamps)
+      // snooze date may be null
+      if (left.snooze_date === right.snooze_date) {
+        return left.created_at - right.created_at
+      }
+      if (left.snooze_date == null) return 1
+      if (right.snooze_date == null) return -1
+      return left.snooze_date - right.snooze_date
+    })
+  }
+
+  return tasks
 }

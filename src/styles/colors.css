@@ -112,7 +112,7 @@
 
   --base-bg: var(--neutral-0);
   --base-text: var(--neutral-950);
-  --base-border: var(--neutral-200);
+  --base-border: var(--neutral-100);
   --base-outline: var(--primary-500);
 
   --neutral-bg: var(--neutral-600);
@@ -120,30 +120,30 @@
   --neutral-text: var(--neutral-600);
   --neutral-border: var(--neutral-600);
 
-  --neutral-muted-bg: var(--neutral-100);
-  --neutral-muted-fg: var(--neutral-500);
-  --neutral-muted-text: var(--neutral-400);
-  --neutral-muted-border: var(--neutral-400);
+  --neutral-muted-bg: var(--neutral-50);
+  --neutral-muted-fg: var(--neutral-300);
+  --neutral-muted-text: var(--neutral-300);
+  --neutral-muted-border: var(--neutral-200);
 
-  --primary-bg: var(--primary-600);
-  --primary-fg: var(--primary-50);
-  --primary-text: var(--primary-600);
-  --primary-border: var(--primary-600);
+  --primary-bg: var(--primary-300);
+  --primary-fg: var(--primary-900);
+  --primary-text: var(--primary-500);
+  --primary-border: var(--primary-200);
 
   --primary-muted-bg: var(--primary-50);
-  --primary-muted-fg: var(--primary-600);
-  --primary-muted-text: var(--primary-600);
-  --primary-muted-border: var(--primary-600);
+  --primary-muted-fg: var(--primary-500);
+  --primary-muted-text: var(--primary-700);
+  --primary-muted-border: var(--primary-200);
 
-  --danger-bg: var(--danger-500);
-  --danger-fg: var(--danger-50);
-  --danger-text: var(--danger-500);
+  --danger-bg: var(--danger-100);
+  --danger-fg: var(--danger-900);
+  --danger-text: var(--danger-100);
   --danger-border: var(--danger-600);
 
   --danger-muted-bg: var(--danger-50);
-  --danger-muted-fg: var(--danger-600);
+  --danger-muted-fg: var(--danger-200);
   --danger-muted-text: var(--danger-600);
-  --danger-muted-border: var(--danger-200);
+  --danger-muted-border: var(--danger-50);
 }
 
 @theme {

@@ -1,9 +1,9 @@
 import { ClassValue } from "tailwind-variants"
-import { GripVerticalIcon } from "lucide-react"
+import { GripVerticalIcon, TextIcon } from "lucide-react"
 import { useState } from "react"
 import { TaskPanel } from "../task-panel"
 import { getTaskStateInfo } from "../task-state"
-import { TaskActionBar } from "../task-action-bar"
+import { TaskActionBar } from "../task-actions"
 import { Task } from "@/database/models/task"
 import { GridListItem } from "~/smui/grid-list/components"
 import { Button } from "~/smui/button/components"
@@ -35,8 +35,18 @@ export function TaskListItem({ task, className }: { task: Task; className: Class
               </Button>
             )}
             <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
-              <Button className="truncate p-2" variants={{ hover: "underline" }}>
-                {task.title || "-"}
+              <Button
+                className="flex items-center gap-4 truncate p-2"
+                variants={{ hover: "underline" }}
+              >
+                <span className="truncate">{task.title || "-"}</span>
+                {task.content ? (
+                  <Icon
+                    icon={<TextIcon />}
+                    variants={{ size: "sm" }}
+                    className="text-neutral-muted-text"
+                  />
+                ) : null}
               </Button>
               <Modal isDismissable>
                 <TaskPanel task={task} />

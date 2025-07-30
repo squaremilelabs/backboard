@@ -84,6 +84,10 @@ export function updateManyTasks(ids: string[], data: TaskUpdateManyParams) {
   )
 }
 
+export function deleteManyTasks(ids: string[]) {
+  return db.transact([...ids.map((id) => db.tx.tasks[id].delete())])
+}
+
 export type TaskQueryParams = InstaQLParams<AppSchema>["tasks"]
 
 export function useTaskQuery<T extends Task = Task>(

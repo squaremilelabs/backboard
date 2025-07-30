@@ -4,7 +4,7 @@ import { useDragAndDrop } from "react-aria-components"
 import { EllipsisIcon } from "lucide-react"
 import { useCurrentInboxView } from "../inbox-views"
 import { InboxListItem } from "./list-item"
-import { createInbox, useInboxQuery } from "@/database/models/inbox"
+import { createInbox, Inbox, useInboxQuery } from "@/database/models/inbox"
 import { useAuth } from "@/modules/auth/use-auth"
 import { Task, updateManyTasks } from "@/database/models/task"
 import {
@@ -26,7 +26,7 @@ export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?:
   const { instantAccount: account } = useAuth()
   const [showArchived, setShowArchived] = useSessionStorageUtility("show-archived-inboxes", false)
 
-  const inboxQuery = useInboxQuery<{ tasks: Task[] }>(
+  const inboxQuery = useInboxQuery<Inbox & { tasks: Task[] }>(
     account
       ? {
           $: {
