@@ -46,7 +46,7 @@ export function TitleContentFields({
   }, [persistedValues])
 
   return (
-    <div className="bg-base-bg flex w-full flex-col gap-12 p-12">
+    <div className="bg-base-bg flex w-full flex-col gap-12 rounded-sm p-12">
       <TextField
         aria-label="Title"
         autoFocus

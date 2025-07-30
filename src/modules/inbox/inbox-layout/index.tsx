@@ -1,7 +1,6 @@
 "use client"
 import React from "react"
 import { Emoji } from "emoji-picker-react"
-import { FolderIcon } from "lucide-react"
 import { useCurrentInboxView } from "../inbox-views"
 import InboxPanel from "../inbox-panel"
 import { InboxLayoutViewTabs } from "./view-tabs"
@@ -41,11 +40,9 @@ function InboxTitlePanelTrigger({ inbox }: { inbox: Inbox | null | undefined }) 
         className="flex max-w-full items-center gap-8 truncate p-2 text-left"
         variants={{ hover: "fill" }}
       >
-        <Icon
-          icon={inbox?.emoji ? <Emoji unified={inbox.emoji} /> : <FolderIcon />}
-          variants={{ size: "lg" }}
-          className={["text-neutral-muted-text"]}
-        />
+        {!!inbox?.emoji && (
+          <Icon icon={<Emoji unified={inbox.emoji} />} variants={{ size: "lg" }} />
+        )}
         <h1 className="text-neutral-text truncate text-lg font-semibold">
           {inbox?.title || "..."}
         </h1>

@@ -1,19 +1,25 @@
 "use client"
-
-import { AlarmClockIcon, ArchiveIcon, InboxIcon, LucideIcon, RefreshCwIcon } from "lucide-react"
+import {
+  AlarmClockIcon,
+  CircleCheckBigIcon,
+  CircleDashedIcon,
+  LucideIcon,
+  RefreshCwIcon,
+} from "lucide-react"
 import { useParams } from "next/navigation"
-import { useMemo } from "react"
-import { useTaskQuery } from "@/database/models/task"
+import { startOfDay, subDays } from "date-fns"
+import { Task } from "@/database/models/task"
 import { TaskInboxState } from "@/database/models/task"
-import { useRecurringTaskQuery } from "@/database/models/recurring-task"
+import { RecurringTask } from "@/database/models/recurring-task"
+import { useInboxQuery } from "@/database/models/inbox"
 
 export type InboxView = TaskInboxState | "recurring"
 
 export const INBOX_VIEWS: Array<{ key: InboxView; title: string; Icon: LucideIcon }> = [
-  { key: "open", title: "Open", Icon: InboxIcon },
+  { key: "open", title: "To do", Icon: CircleDashedIcon },
   { key: "snoozed", title: "Snoozed", Icon: AlarmClockIcon },
   { key: "recurring", title: "Recurring", Icon: RefreshCwIcon },
-  { key: "archived", title: "Archived", Icon: ArchiveIcon },
+  { key: "archived", title: "Done", Icon: CircleCheckBigIcon },
 ]
 
 export function useCurrentInboxView() {
@@ -28,46 +34,46 @@ export function useCurrentInboxView() {
   return { id, view: resolvedView }
 }
 
-export function useActiveTaskQuery(inboxId: string) {
-  return useTaskQuery({
-    $: {
-      where: { "inbox.id": inboxId, "inbox_state": { $in: ["open", "snoozed"] } },
-    },
-  })
-}
-
-export function useArchivedTaskQuery(inboxId: string) {
-  return useTaskQuery({
-    $: {
-      where: { "inbox.id": inboxId, "inbox_state": "archived" },
-      order: { archive_date: "desc" },
-      limit: 30,
-    },
-  })
-}
-
-// TODO: Figure out why counts aren't updating correctly
 export function useCurrentInboxViewCounts(): Record<InboxView, number | null> {
   const { id: inboxId } = useCurrentInboxView()
 
-  const { data: activeTasks } = useActiveTaskQuery(inboxId)
-
-  const { data: archivedTasks } = useArchivedTaskQuery(inboxId)
-
-  const { data: recurringTasks } = useRecurringTaskQuery({
-    $: {
-      where: { "inbox.id": inboxId, "is_archived": false },
+  const inboxQuery = useInboxQuery<{ tasks: Task[]; recurring_tasks: RecurringTask[] }>({
+    $: { where: { id: inboxId } },
+    tasks: {
+      $: {
+        where: {
+          or: [
+            { inbox_state: "open" },
+            { inbox_state: "snoozed" },
+            {
+              inbox_state: "archived",
+              archive_date: { $gte: startOfDay(subDays(new Date(), 3)).getTime() },
+            },
+          ],
+        },
+        fields: ["id", "inbox_state"],
+      },
+    },
+    recurring_tasks: {
+      $: {
+        where: { is_archived: false },
+        fields: ["id"],
+      },
     },
   })
 
-  const result = useMemo(() => {
-    return {
-      open: activeTasks?.filter((task) => task.inbox_state === "open").length || 0,
-      snoozed: activeTasks?.filter((task) => task.inbox_state === "snoozed").length || 0,
-      archived: archivedTasks?.length || 0, // maxes out at 30 (display 29+)
-      recurring: recurringTasks?.length || 0,
-    }
-  }, [activeTasks, archivedTasks, recurringTasks])
+  const tasks = inboxQuery.data?.[0]?.tasks || []
+  const recurringTasks = inboxQuery.data?.[0]?.recurring_tasks || []
 
-  return result
+  const openCount = tasks.filter((task) => task.inbox_state === "open").length || 0
+  const snoozedCount = tasks.filter((task) => task.inbox_state === "snoozed").length || 0
+  const archivedCount = tasks.filter((task) => task.inbox_state === "archived").length || 0
+  const recurringCount = recurringTasks.length || 0
+
+  return {
+    open: openCount,
+    snoozed: snoozedCount,
+    archived: archivedCount,
+    recurring: recurringCount,
+  }
 }

@@ -1,4 +1,5 @@
 "use client"
+
 import { INBOX_VIEWS, useCurrentInboxView, useCurrentInboxViewCounts } from "../inbox-views"
 import { Inbox } from "@/database/models/inbox"
 import { cn } from "~/smui/utils"

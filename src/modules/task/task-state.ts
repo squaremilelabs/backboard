@@ -1,8 +1,10 @@
+"use client"
+
 import {
   AlarmClockIcon,
-  ArchiveIcon,
+  CircleCheckBigIcon,
+  CircleDashedIcon,
   CircleIcon,
-  InboxIcon,
   LucideIcon,
   SunMoonIcon,
 } from "lucide-react"
@@ -18,15 +20,15 @@ export function getTaskStateInfo(task: Task, options?: { verbose?: boolean }): T
   if (task.inbox_state === "open") {
     const date = formatDate(new Date(task.created_at), { withTime: true })
     return {
-      text: options?.verbose ? `Open since ${date}` : date,
-      Icon: InboxIcon,
+      text: options?.verbose ? `Created ${date}` : date,
+      Icon: CircleDashedIcon,
     }
   }
 
   if (task.inbox_state === "snoozed") {
     if (!task.snooze_date) {
       return {
-        text: options?.verbose ? "Snoozed indefinitely" : "Someday",
+        text: options?.verbose ? "Snoozed to Someday" : "Someday",
         Icon: SunMoonIcon,
       }
     }
@@ -43,8 +45,8 @@ export function getTaskStateInfo(task: Task, options?: { verbose?: boolean }): T
       ? formatDate(new Date(task.archive_date), { withTime: true })
       : "-"
     return {
-      text: options?.verbose ? `Archived on ${date}` : date,
-      Icon: ArchiveIcon,
+      text: options?.verbose ? `Completed ${date}` : date,
+      Icon: CircleCheckBigIcon,
     }
   }
 

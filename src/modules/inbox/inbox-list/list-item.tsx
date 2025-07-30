@@ -6,7 +6,7 @@ import { Task } from "@/database/models/task"
 import { ListBoxItem } from "~/smui/list-box/components"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
-import { label } from "@/common/components/variants"
+import { label } from "@/common/components/class-names"
 
 export function InboxListItem({
   inbox,

@@ -9,7 +9,8 @@ import { GridListItem } from "~/smui/grid-list/components"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { Modal, ModalTrigger } from "~/smui/modal/components"
-import { label } from "@/common/components/variants"
+import { label } from "@/common/components/class-names"
+import { cn } from "~/smui/utils"
 
 export function TaskListItem({ task, className }: { task: Task; className: ClassValue }) {
   const [panelOpen, setPanelOpen] = useState(false)
@@ -42,11 +43,16 @@ export function TaskListItem({ task, className }: { task: Task; className: Class
               </Modal>
             </ModalTrigger>
             <div className="grow" />
-            {isHovered ? (
-              <TaskActionBar inboxState={task.inbox_state} selectedTaskIds={[task.id]} iconsOnly />
-            ) : (
-              <span className={label()}>{stateInfo.text}</span>
-            )}
+            <div className={cn(isHovered ? "visible" : "hidden")}>
+              <TaskActionBar
+                inboxState={task.inbox_state}
+                selectedTaskIds={[task.id]}
+                display="icons"
+              />
+            </div>
+            <span className={label({ class: isHovered ? "hidden" : "visible" })}>
+              {stateInfo.text}
+            </span>
           </>
         )
       }}

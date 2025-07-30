@@ -5,7 +5,7 @@ import EmojiPicker, {
   EmojiStyle,
   Theme as EmojiTheme,
 } from "emoji-picker-react"
-import { FolderIcon, XIcon } from "lucide-react"
+import { CircleChevronDownIcon, XIcon } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Inbox, updateInbox } from "@/database/models/inbox"
@@ -13,7 +13,7 @@ import { Icon } from "~/smui/icon/components"
 import { Button } from "~/smui/button/components"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
 
-export function InboxEmojiPicker({ inbox }: { inbox: Inbox }) {
+export function InboxIconPicker({ inbox }: { inbox: Inbox }) {
   const [open, setOpen] = useState(false)
   const { resolvedTheme } = useTheme()
 
@@ -31,7 +31,7 @@ export function InboxEmojiPicker({ inbox }: { inbox: Inbox }) {
     <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
       <Button>
         <Icon
-          icon={inbox.emoji ? <Emoji unified={inbox.emoji} /> : <FolderIcon />}
+          icon={inbox.emoji ? <Emoji unified={inbox.emoji} /> : <CircleChevronDownIcon />}
           variants={{ size: "lg" }}
           className="text-neutral-muted-text"
         />
@@ -47,7 +47,7 @@ export function InboxEmojiPicker({ inbox }: { inbox: Inbox }) {
             onPress={handleRemove}
           >
             <Icon icon={<XIcon />} />
-            Remove
+            Remove icon
           </Button>
         ) : null}
         <EmojiPicker

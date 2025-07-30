@@ -1,15 +1,16 @@
+"use client"
+
 import { Selection, useDragAndDrop } from "react-aria-components"
-import { useState } from "react"
-import { ArrowRightIcon } from "lucide-react"
+import { useEffect, useState } from "react"
 import { TaskActionBar } from "../task-action-bar"
 import { TaskListItem } from "./task-list-item"
 import { processItemKeys, reorderIds, sortItemsByIdOrder } from "@/common/utils/list-utils"
 import { updateInbox, useInboxQuery } from "@/database/models/inbox"
-import { Task, useTaskQuery } from "@/database/models/task"
+import { createTask, Task, TaskInboxState, useTaskQuery } from "@/database/models/task"
 import { useCurrentInboxView } from "@/modules/inbox/inbox-views"
 import { GridList } from "~/smui/grid-list/components"
-import { label } from "@/common/components/variants"
-import { Icon } from "~/smui/icon/components"
+import { CreateField } from "@/common/components/create-field"
+import { cn } from "~/smui/utils"
 
 export function TaskList() {
   const { id: inboxId, view: inboxView } = useCurrentInboxView()
@@ -31,7 +32,26 @@ export function TaskList() {
       : undefined,
   })
 
+  const isCreateEnabled = inboxView === "open" || inboxView === "snoozed"
+  const handleCreate = async (title: string) => {
+    createTask({
+      title,
+      inbox_id: inboxId,
+      inbox_state: inboxView === "snoozed" ? "snoozed" : "open",
+    })
+  }
+
   const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([])
+  useEffect(() => {
+    const visibleTaskIds = tasks.map((task) => task.id)
+    if (selectedTaskIds.length > 0) {
+      const invisibleSelectedTaskIds = selectedTaskIds.filter((id) => !visibleTaskIds.includes(id))
+      if (invisibleSelectedTaskIds.length > 0) {
+        const visibleSelectedTaskIds = selectedTaskIds.filter((id) => visibleTaskIds.includes(id))
+        setSelectedTaskIds(visibleSelectedTaskIds)
+      }
+    }
+  }, [tasks, selectedTaskIds])
   const onSelectionChange = (selection: Selection) => {
     if (selection === "all") {
       setSelectedTaskIds(tasks.map((task) => task.id))
@@ -39,28 +59,36 @@ export function TaskList() {
       setSelectedTaskIds([...selection] as string[])
     }
   }
+  const isBatchActionsVisible = selectedTaskIds.length > 1
+  const isTopBarVisible = isBatchActionsVisible || isCreateEnabled
 
   return (
-    <div className="bg-neutral-muted-bg flex flex-col gap-2 rounded-sm border-2 p-4">
-      <div className="flex h-30 items-center gap-8">
-        {selectedTaskIds.length > 1 && inboxView !== "recurring" ? (
-          <>
-            <p className={label({ className: "text-neutral-text/70 pl-8" })}>
-              {selectedTaskIds.length} Selected
-            </p>
-            <Icon
-              icon={<ArrowRightIcon absoluteStrokeWidth strokeWidth={3} />}
-              variants={{ size: "sm" }}
-              className="text-neutral-muted-text"
+    <div className="bg-neutral-muted-bg flex h-full flex-col gap-2 rounded-sm border p-2">
+      {isTopBarVisible && (
+        <div className={cn("flex h-36 max-h-36 min-h-36 items-stretch")}>
+          {isCreateEnabled && !isBatchActionsVisible && (
+            <CreateField
+              onSubmit={handleCreate}
+              classNames={{
+                base: [
+                  "py-6 px-8 gap-8 self-stretch",
+                  "!outline-0 bg-base-bg/50 not-focus-within:hover:bg-base-bg/70 focus-within:bg-base-bg rounded-sm",
+                ],
+              }}
             />
-            <TaskActionBar selectedTaskIds={selectedTaskIds} inboxState={inboxView} />
-          </>
-        ) : (
-          <p className={label({ className: "text-neutral-text/70 pl-8" })}>
-            {tasks.length} Task{tasks.length !== 1 ? "s" : ""}
-          </p>
-        )}
-      </div>
+          )}
+          {isBatchActionsVisible && (
+            <div className="flex items-center px-4">
+              <TaskActionBar
+                selectedTaskIds={selectedTaskIds}
+                inboxState={inboxView as TaskInboxState}
+                onAfterAction={() => setSelectedTaskIds([])}
+                display="buttons"
+              />
+            </div>
+          )}
+        </div>
+      )}
       <GridList
         aria-label="Task List"
         variants={{ variant: "task-list" }}
@@ -70,6 +98,16 @@ export function TaskList() {
         onSelectionChange={onSelectionChange}
         classNames={{ base: "gap-2" }}
         dragAndDropHooks={dragAndDropHooks}
+        renderEmptyState={() => {
+          return (
+            <div
+              className="text-neutral-muted-text flex h-100 w-full items-center justify-center
+                text-sm"
+            >
+              No tasks
+            </div>
+          )
+        }}
       >
         {(task, classNames) => <TaskListItem task={task} className={classNames.item} />}
       </GridList>
@@ -108,7 +146,7 @@ function useTaskListTaskQuery() {
     return sortItemsByIdOrder({
       items: tasks,
       idOrder: inbox?.open_task_order ?? [],
-      missingIdsPosition: "end",
+      missingIdsPosition: "start",
       sortMissingIds(left, right) {
         return left.created_at - right.created_at
       },
