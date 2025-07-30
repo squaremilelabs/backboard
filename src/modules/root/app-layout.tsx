@@ -53,11 +53,8 @@ function AppSidebar() {
       )}
     >
       <Button
-        className={cn(
-          "flex h-45 items-center gap-8",
-          "border-b p-16",
-          "hover:bg-canvas-1 cursor-pointer"
-        )}
+        className={cn("flex h-45 items-center gap-8", "border-b p-16")}
+        variants={{ hover: "fill" }}
         onPress={() => setSidebarOpen(false)}
       >
         <Image
@@ -67,7 +64,7 @@ function AppSidebar() {
           height={16}
           className="shadow-sm"
         />
-        <h1 className="text-canvas-4 dark:text-canvas-6 font-semibold">Backboard</h1>
+        <h1 className="text-neutral-text font-semibold">Backboard</h1>
         <div className="grow" />
         <Icon icon={<ChevronsLeftIcon />} className="text-canvas-4" />
       </Button>
@@ -138,10 +135,10 @@ function AppMenu({ children }: { children: React.ReactNode }) {
       <Popover
         placement="bottom start"
         classNames={{
-          content: "bg-canvas-0 w-350 border-2 max-h-[80dvh] overflow-auto",
+          content: "bg-base-bg w-350 border-2 max-h-[80dvh] overflow-auto",
         }}
       >
-        <InboxList />
+        <InboxList disableDragAndDrop />
         <AppRoadmapLinks />
       </Popover>
     </PopoverTrigger>

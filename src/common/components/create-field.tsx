@@ -1,19 +1,21 @@
+"use client"
+
 import { PlusIcon } from "lucide-react"
 import { useRef, useState } from "react"
 import { Button } from "~/smui/button/components"
-import { Icon } from "~/smui/icon/components"
-import { TextField, TextFieldInput } from "~/smui/text-field/components"
-import { TextFieldClassNames } from "~/smui/text-field/variants"
-import { ClassValue } from "~/smui/utils"
+import { Icon, IconProps } from "~/smui/icon/components"
+import { TextField, TextFieldInput, TextFieldProps } from "~/smui/text-field/components"
 
 export function CreateField({
   onSubmit,
   placeholder = "Add",
   classNames,
+  iconProps,
 }: {
   placeholder?: string
   onSubmit: (value: string) => Promise<void>
-  classNames?: Partial<TextFieldClassNames & { icon: ClassValue }>
+  classNames?: TextFieldProps["classNames"]
+  iconProps?: Partial<IconProps>
 }) {
   const [value, setValue] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -38,11 +40,12 @@ export function CreateField({
         ...classNames,
         base: [
           "flex items-stretch w-full",
-          "gap-4 px-8",
-          "focus-within:outline-2 rounded-sm",
+          "rounded-sm gap-4 p-8",
+          "focus-within:outline-2",
+          "not-focus-within:hover:bg-neutral-muted-bg/50",
           classNames?.base,
         ],
-        input: ["py-6 !outline-0 w-full", classNames?.input],
+        input: ["!outline-0 w-full", classNames?.input],
       }}
     >
       {(_, innerClassNames) => (
@@ -52,7 +55,7 @@ export function CreateField({
             onPress={() => inputRef.current?.focus()}
             className={"!outline-0"}
           >
-            <Icon icon={<PlusIcon />} className={classNames?.icon} />
+            <Icon icon={<PlusIcon />} {...iconProps} />
           </Button>
           <TextFieldInput
             placeholder={placeholder}

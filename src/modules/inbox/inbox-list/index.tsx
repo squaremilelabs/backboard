@@ -1,4 +1,7 @@
+"use client"
+
 import { useDragAndDrop } from "react-aria-components"
+import { EllipsisIcon } from "lucide-react"
 import { useCurrentInboxView } from "../inbox-views"
 import { InboxListItem } from "./inbox-list-item"
 import { createInbox, useInboxQuery } from "@/database/models/inbox"
@@ -13,13 +16,25 @@ import {
 import { updateAccount } from "@/database/models/account"
 import { ListBox } from "~/smui/list-box/components"
 import { CreateField } from "@/common/components/create-field"
+import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
+import { ToggleButton } from "~/smui/toggle-button/components"
+import { Popover, PopoverTrigger } from "~/smui/popover/components"
+import { Button } from "~/smui/button/components"
+import { Icon } from "~/smui/icon/components"
 
-export function InboxList() {
+export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?: boolean }) {
   const { instantAccount: account } = useAuth()
+  const [showArchived, setShowArchived] = useSessionStorageUtility("show-archived-inboxes", false)
+
   const inboxQuery = useInboxQuery<{ tasks: Task[] }>(
     account
       ? {
-          $: { where: { "owner.id": account.id, "is_archived": false } },
+          $: {
+            where: {
+              "owner.id": account.id,
+              "is_archived": showArchived ? { $in: [true, false] } : false,
+            },
+          },
           tasks: { $: { where: { inbox_state: "open" } } },
         }
       : null
@@ -63,24 +78,45 @@ export function InboxList() {
   }
 
   return (
-    <div className="flex flex-col p-2">
+    <div className="flex flex-col gap-2 p-2">
       <ListBox
         aria-label="Inbox List"
         variants={{ variant: "flat" }}
         selectedKeys={[inboxId]}
         selectionMode="single"
         items={inboxes}
-        dragAndDropHooks={dragAndDropHooks}
-        classNames={{
-          item: [
-            "font-medium data-selected:font-semibold",
-            "opacity-70 data-selected:opacity-100 hover:opacity-100",
-          ],
-        }}
+        dragAndDropHooks={disableDragAndDrop ? undefined : dragAndDropHooks}
       >
         {(inbox, classNames) => <InboxListItem inbox={inbox} className={classNames.item} />}
       </ListBox>
-      <CreateField onSubmit={onCreate} />
+      <CreateField
+        onSubmit={onCreate}
+        classNames={{ base: "py-6", input: "placeholder-neutral-muted-text" }}
+        placeholder="Add inbox"
+      />
+      <PopoverTrigger>
+        <Button variants={{ hover: "fill" }} className="self-start px-8">
+          <Icon icon={<EllipsisIcon />} className="text-neutral-muted-text" />
+        </Button>
+        <Popover placement="right top" offset={0} classNames={{ content: "border-1" }}>
+          {({ close }) => (
+            <>
+              <ToggleButton
+                autoFocus
+                isSelected={showArchived}
+                onPress={() => {
+                  setShowArchived(!showArchived)
+                  close()
+                }}
+                className={["px-16 py-8 text-left text-sm", "text-neutral-text"]}
+                variants={{ hover: "underline" }}
+              >
+                {({ isSelected }) => (isSelected ? "Hide archived" : "Show archived")}
+              </ToggleButton>
+            </>
+          )}
+        </Popover>
+      </PopoverTrigger>
     </div>
   )
 }
