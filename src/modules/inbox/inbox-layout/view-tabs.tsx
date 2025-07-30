@@ -1,6 +1,5 @@
 "use client"
-
-import { INBOX_VIEWS, useCurrentInboxView, useInboxViewCounts } from "../inbox-views"
+import { INBOX_VIEWS, useCurrentInboxView, useCurrentInboxViewCounts } from "../inbox-views"
 import { Inbox } from "@/database/models/inbox"
 import { cn } from "~/smui/utils"
 import { Icon } from "~/smui/icon/components"
@@ -8,13 +7,14 @@ import { Tab, Tabs } from "~/smui/tabs/component"
 
 export function InboxLayoutViewTabs({ inbox }: { inbox: Inbox | null | undefined }) {
   const { view: currentView } = useCurrentInboxView()
-  const counts = useInboxViewCounts(inbox?.id)
+  const counts = useCurrentInboxViewCounts()
+
   return (
     <Tabs
       orientation="horizontal"
       keyboardActivation="manual"
       items={INBOX_VIEWS}
-      dependencies={[counts]}
+      dependencies={[inbox, counts.archived, counts.open, counts.snoozed, counts.recurring]}
       selectedKey={currentView}
       classNames={{
         base: "max-w-full overflow-x-auto p-2",

@@ -1,5 +1,4 @@
-import { id } from "@instantdb/react"
-import { InstaQLParams } from "@instantdb/admin"
+import { id, InstaQLParams } from "@instantdb/react"
 import { db } from "../db"
 import { AppSchema } from "../instant.schema"
 

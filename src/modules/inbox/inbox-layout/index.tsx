@@ -21,7 +21,7 @@ export function InboxLayout({ children }: { children: React.ReactNode }) {
     <div className="flex w-full flex-col">
       <div
         className={cn(
-          "flex w-full flex-col items-start gap-8 p-8",
+          "flex w-full flex-col items-start gap-8 p-16",
           "sticky top-0 z-10",
           "bg-base-bg/50 backdrop-blur-2xl"
         )}
@@ -29,7 +29,7 @@ export function InboxLayout({ children }: { children: React.ReactNode }) {
         <InboxTitlePanelTrigger inbox={inbox} />
         <InboxLayoutViewTabs inbox={inbox} />
       </div>
-      <div className="relative flex w-full flex-col">{children}</div>
+      <div className="relative flex w-full flex-col p-16 pt-0">{children}</div>
     </div>
   )
 }
@@ -38,7 +38,7 @@ function InboxTitlePanelTrigger({ inbox }: { inbox: Inbox | null | undefined }) 
   return (
     <ModalTrigger>
       <Button
-        className="flex max-w-full items-center gap-8 truncate p-8 text-left"
+        className="flex max-w-full items-center gap-8 truncate p-2 text-left"
         variants={{ hover: "fill" }}
       >
         <Icon
@@ -50,9 +50,7 @@ function InboxTitlePanelTrigger({ inbox }: { inbox: Inbox | null | undefined }) 
           {inbox?.title || "..."}
         </h1>
       </Button>
-      <Modal isDismissable classNames={{ content: "w-600 bg-base-bg/30 backdrop-blur-xl" }}>
-        {!!inbox && <InboxPanel inbox={inbox} />}
-      </Modal>
+      <Modal isDismissable>{!!inbox && <InboxPanel inbox={inbox} />}</Modal>
     </ModalTrigger>
   )
 }
