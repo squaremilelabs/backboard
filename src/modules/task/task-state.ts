@@ -45,7 +45,7 @@ export function getTaskStateInfo(task: Task, options?: { verbose?: boolean }): T
       ? formatDate(new Date(task.archive_date), { withTime: true })
       : "-"
     return {
-      text: options?.verbose ? `Completed ${date}` : date,
+      text: options?.verbose ? `Done ${date}` : date,
       Icon: CircleCheckBigIcon,
     }
   }
