@@ -19,10 +19,11 @@ export function InboxLayoutViewTabs({ inbox }: { inbox: Inbox | null | undefined
       selectedKey={currentView}
       classNames={{
         base: "max-w-full overflow-x-auto p-2",
-        tabList: ["flex items-center gap-4"],
+        tabList: ["flex items-center gap-4 min-w-fit"],
         tab: [
           "flex items-stretch",
           "text-sm",
+          "min-w-fit",
           "border divide-x rounded-sm",
           "text-neutral-muted-text data-selected:text-base-text",
           "data-selected:border-neutral-muted-border",
