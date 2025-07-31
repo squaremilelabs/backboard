@@ -66,10 +66,10 @@ export function useCurrentInboxViewCounts(): Record<InboxViewKey, number | null>
   const tasks = inboxQuery.data?.[0]?.tasks || []
   const recurringTasks = inboxQuery.data?.[0]?.recurring_tasks || []
 
-  const openCount = tasks.filter((task) => task.inbox_state === "open").length || 0
-  const snoozedCount = tasks.filter((task) => task.inbox_state === "snoozed").length || 0
-  const archivedCount = tasks.filter((task) => task.inbox_state === "archived").length || 0
-  const recurringCount = recurringTasks.length || 0
+  const openCount = tasks.filter((task) => task.inbox_state === "open").length || null
+  const snoozedCount = tasks.filter((task) => task.inbox_state === "snoozed").length || null
+  const archivedCount = tasks.filter((task) => task.inbox_state === "archived").length || null
+  const recurringCount = recurringTasks.length || null
 
   return {
     open: openCount,

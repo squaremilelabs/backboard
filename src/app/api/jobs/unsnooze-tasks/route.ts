@@ -2,6 +2,7 @@ import { init } from "@instantdb/admin"
 import { NextResponse } from "next/server"
 import schema from "@/database/instant.schema"
 
+// TODO: Refactor into admin db
 const db = init({
   appId: process.env.NEXT_PUBLIC_INSTANT_APP_ID as string,
   adminToken: process.env.INSTANT_APP_ADMIN_TOKEN as string,
