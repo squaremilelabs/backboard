@@ -69,12 +69,12 @@ export function TaskList() {
           {isCreateEnabled && !isBatchActionsVisible && (
             <CreateField
               onSubmit={handleCreate}
-              placeholder={inboxView === "snoozed" ? "Add (Someday)" : "Add"}
               classNames={{
                 base: [
                   "py-6 px-8 gap-8 self-stretch",
-                  "!outline-0 bg-base-bg/50 not-focus-within:hover:bg-base-bg/70 focus-within:bg-base-bg rounded-sm",
-                  "focus-within:border-l-4 focus-within:border-l-neutral-muted-border",
+                  "!outline-0 hover:!bg-base-bg focus-within:bg-base-bg rounded-sm",
+                  "focus-within:border-l-4 focus-within:border-l-neutral-border",
+                  tasks.length === 0 ? "bg-base-bg/70" : "bg-base-bg/50",
                 ],
               }}
             />

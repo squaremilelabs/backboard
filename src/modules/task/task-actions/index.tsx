@@ -13,7 +13,7 @@ import { deleteManyTasks, TaskInboxState, updateManyTasks } from "@/database/mod
 import { Button, ButtonGroup, ButtonProps } from "~/smui/button/components"
 import { Tooltip, TooltipTrigger } from "~/smui/tooltip/components"
 import { Icon } from "~/smui/icon/components"
-import { label, palette, PaletteVariant } from "@/common/components/class-names"
+import { palette, PaletteVariant } from "@/common/components/class-names"
 import { Modal } from "~/smui/modal/components"
 
 export type TaskActionButonProps = {
@@ -36,19 +36,11 @@ export function TaskActionBar(props: TaskActionButonProps) {
   return (
     <ButtonGroup
       classNames={{
-        base: [
-          "flex items-center",
-          props.display === "icons" ? "border rounded-sm p-1 px-4 gap-8" : "gap-4",
-        ],
+        base: ["flex items-center", props.display === "icons" ? "gap-8" : "gap-4"],
       }}
     >
       {(_) => (
         <>
-          {props.selectedTaskIds.length > 1 ? (
-            <span className={label({ class: "text-neutral-text px-8" })}>
-              {props.selectedTaskIds.length} Selected
-            </span>
-          ) : null}
           {displayedActions.map((action) => {
             if (action === "todo") return <TaskTodoActionButton key={action} {...props} />
             if (action === "snooze") return <TaskSnoozeActionButton key={action} {...props} />
@@ -123,7 +115,7 @@ function TaskTodoActionButton({
     <TaskActionButton
       label={inboxState === "archived" ? `Undo` : `Unsnooze`}
       Icon={inboxState === "archived" ? CircleFadingArrowUpIcon : AlarmClockOffIcon}
-      palette={inboxState === "archived" ? "neutral-flat" : "primary-muted-solid"}
+      palette={inboxState === "archived" ? "neutral-flat" : "primary-flat"}
       display={display}
       onPress={onPress}
     />
@@ -174,7 +166,7 @@ function TaskDoneActionButton({
       Icon={CircleCheckBigIcon}
       display={display}
       onPress={onPress}
-      palette={inboxState === "open" ? "primary-muted-solid" : "neutral-flat"}
+      palette={inboxState === "open" ? "primary-flat" : "neutral-flat"}
     />
   )
 }
@@ -191,7 +183,7 @@ function TaskDeleteActionButton({ display, selectedTaskIds, onAfterAction }: Tas
       <TaskActionButton
         label={`Delete`}
         Icon={Trash2Icon}
-        palette="danger-muted-flat"
+        palette="neutral-muted-flat"
         display={display}
         onPress={() => setOpen(true)}
       />
