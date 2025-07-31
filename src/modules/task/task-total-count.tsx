@@ -12,6 +12,7 @@ import { Task } from "@/database/models/task"
 import { Button } from "~/smui/button/components"
 import { Tooltip } from "~/smui/tooltip/components"
 
+// TODO: Refactor and add to user tray
 export function TaskTotalCount() {
   const { tasks, isLoading } = useAccountOpenTasks()
   const { width, height } = useWindowSize()

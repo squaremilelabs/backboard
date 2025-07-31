@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import { Emoji } from "emoji-picker-react"
-import { useCurrentInboxView } from "../inbox-views"
+import { useCurrentInboxView } from "../use-inbox-view"
 import InboxPanel from "../inbox-panel"
 import { InboxLayoutViewTabs } from "./view-tabs"
 import { Inbox, useInboxQuery } from "@/database/models/inbox"

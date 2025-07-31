@@ -2,7 +2,7 @@
 
 import { useDragAndDrop } from "react-aria-components"
 import { EllipsisIcon } from "lucide-react"
-import { useCurrentInboxView } from "../inbox-views"
+import { useCurrentInboxView } from "../use-inbox-view"
 import { InboxListItem } from "./list-item"
 import { createInbox, Inbox, useInboxQuery } from "@/database/models/inbox"
 import { useAuth } from "@/modules/auth/use-auth"

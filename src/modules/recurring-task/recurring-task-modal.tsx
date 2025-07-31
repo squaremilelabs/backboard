@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Form, Group, Input, Label, NumberField } from "react-aria-components"
 import { MinusIcon, PlusIcon } from "lucide-react"
-import { useCurrentInboxView } from "../inbox/inbox-views"
+import { useCurrentInboxView } from "../inbox/use-inbox-view"
 import {
   createRecurringTask,
   RecurringTask,

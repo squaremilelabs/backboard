@@ -31,12 +31,13 @@ export function TaskListItem({ task, className }: { task: Task; className: Class
                 <Icon
                   icon={<GripVerticalIcon />}
                   className="text-neutral-muted-text !w-fit !min-w-fit"
+                  variants={{ size: "sm" }}
                 />
               </Button>
             )}
             <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
               <Button
-                className="flex items-center gap-4 truncate p-2"
+                className="flex items-center gap-4 truncate"
                 variants={{ hover: "underline" }}
               >
                 <span className="truncate">{task.title || "-"}</span>

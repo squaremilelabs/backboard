@@ -13,9 +13,10 @@ import { TaskInboxState } from "@/database/models/task"
 import { RecurringTask } from "@/database/models/recurring-task"
 import { Inbox, useInboxQuery } from "@/database/models/inbox"
 
-export type InboxView = TaskInboxState | "recurring"
+export type InboxViewKey = TaskInboxState | "recurring"
+export type InboxViewInfo = { key: InboxViewKey; title: string; Icon: LucideIcon }
 
-export const INBOX_VIEWS: Array<{ key: InboxView; title: string; Icon: LucideIcon }> = [
+export const INBOX_VIEWS: Array<InboxViewInfo> = [
   { key: "open", title: "To do", Icon: CircleDashedIcon },
   { key: "snoozed", title: "Snoozed", Icon: AlarmClockIcon },
   { key: "recurring", title: "Recurring", Icon: RefreshCwIcon },
@@ -24,9 +25,9 @@ export const INBOX_VIEWS: Array<{ key: InboxView; title: string; Icon: LucideIco
 
 export function useCurrentInboxView() {
   const { id, view } = useParams<{ id: string; view?: string[] }>()
-  let resolvedView: InboxView = "open"
+  let resolvedView: InboxViewKey = "open"
   if (view) {
-    const viewKey = view[0] as InboxView
+    const viewKey = view[0] as InboxViewKey
     if (INBOX_VIEWS.some((v) => v.key === viewKey)) {
       resolvedView = viewKey
     }
@@ -34,7 +35,7 @@ export function useCurrentInboxView() {
   return { id, view: resolvedView }
 }
 
-export function useCurrentInboxViewCounts(): Record<InboxView, number | null> {
+export function useCurrentInboxViewCounts(): Record<InboxViewKey, number | null> {
   const { id: inboxId } = useCurrentInboxView()
 
   const inboxQuery = useInboxQuery<Inbox & { tasks: Task[]; recurring_tasks: RecurringTask[] }>({
