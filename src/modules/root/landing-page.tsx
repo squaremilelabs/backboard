@@ -52,13 +52,7 @@ export default function LandingPage() {
           </div>
         </SignedOut>
         <SignedIn>
-          <div
-            className={cn(
-              "flex items-start gap-8 rounded-sm border p-16",
-              "bg-primary-muted-bg border-primary-muted-border",
-              "max-w-full"
-            )}
-          >
+          <div className={cn("flex items-start gap-8 rounded-sm border p-16", "max-w-full")}>
             <Image
               src="/images/e-headshot.png"
               alt="E"

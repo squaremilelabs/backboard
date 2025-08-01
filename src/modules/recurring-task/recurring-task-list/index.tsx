@@ -31,13 +31,19 @@ export function RecurringTaskList() {
         "overflow-auto"
       )}
     >
-      <div className={cn("flex h-32 max-h-32 min-h-32 items-stretch")}>
+      <div className={cn("flex h-36 max-h-36 min-h-36 items-stretch")}>
         <RecurringTaskModal isOpen={panelOpen} onOpenChange={setPanelOpen}>
           <Button
-            className={["flex items-center gap-8", "bg-base-bg/50 hover:bg-base-bg w-full", "px-8"]}
+            className={[
+              "flex items-center gap-8",
+              "bg-base-bg/50 hover:bg-base-bg w-full",
+              "px-8",
+              tasks.length === 0 && "bg-base-bg/70",
+            ]}
+            variants={{ hover: "none" }}
           >
             <Icon icon={<PlusIcon />} />
-            <span className={"opacity-50"}>Add</span>
+            <span className={"opacity-50"}>Add recurring task</span>
           </Button>
         </RecurringTaskModal>
       </div>

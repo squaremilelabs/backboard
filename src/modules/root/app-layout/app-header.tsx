@@ -26,7 +26,11 @@ export function AppHeader() {
           <NavTrigger className={["flex md:hidden"]} />
         </AppMobilePopoverNav>
         {/* Title */}
-        {isInboxView && <InboxTitle inboxId={inboxId} />}
+        {isInboxView ? (
+          <InboxTitle inboxId={inboxId} />
+        ) : (
+          !sidebarOpen && <p className="text-neutral-muted-text font-semibold">Inboxes</p>
+        )}
         <div className="grow" />
         <AppUserTray />
       </div>

@@ -77,10 +77,11 @@ export function TaskList() {
       )}
     >
       {isTopBarVisible && (
-        <div className={cn("flex h-32 max-h-32 min-h-32 items-stretch")}>
+        <div className={cn("flex h-36 max-h-36 min-h-36 items-stretch")}>
           {isCreateEnabled && !isBatchActionsVisible && (
             <CreateField
               onSubmit={handleCreate}
+              placeholder="Add task"
               classNames={{
                 base: [
                   "py-6 px-8 gap-8 self-stretch",
