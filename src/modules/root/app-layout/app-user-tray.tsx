@@ -8,10 +8,8 @@ import { Icon } from "~/smui/icon/components"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
 import { Button } from "~/smui/button/components"
 import { TaskTotalCount } from "@/modules/task/task-total-count"
-import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 
 export function AppUserTray() {
-  const [sidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
   return (
     <SignedIn>
       <div className="flex items-center gap-8">
@@ -28,9 +26,7 @@ export function AppUserTray() {
             <AppRoadmapLinks />
           </Popover>
         </PopoverTrigger>
-        <div className={sidebarOpen ? "flex md:hidden" : "flex"}>
-          <TaskTotalCount />
-        </div>
+        <TaskTotalCount />
         <UserButton />
       </div>
     </SignedIn>

@@ -1,5 +1,4 @@
 "use client"
-
 import { MenuIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
@@ -10,7 +9,6 @@ import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
 import { cn } from "~/smui/utils"
-import { TaskTotalCount } from "@/modules/task/task-total-count"
 
 export function AppDesktopSidebarNav() {
   const [_, setSidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
@@ -20,7 +18,7 @@ export function AppDesktopSidebarNav() {
         className={cn(
           "sticky top-0 z-10",
           "bg-base-bg/30 backdrop-blur-xl",
-          "flex items-stretch gap-8 p-8"
+          "flex items-stretch gap-8 p-8 pr-0"
         )}
       >
         <Button
@@ -31,8 +29,6 @@ export function AppDesktopSidebarNav() {
           <Icon icon={<MenuIcon />} className="text-neutral-muted-text" />
           <AppLogo withTitle />
         </Button>
-        <div className="grow" />
-        <TaskTotalCount />
       </div>
       <InboxList />
     </div>
