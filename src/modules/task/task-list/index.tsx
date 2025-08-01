@@ -92,7 +92,7 @@ export function TaskList() {
             />
           )}
           {isBatchActionsVisible && (
-            <div className="flex items-center px-4">
+            <div className="bg-base-bg/70 flex items-center rounded-sm px-4">
               <TaskActionBar
                 selectedTaskIds={selectedTaskIds}
                 inboxState={inboxView as TaskInboxState}

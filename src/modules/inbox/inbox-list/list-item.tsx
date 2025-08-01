@@ -49,7 +49,10 @@ export function InboxListItem({
           <p className="grow truncate">{inbox.title}</p>
           {openTaskCount > 0 && !inbox.is_archived && (
             <span
-              className={cn("flex items-center justify-center", "text-primary-text px-4 text-sm")}
+              className={cn(
+                "flex min-w-30 items-center justify-center",
+                "text-primary-text px-4 text-sm"
+              )}
             >
               {openTaskCount}
             </span>

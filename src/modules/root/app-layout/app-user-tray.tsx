@@ -13,6 +13,7 @@ export function AppUserTray() {
   return (
     <SignedIn>
       <div className="flex items-center gap-8">
+        <TaskTotalCount />
         <PopoverTrigger>
           <Button className="text-neutral-muted-text hover:text-primary-text">
             <Icon icon={<MapIcon />} variants={{ size: "lg" }} />
@@ -20,13 +21,12 @@ export function AppUserTray() {
           <Popover
             placement="bottom right"
             classNames={{
-              content: "bg-base-bg border rounded-sm",
+              content: "bg-base-bg border-2 rounded-sm",
             }}
           >
             <AppRoadmapLinks />
           </Popover>
         </PopoverTrigger>
-        <TaskTotalCount />
         <UserButton />
       </div>
     </SignedIn>
@@ -39,7 +39,8 @@ function AppRoadmapLinks() {
       <Link
         className={cn(
           "flex items-center gap-2 text-sm",
-          "text-canvas-3 hover:text-canvas-7 cursor-pointer"
+          "text-canvas-3 hover:text-canvas-7 cursor-pointer",
+          "hover:underline"
         )}
         href="https://squaremilelabs.notion.site/Backboard-Roadmap-23baece5ba1180b59daec44a563d2e86"
         target="_blank"
@@ -50,7 +51,8 @@ function AppRoadmapLinks() {
       <Link
         className={cn(
           "flex items-center gap-2 text-sm",
-          "text-canvas-3 hover:text-canvas-7 cursor-pointer"
+          "text-canvas-3 hover:text-canvas-7 cursor-pointer",
+          "hover:underline"
         )}
         href="https://squaremilelabs.notion.site/23baece5ba11803880f7cb252029167e"
         target="_blank"

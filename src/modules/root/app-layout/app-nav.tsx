@@ -44,10 +44,19 @@ export function AppMobilePopoverNav({ children }: { children: React.ReactNode })
       <Popover
         placement="bottom start"
         classNames={{
-          content: ["bg-base-bg border-2 rounded-sm p-4", "w-xs max-h-[80dvh] overflow-auto"],
+          content: [
+            "bg-base-bg border-2 rounded-sm p-4",
+            "w-xs max-h-[80dvh] overflow-auto relative",
+          ],
         }}
       >
-        <div className="p-8 px-16">
+        <div
+          className={cn(
+            "sticky top-0 z-10",
+            "bg-base-bg/30 backdrop-blur-xl",
+            "flex items-center gap-8 p-8 pl-12"
+          )}
+        >
           <AppLogo withTitle />
         </div>
         <InboxList />

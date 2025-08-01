@@ -99,7 +99,11 @@ export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?:
         <Button variants={{ hover: "fill" }} className="self-start px-8">
           <Icon icon={<EllipsisIcon />} className="text-neutral-muted-text" />
         </Button>
-        <Popover placement="right top" offset={0} classNames={{ content: "border-1" }}>
+        <Popover
+          placement="right top"
+          offset={0}
+          classNames={{ content: "border-2 rounded-sm bg-base-bg" }}
+        >
           {({ close }) => (
             <>
               <ToggleButton

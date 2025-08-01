@@ -24,14 +24,11 @@ export function TaskTotalCount() {
       <Button
         onPress={openTaskCount === 0 && !isLoading ? () => setIsConfettiOn(true) : undefined}
         className={cn(
-          "flex min-w-30 items-center justify-center rounded-full px-8 py-2",
-          "border-[1.5px] text-sm font-bold",
-          openTaskCount > 0 && "border-primary-text text-primary-text",
-          openTaskCount === 0 && [
-            "bg-neutral-muted-bg text-neutral-muted-fg",
-            "hover:bg-primary-bg hover:text-primary-fg hover:border-primary-border cursor-pointer",
-          ],
-          isConfettiOn && "!bg-primary-bg !text-primary-fg !border-primary-border !animate-bounce"
+          "flex items-center justify-center rounded-full px-4",
+          "font-bold",
+          openTaskCount > 0 && "text-primary-text !cursor-auto !opacity-100",
+          openTaskCount === 0 && ["text-neutral-muted-text", "hover:text-primary-text"],
+          isConfettiOn && "text-primary-text !animate-bounce"
         )}
       >
         {openTaskCount}
@@ -54,10 +51,10 @@ export function TaskTotalCount() {
       )}
       <Tooltip
         offset={4}
-        placement="bottom"
+        placement="left"
         className={cn(
-          "rounded-full border px-16 py-4 text-sm font-semibold",
-          "bg-base-bg text-primary-text",
+          "rounded-full border-2 px-16 py-4 text-sm font-semibold",
+          "bg-base-bg text-primary-text border-primary-muted-bg",
           "tracking-wide"
         )}
       >

@@ -73,12 +73,9 @@ function InboxViewTab({
 
   useEffect(() => {
     const key = `${inboxId ?? ""}:${view.key}`
-
     if (previousKeyRef.current !== key) {
       setHasRecentAddition(false)
     }
-
-    // Only trigger animation if this is not the first time seeing this key
     if (
       previousKeyRef.current === key &&
       previousCountRef.current !== null &&
