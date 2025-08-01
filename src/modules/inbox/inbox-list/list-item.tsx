@@ -50,9 +50,9 @@ export function InboxListItem({
           {openTaskCount > 0 && !inbox.is_archived && (
             <span
               className={cn(
-                "flex min-w-24 items-center justify-center px-8 py-1",
-                "rounded-full border",
-                "text-sm font-bold",
+                "flex min-w-24 items-center justify-center px-8",
+                "rounded-full border-[1.5px]",
+                "text-sm font-semibold",
                 "text-primary-text border-primary-text",
                 isSelected && "bg-base-bg"
               )}

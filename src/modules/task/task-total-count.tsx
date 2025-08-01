@@ -25,7 +25,7 @@ export function TaskTotalCount() {
         onPress={openTaskCount === 0 && !isLoading ? () => setIsConfettiOn(true) : undefined}
         className={cn(
           "flex min-w-30 items-center justify-center rounded-full px-8 py-2",
-          "border text-sm font-semibold",
+          "border-[1.5px] text-sm font-bold",
           openTaskCount > 0 && "border-primary-text text-primary-text",
           openTaskCount === 0 && [
             "bg-neutral-muted-bg text-neutral-muted-fg",
