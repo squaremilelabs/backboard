@@ -3,29 +3,30 @@ import { Emoji } from "emoji-picker-react"
 import { ClassValue } from "~/smui/utils"
 import { Inbox } from "@/database/models/inbox"
 import { Task } from "@/database/models/task"
-import { ListBoxItem } from "~/smui/list-box/components"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
-import { label } from "@/common/components/class-names"
+import { typography } from "@/common/components/class-names"
+import { GridListItem } from "~/smui/grid-list/components"
 
 export function InboxListItem({
   inbox,
   className,
+  isSelected,
 }: {
   inbox: Inbox & { tasks: Task[] }
   className: ClassValue
+  isSelected: boolean
 }) {
   const openTaskCount = inbox.tasks.length
   return (
-    <ListBoxItem
+    <GridListItem
       id={inbox.id}
       textValue={inbox.title}
       href={`/inbox/${inbox.id}`}
       className={[
         className,
-        "text-neutral-text data-selected:text-base-text",
-        "font-medium data-selected:font-semibold",
-        "opacity-70 hover:opacity-100 data-selected:opacity-100",
+        "text-neutral-text font-medium opacity-70 hover:opacity-100",
+        isSelected && "text-base-text bg-neutral-muted-bg font-semibold opacity-100",
       ]}
     >
       {({ allowsDragging }) => (
@@ -46,16 +47,17 @@ export function InboxListItem({
           <p className="grow truncate">{inbox.title}</p>
           {openTaskCount > 0 && !inbox.is_archived && (
             <span
-              className={label({
+              className={typography({
+                type: "label",
                 class: ["flex w-30 justify-center", "text-primary-text"],
               })}
             >
               {openTaskCount}
             </span>
           )}
-          {inbox.is_archived && <span className={label()}>ARCHIVED</span>}
+          {inbox.is_archived && <span className={typography({ type: "label" })}>ARCHIVED</span>}
         </>
       )}
-    </ListBoxItem>
+    </GridListItem>
   )
 }

@@ -1,6 +1,7 @@
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs"
 import Image from "next/image"
 import Link from "next/link"
+import { typography } from "@/common/components/class-names"
 import { cn } from "~/smui/utils"
 
 export default function LandingPage() {
@@ -11,12 +12,10 @@ export default function LandingPage() {
           <Image src="/images/backboard-logo.svg" alt="Backboard Logo" height={80} width={80} />
           <div className="flex w-fit flex-col gap-6">
             <h1
-              className={cn([
-                "text-[50px] leading-[50px] font-bold tracking-tighter",
-                "inline-block bg-clip-text",
-                "from-neutral-text to-primary-text bg-gradient-to-br from-20% via-80% to-95%",
-                "text-transparent",
-              ])}
+              className={typography({
+                type: "gradient-title",
+                className: "text-[50px] leading-[50px]",
+              })}
             >
               Backboard
             </h1>

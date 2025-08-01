@@ -48,7 +48,7 @@ export function useCurrentInboxViewCounts(): Record<InboxViewKey, number | null>
             { inbox_state: "snoozed" },
             {
               inbox_state: "archived",
-              archive_date: { $gte: startOfDay(subDays(new Date(), 3)).getTime() },
+              archive_date: { $gte: startOfDay(subDays(new Date(), 5)).getTime() },
             },
           ],
         },

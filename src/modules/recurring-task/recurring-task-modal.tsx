@@ -17,7 +17,7 @@ import { ToggleButton, ToggleButtonGroup } from "~/smui/toggle-button/components
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { Checkbox } from "~/smui/checkbox/components"
-import { label } from "@/common/components/class-names"
+import { typography } from "@/common/components/class-names"
 
 // TODO: REFACTOR
 export function RecurringTaskModal({
@@ -144,7 +144,7 @@ export function RecurringTaskModal({
           >
             {(_, classNames) => (
               <>
-                <FieldLabel className={label()}>Title</FieldLabel>
+                <FieldLabel className={typography({ type: "label" })}>Title</FieldLabel>
                 <TextFieldInput className={classNames.input} />
               </>
             )}
@@ -164,13 +164,13 @@ export function RecurringTaskModal({
           >
             {(_, classNames) => (
               <>
-                <FieldLabel className={label()}>Content</FieldLabel>
+                <FieldLabel className={typography({ type: "label" })}>Content</FieldLabel>
                 <TextFieldTextArea className={classNames.textarea} spellCheck={false} minRows={3} />
               </>
             )}
           </TextField>
           <div className="flex flex-col gap-2">
-            <span className={label()}>Frequency</span>
+            <span className={typography({ type: "label" })}>Frequency</span>
             <ToggleButtonGroup
               selectedKeys={[values.frequency.type]}
               selectionMode="single"
@@ -246,7 +246,7 @@ export function RecurringTaskModal({
             >
               {(_, classNames) => (
                 <>
-                  <FieldLabel className={label()}>Day of Week</FieldLabel>
+                  <FieldLabel className={typography({ type: "label" })}>Day of Week</FieldLabel>
                   <SelectButton classNames={classNames.button}>
                     {({ defaultChildren }) => defaultChildren}
                   </SelectButton>
@@ -287,7 +287,7 @@ export function RecurringTaskModal({
               minValue={1}
               maxValue={31}
             >
-              <Label className={label()}>Day of Month</Label>
+              <Label className={typography({ type: "label" })}>Day of Month</Label>
               <Group className="flex items-stretch">
                 <Button
                   slot="decrement"

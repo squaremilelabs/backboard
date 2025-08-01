@@ -9,7 +9,7 @@ import { cn } from "~/smui/utils"
 import { Modal, ModalTrigger } from "~/smui/modal/components"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
-import { label } from "@/common/components/class-names"
+import { typography } from "@/common/components/class-names"
 
 export function InboxLayout({ children }: { children: React.ReactNode }) {
   const { id: inboxId } = useCurrentInboxView()
@@ -47,7 +47,7 @@ function InboxTitlePanelTrigger({ inbox }: { inbox: Inbox | null | undefined }) 
         <h1 className="text-neutral-text truncate text-lg font-semibold">
           {inbox?.title || "..."}
         </h1>
-        {inbox?.is_archived && <span className={label()}>ARCHIVED</span>}
+        {inbox?.is_archived && <span className={typography({ type: "label" })}>ARCHIVED</span>}
       </Button>
       <Modal isDismissable variants={{ size: "sm" }}>
         {!!inbox && <InboxPanel inbox={inbox} />}

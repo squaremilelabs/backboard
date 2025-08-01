@@ -1,7 +1,21 @@
 import { tv, VariantProps } from "~/smui/utils"
 
-export const label = tv({
-  base: ["text-sm text-neutral-muted-text uppercase", "min-w-fit tracking-wider font-semibold"],
+export const typography = tv({
+  base: [],
+  variants: {
+    type: {
+      "label": [
+        "text-sm text-neutral-muted-text uppercase",
+        "min-w-fit tracking-wider font-semibold",
+      ],
+      "gradient-title": [
+        "font-bold tracking-tighter",
+        "inline-block bg-clip-text",
+        "from-neutral-text to-primary-text bg-gradient-to-br from-20% via-80% to-95%",
+        "text-transparent",
+      ],
+    },
+  },
 })
 
 export const panel = tv({

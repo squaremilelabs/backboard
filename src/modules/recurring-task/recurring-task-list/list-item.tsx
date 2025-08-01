@@ -7,7 +7,7 @@ import { GridListItem } from "~/smui/grid-list/components"
 import { Icon } from "~/smui/icon/components"
 import { ClassValue } from "~/smui/utils"
 import { Button } from "~/smui/button/components"
-import { label } from "@/common/components/class-names"
+import { typography } from "@/common/components/class-names"
 
 export function RecurringTaskListItem({
   task,
@@ -37,7 +37,9 @@ export function RecurringTaskListItem({
                 {task.title || "-"}
               </Button>
             </RecurringTaskModal>
-            <span className={label()}>{getDisplayedFrequency(task) || "-"}</span>
+            <span className={typography({ type: "label" })}>
+              {getDisplayedFrequency(task) || "-"}
+            </span>
           </>
         )
       }}

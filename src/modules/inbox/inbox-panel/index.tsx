@@ -23,7 +23,7 @@ export default function InboxPanel({ inbox }: { inbox: Inbox }) {
       <div className={section()}>
         <Button
           variants={{ variant: "action-button" }}
-          className={[palette({ p: inbox.is_archived ? "base-solid" : "neutral-muted-solid" })]}
+          className={[palette({ p: inbox.is_archived ? "base-flat" : "neutral-muted-flat" })]}
           onPress={onArchive}
         >
           <Icon icon={inbox.is_archived ? <ArchiveRestoreIcon /> : <ArchiveIcon />} />

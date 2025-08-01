@@ -1,5 +1,4 @@
 "use client"
-
 import { useDragAndDrop } from "react-aria-components"
 import { EllipsisIcon } from "lucide-react"
 import { useCurrentInboxView } from "../use-inbox-view"
@@ -14,13 +13,13 @@ import {
   sortItemsByIdOrder,
 } from "@/common/utils/list-utils"
 import { updateAccount } from "@/database/models/account"
-import { ListBox } from "~/smui/list-box/components"
 import { CreateField } from "@/common/components/create-field"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 import { ToggleButton } from "~/smui/toggle-button/components"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
+import { GridList } from "~/smui/grid-list/components"
 
 export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?: boolean }) {
   const { instantAccount: account } = useAuth()
@@ -79,16 +78,18 @@ export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?:
 
   return (
     <div className="flex flex-col gap-2 p-2">
-      <ListBox
+      <GridList
         aria-label="Inbox List"
-        variants={{ variant: "flat" }}
-        selectedKeys={[inboxId]}
-        selectionMode="single"
+        variants={{ variant: "nav-list" }}
+        dependencies={[inboxId, inboxes]}
         items={inboxes}
         dragAndDropHooks={disableDragAndDrop ? undefined : dragAndDropHooks}
       >
-        {(inbox, classNames) => <InboxListItem inbox={inbox} className={classNames.item} />}
-      </ListBox>
+        {(inbox, classNames) => {
+          const isSelected = inboxId === inbox.id
+          return <InboxListItem inbox={inbox} className={classNames.item} isSelected={isSelected} />
+        }}
+      </GridList>
       <CreateField
         onSubmit={onCreate}
         classNames={{ base: "py-6", input: "placeholder-neutral-muted-text" }}
