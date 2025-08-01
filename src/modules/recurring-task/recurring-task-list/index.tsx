@@ -25,8 +25,13 @@ export function RecurringTaskList() {
   const [panelOpen, setPanelOpen] = useState(false)
 
   return (
-    <div className="bg-neutral-muted-bg flex h-full flex-col gap-2 rounded-sm border p-2">
-      <div className={cn("flex h-36 items-stretch")}>
+    <div
+      className={cn(
+        "bg-neutral-muted-bg flex h-full max-h-full flex-col gap-2 rounded-sm border p-2",
+        "overflow-auto"
+      )}
+    >
+      <div className={cn("flex h-32 max-h-32 min-h-32 items-stretch")}>
         <RecurringTaskModal isOpen={panelOpen} onOpenChange={setPanelOpen}>
           <Button
             className={["flex items-center gap-8", "bg-base-bg/50 hover:bg-base-bg w-full", "px-8"]}

@@ -7,6 +7,7 @@ import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { typography } from "@/common/components/class-names"
 import { GridListItem } from "~/smui/grid-list/components"
+import { cn } from "~/smui/utils"
 
 export function InboxListItem({
   inbox,
@@ -25,8 +26,9 @@ export function InboxListItem({
       href={`/inbox/${inbox.id}`}
       className={[
         className,
-        "text-neutral-text font-medium opacity-70 hover:opacity-100",
-        isSelected && "text-base-text bg-neutral-muted-bg font-semibold opacity-100",
+        "text-neutral-text rounded-sm font-medium opacity-70 hover:opacity-100",
+        isSelected && "text-base-text bg-neutral-muted-bg border font-semibold opacity-100",
+        "transition-colors",
       ]}
     >
       {({ allowsDragging }) => (
@@ -47,10 +49,13 @@ export function InboxListItem({
           <p className="grow truncate">{inbox.title}</p>
           {openTaskCount > 0 && !inbox.is_archived && (
             <span
-              className={typography({
-                type: "label",
-                class: ["flex w-30 justify-center", "text-primary-text"],
-              })}
+              className={cn(
+                "flex min-w-24 items-center justify-center px-8 py-1",
+                "rounded-full border",
+                "text-sm font-bold",
+                "text-primary-text border-primary-text",
+                isSelected && "bg-base-bg"
+              )}
             >
               {openTaskCount}
             </span>
