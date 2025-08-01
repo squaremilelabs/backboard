@@ -1,5 +1,5 @@
 "use client"
-import { MenuIcon } from "lucide-react"
+import { ChevronsLeftIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { AppLogo } from "./app-logo"
@@ -14,22 +14,19 @@ export function AppDesktopSidebarNav() {
   const [_, setSidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
   return (
     <div className="relative flex w-full flex-col overflow-auto p-4">
-      <div
+      <Button
+        onPress={() => setSidebarOpen(false)}
         className={cn(
           "sticky top-0 z-10",
           "bg-base-bg/30 backdrop-blur-xl",
-          "flex items-stretch gap-8 p-8 pr-0"
+          "flex items-center gap-8 p-8 pl-12"
         )}
+        variants={{ hover: "fill" }}
       >
-        <Button
-          onPress={() => setSidebarOpen(false)}
-          className="flex items-center gap-8"
-          variants={{ hover: "fill" }}
-        >
-          <Icon icon={<MenuIcon />} className="text-neutral-muted-text" />
-          <AppLogo withTitle />
-        </Button>
-      </div>
+        <AppLogo withTitle />
+        <div className="grow" />
+        <Icon icon={<ChevronsLeftIcon />} className="text-neutral-muted-text" />
+      </Button>
       <InboxList />
     </div>
   )
