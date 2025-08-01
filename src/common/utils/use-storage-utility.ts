@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from "react"
 import { useLocalStorage, useSessionStorage } from "usehooks-ts"
 
