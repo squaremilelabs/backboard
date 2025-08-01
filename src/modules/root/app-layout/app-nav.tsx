@@ -50,6 +50,9 @@ export function AppMobilePopoverNav({ children }: { children: React.ReactNode })
           content: ["bg-base-bg border-2 rounded-sm p-4", "w-xs max-h-[80dvh] overflow-auto"],
         }}
       >
+        <div className="p-8 px-16">
+          <AppLogo withTitle />
+        </div>
         <InboxList />
       </Popover>
     </PopoverTrigger>

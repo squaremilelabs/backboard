@@ -38,7 +38,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             "grid grid-cols-1 grid-rows-[auto_1fr]"
           )}
         >
-          <header className="w-full max-w-full px-8 py-16 md:px-16">
+          <header className="w-full max-w-full p-8 md:p-16">
             <AppHeader />
           </header>
           <main

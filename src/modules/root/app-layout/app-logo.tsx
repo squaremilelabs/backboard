@@ -1,11 +1,9 @@
 "use client"
-
 import Image from "next/image"
-import { typography } from "@/common/components/class-names"
 
 export function AppLogo({ withTitle }: { withTitle?: boolean }) {
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-8">
       <Image
         src="/images/backboard-logo.svg"
         alt="Backboard Logo"
@@ -13,11 +11,7 @@ export function AppLogo({ withTitle }: { withTitle?: boolean }) {
         height={16}
         className="shadow"
       />
-      {withTitle && (
-        <p className={typography({ type: "gradient-title", className: "font-semibold" })}>
-          Backboard
-        </p>
-      )}
+      {withTitle && <p className={"text-neutral-text font-semibold"}>Backboard</p>}
     </div>
   )
 }
