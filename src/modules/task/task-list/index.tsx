@@ -2,12 +2,19 @@
 
 import { Selection, useDragAndDrop } from "react-aria-components"
 import { useEffect, useState } from "react"
+import { startOfDay, subDays } from "date-fns"
 import { TaskActionBar } from "../task-actions"
 import { TaskListItem } from "./task-list-item"
 import { processItemKeys, reorderIds, sortItemsByIdOrder } from "@/common/utils/list-utils"
 import { updateInbox, useInboxQuery } from "@/database/models/inbox"
-import { createTask, Task, TaskInboxState, useTaskQuery } from "@/database/models/task"
-import { useCurrentInboxView } from "@/modules/inbox/use-inbox-view"
+import {
+  createTask,
+  Task,
+  TaskInboxState,
+  TaskQueryParams,
+  useTaskQuery,
+} from "@/database/models/task"
+import { InboxViewKey, useCurrentInboxView } from "@/modules/inbox/use-inbox-view"
 import { GridList } from "~/smui/grid-list/components"
 import { CreateField } from "@/common/components/create-field"
 import { cn } from "~/smui/utils"
@@ -117,21 +124,32 @@ function useTaskListTaskQuery() {
 
   const inbox = inboxQuery.data?.[0]
 
-  const taskQuery = useTaskQuery({
-    $: {
-      where: {
-        "inbox.id": inboxId,
-        "inbox_state": inboxView,
-      },
-      order:
-        inboxView === "snoozed"
-          ? { snooze_date: "asc" }
-          : inboxView === "archived"
-            ? { archive_date: "desc" }
-            : undefined,
-      limit: inboxView === "archived" ? 30 : undefined,
+  const queryMap: Partial<Record<InboxViewKey, TaskQueryParams>> = {
+    open: {
+      $: { where: { "inbox.id": inboxId, "inbox_state": "open" } },
     },
-  })
+    snoozed: {
+      $: {
+        where: {
+          "inbox.id": inboxId,
+          "inbox_state": "snoozed",
+        },
+        order: { snooze_date: "asc" },
+      },
+    },
+    archived: {
+      $: {
+        where: {
+          "inbox.id": inboxId,
+          "inbox_state": "archived",
+          "archive_date": { $gte: startOfDay(subDays(new Date(), 5)).getTime() },
+        },
+        order: { archive_date: "desc" },
+      },
+    },
+  }
+
+  const taskQuery = useTaskQuery(queryMap[inboxView])
 
   const tasks: Task[] = taskQuery.data ?? []
 
@@ -148,8 +166,6 @@ function useTaskListTaskQuery() {
 
   if (inboxView === "snoozed") {
     return [...tasks].sort((left, right) => {
-      // Sort snoozed tasks by snooze date, then by created date (both are number, timestamps)
-      // snooze date may be null
       if (left.snooze_date === right.snooze_date) {
         return left.created_at - right.created_at
       }
