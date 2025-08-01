@@ -1,3 +1,2 @@
-export default function RootPage() {
-  return null
-}
+import LandingPage from "@/modules/root/landing-page"
+export default LandingPage

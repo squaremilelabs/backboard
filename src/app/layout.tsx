@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import { SignedIn, SignedOut } from "@clerk/nextjs"
 import { fontsClassName } from "@/styles/fonts"
 import Providers from "@/modules/root/providers"
 import { AppLayout } from "@/modules/root/app-layout"
@@ -35,7 +36,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={fontsClassName} suppressHydrationWarning>
       <body>
         <Providers>
-          <AppLayout>{children}</AppLayout>
+          <SignedIn>
+            <AppLayout>{children}</AppLayout>
+          </SignedIn>
+          <SignedOut>{children}</SignedOut>
         </Providers>
       </body>
     </html>

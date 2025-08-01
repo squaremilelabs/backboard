@@ -1,9 +1,8 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
+import { NextResponse } from "next/server"
 
 // Only protect app pages (not API routes)
-const isProtectedRoute = createRouteMatcher([
-  "/((?!api/).*)", // Protect all routes except those starting with /api/
-])
+const isProtectedRoute = createRouteMatcher(["/inbox(.*)"])
 
 export const config = {
   matcher: [
@@ -15,5 +14,10 @@ export const config = {
 }
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) await auth.protect()
+  if (isProtectedRoute(req)) {
+    const { isAuthenticated } = await auth()
+    if (!isAuthenticated) {
+      return NextResponse.redirect(new URL("/", req.url))
+    }
+  }
 })
