@@ -61,11 +61,7 @@ export function TaskListItem({ task, className }: { task: Task; className: Class
                 display="icons"
               />
             </div>
-            <span
-              className={typography({ type: "label", class: isHovered ? "hidden" : "visible" })}
-            >
-              {stateInfo.text}
-            </span>
+            <span className={typography({ type: "label" })}>{stateInfo.text}</span>
           </>
         )
       }}

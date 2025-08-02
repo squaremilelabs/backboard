@@ -27,7 +27,7 @@ export function InboxListItem({
       className={[
         className,
         "text-neutral-text rounded-sm font-medium opacity-70 hover:opacity-100",
-        isSelected && "text-base-text bg-neutral-muted-bg border font-semibold opacity-100",
+        isSelected && "text-base-text bg-neutral-muted-bg border font-semibold !opacity-100",
         "transition-colors",
       ]}
     >

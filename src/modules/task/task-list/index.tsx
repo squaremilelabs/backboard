@@ -1,5 +1,4 @@
 "use client"
-
 import { Selection, useDragAndDrop } from "react-aria-components"
 import { useEffect, useState } from "react"
 import { startOfDay, subDays } from "date-fns"
@@ -42,6 +41,23 @@ export function TaskList() {
           updateInbox(inboxId, { open_task_order: newOrder })
         }
       : undefined,
+    renderDragPreview: (items) => {
+      const firstTask = JSON.parse(items[0]["db/task"]) as Task
+      const firstTaskTitle = firstTask.title
+      const remainingCount = items.length - 1
+      return (
+        <div
+          className={cn(
+            "bg-base-bg rounded-sm px-16 py-8",
+            "border-l-primary-border border-l-4",
+            "flex items-center gap-16"
+          )}
+        >
+          <span className="font-semibold">{firstTaskTitle}</span>{" "}
+          {remainingCount ? <span className="text-sm font-normal">+{remainingCount}</span> : null}
+        </div>
+      )
+    },
   })
 
   const isCreateEnabled = inboxView === "open" || inboxView === "snoozed"
@@ -98,7 +114,7 @@ export function TaskList() {
             />
           )}
           {isBatchActionsVisible && (
-            <div className="bg-base-bg/70 flex items-center rounded-sm px-4">
+            <div className="bg-base-bg flex items-center rounded-sm px-4">
               <TaskActionBar
                 selectedTaskIds={selectedTaskIds}
                 inboxState={inboxView as TaskInboxState}

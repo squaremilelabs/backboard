@@ -105,7 +105,7 @@ export function TitleContentFields({
             <Icon icon={<TextIcon />} className="text-neutral-muted-text w-24" />
             <TextFieldTextArea
               className={classNames.textarea}
-              minRows={3}
+              minRows={5}
               placeholder="Notes..."
               spellCheck={false}
             />
