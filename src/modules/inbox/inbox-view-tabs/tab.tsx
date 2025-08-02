@@ -1,10 +1,10 @@
 "use client"
-
 import { useEffect, useRef, useState } from "react"
-import { InboxViewInfo } from "../use-inbox-view"
+import { InboxViewInfo, useCurrentInboxView } from "../use-inbox-view"
 import { ClassValue, cn } from "~/smui/utils"
 import { Icon } from "~/smui/icon/components"
-import { Tab } from "~/smui/tabs/component"
+import { ListBoxItem } from "~/smui/list-box/components"
+import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 
 export function InboxViewTab({
   inboxId,
@@ -17,6 +17,7 @@ export function InboxViewTab({
   count: number | null
   className: ClassValue
 }) {
+  const { view: currentView } = useCurrentInboxView()
   const previousKeyRef = useRef<string | null>(null)
   const previousCountRef = useRef<number | null>(null)
   const [hasRecentAddition, setHasRecentAddition] = useState(false)
@@ -42,12 +43,27 @@ export function InboxViewTab({
   }, [inboxId, view.key, count])
 
   const isAccented = view.key === "open" && !!count
+  const [isTasksDragging] = useSessionStorageUtility("is-tasks-dragging", false)
+  const isDroppable = view.key !== "recurring" && currentView !== view.key
 
   return (
-    <Tab
+    <ListBoxItem
       id={view.key}
       className={[
         className,
+        [
+          "flex items-stretch",
+          "text-sm",
+          "min-w-fit",
+          "divide-x rounded-sm border",
+          "text-neutral-muted-text data-selected:text-base-text",
+          "data-selected:border-2",
+          "data-selected:border-neutral-muted-border",
+          "data-selected:divide-neutral-muted-border",
+          "data-selected:font-semibold",
+          "hover:bg-neutral-muted-bg/50",
+          "data-selected:bg-neutral-muted-bg",
+        ],
         isAccented && [
           "text-primary-text",
           "data-selected:bg-primary-muted-bg",
@@ -55,7 +71,10 @@ export function InboxViewTab({
           "data-selected:border-primary-muted-border",
           "data-selected:divide-primary-muted-border",
         ],
-        hasRecentAddition && ["outline-primary-bg outline-1 outline-dashed"],
+        (hasRecentAddition || (isTasksDragging && isDroppable)) && [
+          "outline-primary-bg outline-1 outline-dashed",
+        ],
+        ["data-drop-target:outline-2", "data-drop-target:outline-solid"],
       ]}
       textValue={view.title}
       href={`/inbox/${inboxId}/${view.key}`}
@@ -82,6 +101,6 @@ export function InboxViewTab({
           ) : null}
         </>
       )}
-    </Tab>
+    </ListBoxItem>
   )
 }

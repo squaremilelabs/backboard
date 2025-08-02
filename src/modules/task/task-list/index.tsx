@@ -18,14 +18,19 @@ import { InboxViewKey, useCurrentInboxView } from "@/modules/inbox/use-inbox-vie
 import { GridList } from "~/smui/grid-list/components"
 import { CreateField } from "@/common/components/create-field"
 import { cn } from "~/smui/utils"
+import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 
 export function TaskList() {
   const { id: inboxId, view: inboxView } = useCurrentInboxView()
   const tasks = useTaskListTaskQuery()
 
+  const [_, setIsTasksDragging] = useSessionStorageUtility("is-tasks-dragging", false)
+
   const isReorderable = inboxView === "open"
   const { dragAndDropHooks } = useDragAndDrop({
     getItems: (keys) => processItemKeys(keys, tasks, "db/task"),
+    onDragStart: () => setIsTasksDragging(true),
+    onDragEnd: () => setIsTasksDragging(false),
     onReorder: isReorderable
       ? (e) => {
           const newOrder = reorderIds({
