@@ -113,6 +113,11 @@ export function TaskList() {
           }}
         />
       )}
+      {inboxView === "archived" && (
+        <div className={cn("flex h-32 min-h-32 items-center px-8", "text-sm")}>
+          <span className={typography({ type: "label" })}>Tasks done in the last 5 days</span>
+        </div>
+      )}
       <GridList
         aria-label="Task List"
         variants={{ variant: "task-list" }}

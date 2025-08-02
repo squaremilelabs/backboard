@@ -25,7 +25,7 @@ export function AppDesktopSidebarNav() {
       >
         <AppLogo withTitle />
         <div className="grow" />
-        <Icon icon={<ChevronsLeftIcon />} className="text-neutral-muted-text" />
+        <Icon icon={<ChevronsLeftIcon />} className="text-neutral-muted-text !min-w-30" />
       </Button>
       <InboxList />
     </div>
@@ -46,7 +46,7 @@ export function AppMobilePopoverNav({ children }: { children: React.ReactNode })
         classNames={{
           content: [
             "bg-base-bg border-2 rounded-sm p-4",
-            "w-xs max-h-[80dvh] overflow-auto relative",
+            "w-350 max-h-[80dvh] overflow-auto relative",
           ],
         }}
       >
