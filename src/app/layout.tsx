@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+import { Metadata, Viewport } from "next"
 import { SignedIn, SignedOut } from "@clerk/nextjs"
 import { fontsClassName } from "@/styles/fonts"
 import Providers from "@/modules/root/providers"
@@ -29,6 +29,13 @@ export const metadata: Metadata = {
       { url: "/icons/apple-icon-180x180.png", sizes: "180x180" },
     ],
   },
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

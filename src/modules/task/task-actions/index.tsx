@@ -88,7 +88,11 @@ function TaskActionButton({
   }
 
   return (
-    <Button {...props} variants={{ variant: "action-button" }} className={palette({ p })}>
+    <Button
+      {...props}
+      variants={{ variant: "action-button" }}
+      className={palette({ p, className: "min-w-fit" })}
+    >
       <Icon icon={<ActionIcon />} />
       <span className="text-sm">{label}</span>
     </Button>

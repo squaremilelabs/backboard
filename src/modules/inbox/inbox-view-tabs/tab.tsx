@@ -57,7 +57,7 @@ export function InboxViewTab({
           "min-w-fit",
           "divide-x rounded-sm border",
           "text-neutral-muted-text data-selected:text-base-text",
-          "data-selected:border-2",
+          "data-selected:border",
           "data-selected:border-neutral-muted-border",
           "data-selected:divide-neutral-muted-border",
           "data-selected:font-semibold",
@@ -65,7 +65,7 @@ export function InboxViewTab({
           "data-selected:bg-neutral-muted-bg",
         ],
         isAccented && [
-          "text-primary-text",
+          "text-primary-text border-primary-muted-border divide-primary-muted-border",
           "data-selected:bg-primary-muted-bg",
           "data-selected:text-primary-muted-fg",
           "data-selected:border-primary-muted-border",

@@ -18,6 +18,7 @@ import { GridList } from "~/smui/grid-list/components"
 import { CreateField } from "@/common/components/create-field"
 import { cn } from "~/smui/utils"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
+import { typography } from "@/common/components/class-names"
 
 export function TaskList() {
   const { id: inboxId, view: inboxView } = useCurrentInboxView()
@@ -88,7 +89,6 @@ export function TaskList() {
     }
   }
   const isBatchActionsVisible = selectedTaskIds.length > 1
-  const isTopBarVisible = isBatchActionsVisible || isCreateEnabled
 
   return (
     <div
@@ -97,33 +97,19 @@ export function TaskList() {
         "overflow-auto"
       )}
     >
-      {isTopBarVisible && (
-        <div className={cn("flex h-36 max-h-36 min-h-36 items-stretch")}>
-          {isCreateEnabled && !isBatchActionsVisible && (
-            <CreateField
-              onSubmit={handleCreate}
-              placeholder="Add task"
-              classNames={{
-                base: [
-                  "py-6 px-8 gap-8 self-stretch",
-                  "!outline-0 hover:!bg-base-bg focus-within:bg-base-bg rounded-sm",
-                  "focus-within:border-l-4 focus-within:border-l-neutral-border",
-                  tasks.length === 0 ? "bg-base-bg/70" : "bg-base-bg/50",
-                ],
-              }}
-            />
-          )}
-          {isBatchActionsVisible && (
-            <div className="bg-base-bg flex items-center rounded-sm px-4">
-              <TaskActionBar
-                selectedTaskIds={selectedTaskIds}
-                inboxState={inboxView as TaskInboxState}
-                onAfterAction={() => setSelectedTaskIds([])}
-                display="buttons"
-              />
-            </div>
-          )}
-        </div>
+      {isCreateEnabled && (
+        <CreateField
+          onSubmit={handleCreate}
+          placeholder="Add task"
+          classNames={{
+            base: [
+              "py-6 px-8 gap-8 self-stretch",
+              "!outline-0 hover:!bg-base-bg focus-within:bg-base-bg rounded-sm",
+              "focus-within:border-l-4 focus-within:border-l-neutral-border",
+              tasks.length === 0 ? "bg-base-bg/70" : "bg-base-bg/50",
+            ],
+          }}
+        />
       )}
       <GridList
         aria-label="Task List"
@@ -138,6 +124,19 @@ export function TaskList() {
       >
         {(task, classNames) => <TaskListItem task={task} className={classNames.item} />}
       </GridList>
+      {isBatchActionsVisible && (
+        <div className={cn("flex items-center gap-16 px-16 py-8", "bg-base-bg border-t")}>
+          <p className={typography({ type: "label", className: "text-neutral-muted-text" })}>
+            {selectedTaskIds.length} selected
+          </p>
+          <TaskActionBar
+            selectedTaskIds={selectedTaskIds}
+            inboxState={inboxView as TaskInboxState}
+            onAfterAction={() => setSelectedTaskIds([])}
+            display="buttons"
+          />
+        </div>
+      )}
     </div>
   )
 }

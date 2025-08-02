@@ -20,7 +20,7 @@ export function TaskPanel({ task }: { task: Task }) {
         initialValues={{ title: task.title, content: task.content || null }}
         handleSaveValues={(values) => updateTask(task.id, values)}
       />
-      <div className={section()}>
+      <div className={section({ className: "overflow-x-auto" })}>
         <TaskActionBar
           inboxState={task.inbox_state}
           selectedTaskIds={[task.id]}
