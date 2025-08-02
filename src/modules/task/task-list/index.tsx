@@ -54,8 +54,10 @@ export function TaskList() {
             "flex items-center gap-16"
           )}
         >
-          <span className="font-semibold">{firstTaskTitle}</span>{" "}
-          {remainingCount ? <span className="text-sm font-normal">+{remainingCount}</span> : null}
+          <span>{firstTaskTitle}</span>{" "}
+          {remainingCount ? (
+            <span className="text-primary-text text-sm font-semibold">+{remainingCount}</span>
+          ) : null}
         </div>
       )
     },
@@ -125,7 +127,13 @@ export function TaskList() {
         {(task, classNames) => <TaskListItem task={task} className={classNames.item} />}
       </GridList>
       {isBatchActionsVisible && (
-        <div className={cn("flex items-center gap-16 px-16 py-8", "bg-base-bg border-t")}>
+        <div
+          className={cn(
+            "flex items-center gap-16 px-16 py-8",
+            "bg-base-bg border-t",
+            "overflow-x-auto"
+          )}
+        >
           <p className={typography({ type: "label", className: "text-neutral-muted-text" })}>
             {selectedTaskIds.length} selected
           </p>
