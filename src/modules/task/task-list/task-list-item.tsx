@@ -11,6 +11,7 @@ import { Icon } from "~/smui/icon/components"
 import { Modal, ModalTrigger } from "~/smui/modal/components"
 import { cn } from "~/smui/utils"
 import { typography } from "@/common/components/class-names"
+import { Checkbox } from "~/smui/checkbox/components"
 
 export function TaskListItem({ task, className }: { task: Task; className: ClassValue }) {
   const [panelOpen, setPanelOpen] = useState(false)
@@ -35,6 +36,13 @@ export function TaskListItem({ task, className }: { task: Task; className: Class
                 />
               </Button>
             )}
+            <Checkbox
+              slot="selection"
+              excludeFromTabOrder
+              classNames={{
+                base: "text-neutral-muted-text hover:opacity-70 data-selected:text-primary-text",
+              }}
+            />
             <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
               <Button
                 className="flex items-center gap-4 truncate"

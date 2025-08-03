@@ -36,7 +36,7 @@ export function RecurringTaskList() {
           className={[
             "flex items-center gap-8",
             "bg-base-bg/50 hover:bg-base-bg w-full",
-            "min-h-fit px-8 py-6",
+            "min-h-fit p-8",
             tasks.length === 0 && "bg-base-bg/70",
           ]}
           variants={{ hover: "none" }}

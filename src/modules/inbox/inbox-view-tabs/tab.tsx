@@ -81,7 +81,7 @@ export function InboxViewTab({
     >
       {({ isSelected }) => (
         <>
-          <div className={cn("flex items-center gap-4 px-8 py-4")}>
+          <div className={cn("flex items-center gap-4 px-8 py-6")}>
             <Icon icon={<view.Icon />} variants={{ size: "sm" }} />
             <span>{view.title}</span>
           </div>

@@ -105,7 +105,7 @@ export function TaskList() {
           placeholder="Add task"
           classNames={{
             base: [
-              "py-6 px-8 gap-8 self-stretch",
+              "p-8 gap-8 self-stretch",
               "!outline-0 hover:!bg-base-bg focus-within:bg-base-bg rounded-sm",
               "focus-within:border-l-4 focus-within:border-l-neutral-border",
               tasks.length === 0 ? "bg-base-bg/70" : "bg-base-bg/50",
@@ -114,7 +114,7 @@ export function TaskList() {
         />
       )}
       {inboxView === "archived" && (
-        <div className={cn("flex h-32 min-h-32 items-center px-8", "text-sm")}>
+        <div className={cn("flex h-36 min-h-36 items-center px-8", "text-sm")}>
           <span className={typography({ type: "label" })}>Tasks done in the last 5 days</span>
         </div>
       )}
@@ -123,7 +123,7 @@ export function TaskList() {
         variants={{ variant: "task-list" }}
         items={tasks}
         selectionMode="multiple"
-        selectionBehavior="replace"
+        selectionBehavior="toggle"
         onSelectionChange={onSelectionChange}
         classNames={{ base: "gap-2" }}
         dragAndDropHooks={dragAndDropHooks}
@@ -139,7 +139,7 @@ export function TaskList() {
             "overflow-x-auto"
           )}
         >
-          <p className={typography({ type: "label", className: "text-neutral-muted-text" })}>
+          <p className={typography({ type: "label", className: "text-neutral-text" })}>
             {selectedTaskIds.length} selected
           </p>
           <TaskActionBar
