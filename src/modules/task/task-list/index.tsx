@@ -90,7 +90,7 @@ export function TaskList() {
       setSelectedTaskIds([...selection] as string[])
     }
   }
-  const isBatchActionsVisible = selectedTaskIds.length > 1
+  const isBatchActionsVisible = selectedTaskIds.length > 0
 
   return (
     <div
