@@ -28,7 +28,7 @@ export function TaskListItem({ task, className }: { task: Task; className: Class
         return (
           <>
             {allowsDragging && (
-              <Button slot="drag" excludeFromTabOrder>
+              <Button slot="drag" className="hidden md:flex">
                 <Icon
                   icon={<GripVerticalIcon />}
                   className="text-neutral-muted-text !w-fit !min-w-fit"

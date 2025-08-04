@@ -119,7 +119,7 @@ function TaskTodoActionButton({
     <TaskActionButton
       label={inboxState === "archived" ? `Undo` : `Unsnooze`}
       Icon={inboxState === "archived" ? CircleFadingArrowUpIcon : AlarmClockOffIcon}
-      palette={inboxState === "archived" ? "neutral-flat" : "primary-flat"}
+      palette={inboxState === "open" ? "primary-flat" : "neutral-flat"}
       display={display}
       onPress={onPress}
     />

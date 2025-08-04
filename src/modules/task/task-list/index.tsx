@@ -123,7 +123,7 @@ export function TaskList() {
         variants={{ variant: "task-list" }}
         items={tasks}
         selectionMode="multiple"
-        selectionBehavior="toggle"
+        selectionBehavior="replace"
         onSelectionChange={onSelectionChange}
         classNames={{ base: "gap-2" }}
         dragAndDropHooks={dragAndDropHooks}
@@ -134,7 +134,7 @@ export function TaskList() {
       {isBatchActionsVisible && (
         <div
           className={cn(
-            "flex items-center gap-32 px-16 py-8",
+            "flex items-center gap-16 px-16 py-8 md:gap-32",
             "bg-base-bg border-2",
             "justify-center-safe overflow-x-auto"
           )}
