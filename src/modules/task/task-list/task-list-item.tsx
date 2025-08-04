@@ -40,7 +40,10 @@ export function TaskListItem({ task, className }: { task: Task; className: Class
               slot="selection"
               excludeFromTabOrder
               classNames={{
-                base: "text-neutral-muted-text hover:opacity-70 data-selected:text-primary-text",
+                base: [
+                  "text-neutral-muted-text hover:opacity-70 data-selected:text-primary-text",
+                  isHovered && "text-primary-text",
+                ],
               }}
             />
             <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
