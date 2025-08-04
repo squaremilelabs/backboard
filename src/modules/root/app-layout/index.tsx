@@ -11,7 +11,7 @@ import { Modal } from "~/smui/modal/components"
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
   const windowSize = useWindowSize()
-  const isMobile = windowSize.width < 768
+  const isMobile = windowSize.width <= 864
   return (
     <div className={cn("h-dvh max-h-dvh w-dvw max-w-dvw", "grid grid-cols-[auto_1fr]")}>
       <nav
