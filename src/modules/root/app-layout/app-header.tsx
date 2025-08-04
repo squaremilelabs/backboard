@@ -1,6 +1,5 @@
 "use client"
 import { MenuIcon } from "lucide-react"
-import { AppMobilePopoverNav } from "./app-nav"
 import { AppUserTray } from "./app-user-tray"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 import { useCurrentInboxView } from "@/modules/inbox/use-inbox-view"
@@ -18,13 +17,9 @@ export function AppHeader() {
       <div className="flex items-center">
         {/* Desktop Sidebar Trigger */}
         <NavTrigger
-          className={["hidden", !sidebarOpen && "md:flex"]}
+          className={["flex", sidebarOpen && "md:hidden"]}
           onPress={() => setSidebarOpen(true)}
         />
-        {/* Mobile Popover Trigger */}
-        <AppMobilePopoverNav>
-          <NavTrigger className={["flex md:hidden"]} />
-        </AppMobilePopoverNav>
         {/* Title */}
         {isInboxView ? (
           <InboxTitle inboxId={inboxId} />

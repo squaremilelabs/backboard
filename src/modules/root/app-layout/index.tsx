@@ -2,12 +2,13 @@
 
 import React from "react"
 import { AppHeader } from "./app-header"
-import { AppDesktopSidebarNav } from "./app-nav"
+import { AppSidebar } from "./app-sidebar"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 import { cn } from "~/smui/utils"
+import { Modal } from "~/smui/modal/components"
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
-  const [sidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
+  const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
   return (
     <div className={cn("h-dvh max-h-dvh w-dvw max-w-dvw", "grid grid-cols-[auto_1fr]")}>
       <nav
@@ -19,8 +20,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           sidebarOpen ? "w-xs max-w-xs" : "w-0 overflow-hidden"
         )}
       >
-        <AppDesktopSidebarNav />
+        <AppSidebar />
       </nav>
+      <Modal
+        isOpen={sidebarOpen}
+        onOpenChange={setSidebarOpen}
+        isDismissable
+        variants={{ variant: "drawer" }}
+        classNames={{
+          overlay: "flex md:hidden",
+          content: ["flex bg-base-bg border-r transition-all", "w-xs starting:w-0"],
+        }}
+      >
+        <AppSidebar />
+      </Modal>
       <div
         className={cn(
           // take up full viewport

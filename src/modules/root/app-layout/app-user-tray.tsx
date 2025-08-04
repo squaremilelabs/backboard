@@ -20,12 +20,17 @@ import { typography } from "@/common/components/class-names"
 export function AppUserTray() {
   return (
     <SignedIn>
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-4">
         <TaskTotalCount />
+        <div />
         <UserButton />
         <PopoverTrigger>
           <Button className="text-neutral-muted-text hover:text-primary-text">
-            <Icon icon={<EllipsisVerticalIcon />} variants={{ size: "lg" }} />
+            <Icon
+              icon={<EllipsisVerticalIcon />}
+              className="!w-fit !min-w-fit"
+              variants={{ size: "md" }}
+            />
           </Button>
           <Popover
             placement="bottom right"
