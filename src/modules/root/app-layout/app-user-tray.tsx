@@ -1,7 +1,13 @@
 "use client"
 import { SignedIn, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
-import { CircleEllipsisIcon, ExternalLinkIcon, Laptop2Icon, MoonIcon, SunIcon } from "lucide-react"
+import {
+  EllipsisVerticalIcon,
+  ExternalLinkIcon,
+  Laptop2Icon,
+  MoonIcon,
+  SunIcon,
+} from "lucide-react"
 import { useTheme } from "next-themes"
 import { cn } from "~/smui/utils"
 import { Icon } from "~/smui/icon/components"
@@ -16,9 +22,10 @@ export function AppUserTray() {
     <SignedIn>
       <div className="flex items-center gap-8">
         <TaskTotalCount />
+        <UserButton />
         <PopoverTrigger>
           <Button className="text-neutral-muted-text hover:text-primary-text">
-            <Icon icon={<CircleEllipsisIcon />} variants={{ size: "lg" }} />
+            <Icon icon={<EllipsisVerticalIcon />} variants={{ size: "lg" }} />
           </Button>
           <Popover
             placement="bottom right"
@@ -30,7 +37,6 @@ export function AppUserTray() {
             <AppRoadmapLinks />
           </Popover>
         </PopoverTrigger>
-        <UserButton />
       </div>
     </SignedIn>
   )
