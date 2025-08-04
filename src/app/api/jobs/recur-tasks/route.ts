@@ -1,13 +1,7 @@
-import { id, init } from "@instantdb/admin"
 import { NextResponse } from "next/server"
-import schema from "@/database/instant.schema"
+import { id } from "@instantdb/admin"
 import { RecurringTask } from "@/database/models/recurring-task"
-
-const db = init({
-  appId: process.env.NEXT_PUBLIC_INSTANT_APP_ID as string,
-  adminToken: process.env.INSTANT_APP_ADMIN_TOKEN as string,
-  schema: schema,
-})
+import { db } from "@/database/db-admin"
 
 export async function GET() {
   try {

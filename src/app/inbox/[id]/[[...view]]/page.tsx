@@ -1,15 +1,8 @@
-import { init } from "@instantdb/admin"
 import { Metadata } from "next"
 import { currentUser } from "@clerk/nextjs/server"
-import schema from "@/database/instant.schema"
 import { InboxPageRouter } from "@/modules/inbox/inbox-page-router"
 import { Inbox } from "@/database/models/inbox"
-
-const db = init({
-  appId: process.env.NEXT_PUBLIC_INSTANT_APP_ID as string,
-  adminToken: process.env.INSTANT_APP_ADMIN_TOKEN as string,
-  schema: schema,
-})
+import { db } from "@/database/db-admin"
 
 export async function generateMetadata({
   params,

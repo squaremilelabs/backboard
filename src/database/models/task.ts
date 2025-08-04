@@ -1,5 +1,5 @@
 import { id, InstaQLParams } from "@instantdb/react"
-import { db } from "../db"
+import { db } from "../db-client"
 import { AppSchema } from "../instant.schema"
 
 export type Task = {

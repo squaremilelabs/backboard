@@ -134,9 +134,9 @@ export function TaskList() {
       {isBatchActionsVisible && (
         <div
           className={cn(
-            "flex items-center gap-16 px-16 py-8",
-            "bg-base-bg border-t",
-            "overflow-x-auto"
+            "flex items-center gap-32 px-16 py-8",
+            "bg-base-bg border-2",
+            "justify-center-safe overflow-x-auto"
           )}
         >
           <p className={typography({ type: "label", className: "text-neutral-text" })}>
