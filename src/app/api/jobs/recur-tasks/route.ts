@@ -5,7 +5,6 @@ import { db } from "@/database/db-admin"
 
 export async function GET() {
   try {
-    // DAILY TASKS
     const query = await db.query({
       recurring_tasks: {
         $: {
