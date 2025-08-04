@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useEffect } from "react"
 import { useWindowSize } from "usehooks-ts"
 import { AppHeader } from "./app-header"
 import { AppSidebar } from "./app-sidebar"
@@ -12,6 +12,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
   const windowSize = useWindowSize()
   const isMobile = windowSize.width <= 864
+  useEffect(() => {
+    if (isMobile) setSidebarOpen(false)
+  }, [isMobile, setSidebarOpen])
   return (
     <div className={cn("h-dvh max-h-dvh w-dvw max-w-dvw", "grid grid-cols-[auto_1fr]")}>
       <nav
