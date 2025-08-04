@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import { useWindowSize } from "usehooks-ts"
 import { AppHeader } from "./app-header"
 import { AppSidebar } from "./app-sidebar"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
@@ -9,6 +10,8 @@ import { Modal } from "~/smui/modal/components"
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
+  const windowSize = useWindowSize()
+  const isMobile = windowSize.width < 768
   return (
     <div className={cn("h-dvh max-h-dvh w-dvw max-w-dvw", "grid grid-cols-[auto_1fr]")}>
       <nav
@@ -23,13 +26,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <AppSidebar />
       </nav>
       <Modal
-        isOpen={sidebarOpen}
+        isOpen={sidebarOpen && isMobile}
         onOpenChange={setSidebarOpen}
         isDismissable
         variants={{ variant: "drawer" }}
         classNames={{
           overlay: "flex md:hidden",
-          content: ["flex bg-base-bg border-r transition-all", "w-xs starting:w-0"],
+          content: ["flex md:hidden bg-base-bg border-r transition-all", "w-xs starting:w-0"],
         }}
       >
         <AppSidebar />
