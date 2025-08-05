@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     const newTaskId = id()
     await scopedDb.transact([
-      db.tx.tasks[newTaskId].link({ inbox: payload.inbox_id }).create({
+      scopedDb.tx.tasks[newTaskId].link({ inbox: payload.inbox_id }).create({
         title: payload.title || null,
         content: payload.content || null,
         created_at: new Date().getTime(),
