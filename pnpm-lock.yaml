@@ -59,6 +59,9 @@ importers:
       react-dom:
         specifier: ^19.1.0
         version: 19.1.1(react@19.1.1)
+      react-loom-player:
+        specifier: ^1.6.0
+        version: 1.6.0
       react-textarea-autosize:
         specifier: ^8.5.9
         version: 8.5.9(@types/react@19.1.8)(react@19.1.1)
@@ -2574,6 +2577,9 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  react-loom-player@1.6.0:
+    resolution: {integrity: sha512-G4ckgQRMk3O5SOn0+NF0dNfFk+XbiTEZOxGPuoXDQfqTnMHBlEO41aAKbHuf+i0U/+evIgZzn30JVMNxXMMycA==}
 
   react-stately@3.40.0:
     resolution: {integrity: sha512-Icg2q1pxTskx2dph3cFUu9RUQcInq25WZfUcKroX1Kl4jWxBobnfMvuxvJHHkysJh77IsnLmhF3+8If5oCoMFQ==}
@@ -5953,6 +5959,8 @@ snapshots:
       scheduler: 0.26.0
 
   react-is@16.13.1: {}
+
+  react-loom-player@1.6.0: {}
 
   react-stately@3.40.0(react@19.1.1):
     dependencies:

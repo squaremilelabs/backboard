@@ -4,11 +4,14 @@ import Link from "next/link"
 import {
   EllipsisVerticalIcon,
   ExternalLinkIcon,
+  HeartHandshakeIcon,
   Laptop2Icon,
+  MapIcon,
   MoonIcon,
   SunIcon,
 } from "lucide-react"
 import { useTheme } from "next-themes"
+import { FEEDBACK_URL, ROADMAP_URL } from "./links"
 import { cn } from "~/smui/utils"
 import { Icon } from "~/smui/icon/components"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
@@ -57,11 +60,12 @@ function AppRoadmapLinks() {
           "text-neutral-text hover:text-base-text cursor-pointer",
           "hover:underline"
         )}
-        href="https://squaremilelabs.notion.site/Backboard-Roadmap-23baece5ba1180b59daec44a563d2e86"
+        href={ROADMAP_URL}
         target="_blank"
       >
+        <Icon icon={<MapIcon />} />
+        <span className="grow">Product Roadmap</span>
         <Icon icon={<ExternalLinkIcon />} />
-        Roadmap
       </Link>
       <Link
         className={cn(
@@ -69,11 +73,12 @@ function AppRoadmapLinks() {
           "text-neutral-text hover:text-base-text cursor-pointer",
           "hover:underline"
         )}
-        href="https://squaremilelabs.notion.site/23baece5ba11803880f7cb252029167e"
+        href={FEEDBACK_URL}
         target="_blank"
       >
+        <Icon icon={<HeartHandshakeIcon />} />
+        <span className="grow">Submit Feedback</span>
         <Icon icon={<ExternalLinkIcon />} />
-        Submit Feedback
       </Link>
     </div>
   )
