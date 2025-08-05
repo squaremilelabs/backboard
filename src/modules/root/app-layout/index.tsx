@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react"
 import { useWindowSize } from "usehooks-ts"
+import { usePathname } from "next/navigation"
 import { AppHeader } from "./app-header"
 import { AppSidebar } from "./app-sidebar"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
@@ -9,12 +10,13 @@ import { cn } from "~/smui/utils"
 import { Modal } from "~/smui/modal/components"
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
   const windowSize = useWindowSize()
   const isMobile = windowSize.width <= 864
   useEffect(() => {
     if (isMobile) setSidebarOpen(false)
-  }, [isMobile, setSidebarOpen])
+  }, [isMobile, setSidebarOpen, pathname])
   return (
     <div className={cn("h-dvh max-h-dvh w-dvw max-w-dvw", "grid grid-cols-[auto_1fr]")}>
       <nav
