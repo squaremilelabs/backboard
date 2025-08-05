@@ -1,3 +1,5 @@
+import "server-only"
+
 import { init } from "@instantdb/admin"
 import schema from "./instant.schema"
 

@@ -1,3 +1,5 @@
+"use client"
+
 import { init } from "@instantdb/react"
 import schema from "./instant.schema"
 

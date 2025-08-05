@@ -1,6 +1,6 @@
 // Docs: https://www.instantdb.com/docs/modeling-data
 
-import { i } from "@instantdb/react"
+import { i } from "@instantdb/admin"
 
 const _schema = i.schema({
   entities: {
@@ -13,6 +13,7 @@ const _schema = i.schema({
     }),
     accounts: i.entity({
       inbox_order: i.json(), // array of inbox IDs (strings)
+      api_key: i.string().unique().optional(),
     }),
     inboxes: i.entity({
       created_at: i.date().indexed(),
