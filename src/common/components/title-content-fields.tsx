@@ -46,7 +46,7 @@ export function TitleContentFields({
   }, [persistedValues])
 
   return (
-    <div className="bg-base-bg flex w-full flex-col gap-12 rounded-sm p-12">
+    <div className="bg-base-bg flex w-full grow flex-col gap-12 rounded-sm p-12">
       <TextField
         aria-label="Title"
         autoFocus
@@ -85,7 +85,7 @@ export function TitleContentFields({
       <TextField
         aria-label="Content"
         classNames={{
-          base: "flex items-start w-full gap-8",
+          base: "flex items-start w-full gap-8 grow overflow-auto max-h-[400px]",
           textarea: "w-full !outline-0",
         }}
         value={typedValues.content || ""}
