@@ -75,11 +75,11 @@ export default function LandingPage() {
               <p className="text-neutral-text">
                 Click on the <EllipsisVerticalIcon className="inline-block size-14" /> icon on the
                 top right corner to view the{" "}
-                <Link href={ROADMAP_URL} className="underline">
+                <Link href={ROADMAP_URL} target="_blank" className="underline">
                   Product Roadmap
                 </Link>{" "}
                 or to{" "}
-                <Link href={FEEDBACK_URL} className="underline">
+                <Link href={FEEDBACK_URL} target="_blank" className="underline">
                   Submit Feedback
                 </Link>
                 .
