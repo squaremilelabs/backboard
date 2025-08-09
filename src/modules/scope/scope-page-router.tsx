@@ -2,12 +2,12 @@
 
 import { RecurringTaskList } from "../recurring-task/recurring-task-list"
 import { TaskList } from "../task/task-list"
-import { InboxViewKey, useCurrentInboxView } from "./use-inbox-view"
+import { ScopeViewKey, useCurrentScopeView } from "./use-scope-views"
 
-export function InboxPageRouter() {
-  const { view } = useCurrentInboxView()
+export function ScopePageRouter() {
+  const { view } = useCurrentScopeView()
 
-  const isTaskListView = (["open", "snoozed", "archived"] as InboxViewKey[]).includes(view)
+  const isTaskListView = (["now", "later", "done"] as ScopeViewKey[]).includes(view)
   const isRecurringTaskListView = view === "recurring"
 
   if (isTaskListView) {

@@ -10,7 +10,7 @@ export type ScopeListOrders = z.infer<typeof ScopeListOrdersSchema>
 export type Scope = {
   id: string
   created_at: number
-  icon: ScopeIcon
+  icon: ScopeIcon | null
   title: string
   content: string | null
   is_inactive: boolean
@@ -53,7 +53,10 @@ export const ScopeCreateSchema = z
   .transform(({ id, owner_id, ...data }) => {
     return {
       id: id ?? v4(),
-      data,
+      data: {
+        ...data,
+        created_at: Date.now(),
+      },
       link: { owner: owner_id },
       list_orders: {
         "tasks/now": [],

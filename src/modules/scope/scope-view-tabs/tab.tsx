@@ -1,29 +1,29 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
-import { InboxViewInfo, useCurrentInboxView } from "../use-inbox-view"
+import { ScopeViewInfo, useCurrentScopeView } from "../use-scope-views"
 import { ClassValue, cn } from "~/smui/utils"
 import { Icon } from "~/smui/icon/components"
 import { ListBoxItem } from "~/smui/list-box/components"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 
-export function InboxViewTab({
-  inboxId,
+export function ScopeViewTab({
+  scopeId,
   view,
   count,
   className,
 }: {
-  inboxId: string | undefined
-  view: InboxViewInfo
+  scopeId: string | undefined
+  view: ScopeViewInfo
   count: number | null
   className: ClassValue
 }) {
-  const { view: currentView } = useCurrentInboxView()
+  const { view: currentView } = useCurrentScopeView()
   const previousKeyRef = useRef<string | null>(null)
   const previousCountRef = useRef<number | null>(null)
   const [hasRecentAddition, setHasRecentAddition] = useState(false)
 
   useEffect(() => {
-    const key = `${inboxId ?? ""}:${view.key}`
+    const key = `${scopeId ?? ""}:${view.key}`
     if (previousKeyRef.current !== key) {
       setHasRecentAddition(false)
     }
@@ -40,9 +40,9 @@ export function InboxViewTab({
     previousKeyRef.current = key
     previousCountRef.current = count
     return () => setHasRecentAddition(false)
-  }, [inboxId, view.key, count])
+  }, [scopeId, view.key, count])
 
-  const isAccented = view.key === "open" && !!count
+  const isAccented = view.key === "now" && !!count
   const [isTasksDragging] = useSessionStorageUtility("is-tasks-dragging", false)
   const isDroppable = view.key !== "recurring" && currentView !== view.key
 
@@ -77,7 +77,7 @@ export function InboxViewTab({
         ["data-drop-target:outline-2", "data-drop-target:outline-solid"],
       ]}
       textValue={view.title}
-      href={`/inbox/${inboxId}/${view.key}`}
+      href={`/scope/${scopeId}/${view.key}`}
     >
       {({ isSelected }) => (
         <>

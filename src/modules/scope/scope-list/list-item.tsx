@@ -1,29 +1,29 @@
 import { GripVerticalIcon } from "lucide-react"
 import { Emoji } from "emoji-picker-react"
 import { ClassValue } from "~/smui/utils"
-import { Inbox } from "@/database/_models/inbox"
-import { Task } from "@/database/_models/task"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { typography } from "@/common/components/class-names"
 import { GridListItem } from "~/smui/grid-list/components"
 import { cn } from "~/smui/utils"
+import { Scope } from "@/database/models/scope"
+import { Task } from "@/database/models/task"
 
-export function InboxListItem({
-  inbox,
+export function ScopeListItem({
+  scope,
   className,
   isSelected,
 }: {
-  inbox: Inbox & { tasks: Task[] }
+  scope: Scope & { tasks: Task[] }
   className: ClassValue
   isSelected: boolean
 }) {
-  const openTaskCount = inbox.tasks.length
+  const nowTaskCount = scope.tasks.length
   return (
     <GridListItem
-      id={inbox.id}
-      textValue={inbox.title}
-      href={`/inbox/${inbox.id}`}
+      id={scope.id}
+      textValue={scope.title}
+      href={`/scope/${scope.id}`}
       className={[
         className,
         "text-neutral-text rounded-sm font-medium opacity-70 hover:opacity-100",
@@ -43,21 +43,21 @@ export function InboxListItem({
               <Icon icon={<GripVerticalIcon />} variants={{ size: "sm" }} />
             </Button>
           )}
-          {inbox?.emoji ? (
-            <Icon icon={<Emoji unified={inbox?.emoji} />} variants={{ size: "sm" }} />
+          {scope?.icon?.type === "emoji" ? (
+            <Icon icon={<Emoji unified={scope.icon.unified} />} variants={{ size: "sm" }} />
           ) : null}
-          <p className="grow truncate">{inbox.title}</p>
-          {openTaskCount > 0 && !inbox.is_archived && (
+          <p className="grow truncate">{scope.title}</p>
+          {nowTaskCount > 0 && !scope.is_inactive && (
             <span
               className={cn(
                 "flex min-w-30 items-center justify-center",
                 "text-primary-text px-4 text-sm"
               )}
             >
-              {openTaskCount}
+              {nowTaskCount}
             </span>
           )}
-          {inbox.is_archived && <span className={typography({ type: "label" })}>ARCHIVED</span>}
+          {scope.is_inactive && <span className={typography({ type: "label" })}>INACTIVE</span>}
         </>
       )}
     </GridListItem>

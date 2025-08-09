@@ -3,38 +3,67 @@ import { Calendar, CalendarCell, CalendarGrid, DateValue, Heading } from "react-
 import { AlarmClockIcon, ChevronLeftIcon, ChevronRightIcon, SunMoonIcon } from "lucide-react"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { Icon } from "~/smui/icon/components"
-import { updateManyTasks } from "@/database/_models/task"
 import { Button } from "~/smui/button/components"
 import { cn } from "~/smui/utils"
 import { Modal } from "~/smui/modal/components"
 import { panel } from "@/common/components/class-names"
+import { db } from "@/database/db-client"
+import { parseTaskUpdateInput, TaskStatus, TaskUpdateOutput } from "@/database/models/task"
 
 // TODO: Create calendar component in SMUI
-export function TaskSnoozePicker({
+export function TaskLaterPicker({
   isOpen,
   onOpenChange,
   selectedTaskIds,
+  currentStatus,
 }: {
   isOpen: boolean
   onOpenChange: (isOpen: boolean) => void
   selectedTaskIds: string[]
+  currentStatus: TaskStatus
 }) {
   const handleDateSelect = (date: DateValue) => {
-    updateManyTasks(selectedTaskIds, {
-      inbox_state: "snoozed",
-      snooze_date: date.toDate(getLocalTimeZone()).getTime(),
-      archive_date: null,
-    }).then(() => {
+    db.transact(
+      selectedTaskIds.map((id) => {
+        let data: TaskUpdateOutput["data"] = {}
+        if (currentStatus === "later") {
+          const { data: narrowedData } = parseTaskUpdateInput({
+            status_time: date.toDate(getLocalTimeZone()).getTime(),
+          })
+          data = narrowedData
+        } else {
+          const { data: narrowedData } = parseTaskUpdateInput({
+            status: "later",
+            status_time: date.toDate(getLocalTimeZone()).getTime(),
+            prev_status: currentStatus,
+          })
+          data = narrowedData
+        }
+        return db.tx.tasks[id].update(data)
+      })
+    ).then(() => {
       onOpenChange(false)
     })
   }
 
   const handleSomedaySelect = () => {
-    updateManyTasks(selectedTaskIds, {
-      inbox_state: "snoozed",
-      snooze_date: null,
-      archive_date: null,
-    }).then(() => {
+    db.transact(
+      selectedTaskIds.map((id) => {
+        let data: TaskUpdateOutput["data"] = {}
+        if (currentStatus === "later") {
+          const { data: narrowedData } = parseTaskUpdateInput({ status_time: null })
+          data = narrowedData
+        } else {
+          const { data: narrowedData } = parseTaskUpdateInput({
+            status: "later",
+            status_time: null,
+            prev_status: currentStatus,
+          })
+          data = narrowedData
+        }
+        return db.tx.tasks[id].update(data)
+      })
+    ).then(() => {
       onOpenChange(false)
     })
   }

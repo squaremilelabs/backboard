@@ -2,9 +2,8 @@ import { ClassValue } from "tailwind-variants"
 import { GripVerticalIcon, TextIcon } from "lucide-react"
 import { useState } from "react"
 import { TaskPanel } from "../task-panel"
-import { getTaskStateInfo } from "../task-state"
+import { getTaskStatusInfo } from "../task-status"
 import { TaskActionBar } from "../task-actions"
-import { Task } from "@/database/_models/task"
 import { GridListItem } from "~/smui/grid-list/components"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
@@ -12,11 +11,12 @@ import { Modal, ModalTrigger } from "~/smui/modal/components"
 import { cn } from "~/smui/utils"
 import { typography } from "@/common/components/class-names"
 import { Checkbox } from "~/smui/checkbox/components"
+import { Task } from "@/database/models/task"
 
 export function TaskListItem({ task, className }: { task: Task; className: ClassValue }) {
   const [panelOpen, setPanelOpen] = useState(false)
 
-  const stateInfo = getTaskStateInfo(task)
+  const statusInfo = getTaskStatusInfo(task)
   return (
     <GridListItem
       id={task.id}
@@ -67,12 +67,12 @@ export function TaskListItem({ task, className }: { task: Task; className: Class
             <div className="grow" />
             <div className={cn(isHovered ? "visible" : "hidden")}>
               <TaskActionBar
-                inboxState={task.inbox_state}
+                currentStatus={task.status}
                 selectedTaskIds={[task.id]}
                 display="icons"
               />
             </div>
-            <span className={typography({ type: "label" })}>{stateInfo.text}</span>
+            <span className={typography({ type: "label" })}>{statusInfo.text}</span>
           </>
         )
       }}

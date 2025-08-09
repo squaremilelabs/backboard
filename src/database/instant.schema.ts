@@ -41,7 +41,7 @@ const _schema = i.schema({
       archive_date: i.date().indexed().optional(),
       // ADD
       status: i.string().optional(), // TaskStatus // TODO: remove optional after migration
-      status_time: i.date().optional(), // TODO: add indexed after migration
+      status_time: i.date().indexed().optional(), // TODO: add indexed after migration
       prev_status: i.string().optional(),
     }),
     // MAINTAIN

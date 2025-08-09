@@ -1,13 +1,22 @@
-import { getTaskStateInfo } from "../task-state"
+import { getTaskStatusInfo } from "../task-status"
 import { TaskActionBar } from "../task-actions"
-import { TitleContentFields } from "@/common/components/title-content-fields"
+import {
+  TitleContentFields,
+  TitleContentFieldValues,
+} from "@/common/components/title-content-fields"
 import { panel } from "@/common/components/class-names"
-import { Task, updateTask } from "@/database/_models/task"
 import { Icon } from "~/smui/icon/components"
+import { parseTaskUpdateInput, Task } from "@/database/models/task"
+import { db } from "@/database/db-client"
 
 export function TaskPanel({ task }: { task: Task }) {
-  const { Icon: StateIcon, text } = getTaskStateInfo(task, { verbose: true })
+  const { Icon: StateIcon, text } = getTaskStatusInfo(task, { verbose: true })
   const { base, section } = panel()
+
+  const handleTitleContentSave = (values: TitleContentFieldValues) => {
+    const { data } = parseTaskUpdateInput(values)
+    db.transact(db.tx.tasks[task.id].update(data))
+  }
   return (
     <div className={base()}>
       <div className={section()}>
@@ -18,14 +27,10 @@ export function TaskPanel({ task }: { task: Task }) {
       </div>
       <TitleContentFields
         initialValues={{ title: task.title, content: task.content || null }}
-        handleSaveValues={(values) => updateTask(task.id, values)}
+        handleSaveValues={handleTitleContentSave}
       />
       <div className={section({ className: "overflow-x-auto" })}>
-        <TaskActionBar
-          inboxState={task.inbox_state}
-          selectedTaskIds={[task.id]}
-          display="buttons"
-        />
+        <TaskActionBar currentStatus={task.status} selectedTaskIds={[task.id]} display="buttons" />
       </div>
     </div>
   )

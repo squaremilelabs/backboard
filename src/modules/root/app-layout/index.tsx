@@ -39,7 +39,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           overlay: "flex md:hidden",
           content: ["flex md:hidden bg-base-bg border-r transition-all", "w-xs starting:w-0"],
         }}
-        dialogProps={{ "aria-label": "Inbox Navigation" }}
+        dialogProps={{ "aria-label": "Scope Navigation" }}
       >
         <AppSidebar />
       </Modal>

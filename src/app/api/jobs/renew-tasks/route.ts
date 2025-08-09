@@ -1,29 +1,28 @@
 import { NextResponse } from "next/server"
 import { db } from "@/database/db-admin"
+import { parseTaskUpdateInput } from "@/database/models/task"
 
 export async function GET() {
   try {
     const now = new Date().getTime()
-    const tasksToUnsnooze = await db.query({
+    const tasksToRenew = await db.query({
       tasks: {
         $: {
           where: {
-            "inbox_state": "snoozed",
-            "snooze_date": { $lte: now },
-            "inbox.is_archived": false,
+            "status": "later",
+            "status_time": { $lte: now },
+            "scope.is_inactive": false,
           },
           fields: ["id"],
         },
       },
     })
-    const taskIds = tasksToUnsnooze.tasks.map((task: { id: string }) => task.id)
+    const taskIds = tasksToRenew.tasks.map((task: { id: string }) => task.id)
     await db.transact(
-      taskIds.map((id) =>
-        db.tx.tasks[id].update({
-          inbox_state: "open",
-          snooze_date: null,
-        })
-      )
+      taskIds.map((id) => {
+        const { data } = parseTaskUpdateInput({ status: "now", prev_status: "later" })
+        return db.tx.tasks[id].update(data)
+      })
     )
 
     return NextResponse.json(

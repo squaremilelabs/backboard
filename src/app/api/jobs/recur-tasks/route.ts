@@ -1,19 +1,21 @@
 import { NextResponse } from "next/server"
-import { id } from "@instantdb/admin"
-import { RecurringTask } from "@/database/_models/recurring-task"
 import { db } from "@/database/db-admin"
+import { RecurringTask } from "@/database/models/recurring-task"
+import { parseTaskCreateInput } from "@/database/models/task"
 
 export async function GET() {
   try {
+    // WeekdayQuery
+
     const query = await db.query({
       recurring_tasks: {
         $: {
           where: {
-            "is_archived": false,
-            "inbox.is_archived": false,
+            "is_inactive": false,
+            "scope.is_inactive": false,
           },
         },
-        inbox: {
+        scope: {
           $: {
             fields: ["id"],
           },
@@ -21,41 +23,38 @@ export async function GET() {
       },
     })
 
-    const recurringTasks = query.recurring_tasks as Array<RecurringTask & { inbox: { id: string } }>
+    const recurringTasks = query.recurring_tasks as Array<RecurringTask & { scope: { id: string } }>
 
-    const currentDayOfWeek = new Date().getUTCDay()
-
-    const dailyTasks = recurringTasks.filter((task) => {
-      if (task.frequency.type !== "daily") return false
-      if (currentDayOfWeek === 0 || currentDayOfWeek === 6) {
-        // If it's a weekend and the task skips weekends, skip it
-        if (task.frequency.skip_weekends) return false
-      }
-      return true
+    const currentWeekday = new Date().getUTCDay()
+    const weekdayTasks = recurringTasks.filter((task) => {
+      if (task.recur_day_type !== "weekday") return false
+      return task.recur_days.includes(currentWeekday)
     })
 
-    const weeklyTasks = recurringTasks.filter((task) => {
-      if (task.frequency.type !== "weekly") return false
-      return task.frequency.weekday === currentDayOfWeek
+    const currentMonthDay = new Date().getUTCDate()
+    const monthdayTasks = recurringTasks.filter((task) => {
+      if (task.recur_day_type !== "monthday") return false
+      return task.recur_days.includes(currentMonthDay)
     })
 
-    const currentDayOfMonth = new Date().getUTCDate()
-    const monthlyTasks = recurringTasks.filter((task) => {
-      if (task.frequency.type !== "monthly") return false
-      return task.frequency.day === currentDayOfMonth
-    })
-
-    const tasksToRecur = [...dailyTasks, ...weeklyTasks, ...monthlyTasks]
+    const tasksToRecur = [...weekdayTasks, ...monthdayTasks]
 
     await db.transact(
-      tasksToRecur.map((task) =>
-        db.tx.tasks[id()].link({ inbox: task.inbox.id }).create({
-          created_at: new Date().getTime(),
-          title: `[${task.frequency.type.toUpperCase()}] ${task.title}`,
+      tasksToRecur.map((task) => {
+        const { id, data, link } = parseTaskCreateInput({
+          scope_id: task.scope.id,
+          recurring_task_id: task.id,
+          title: task.title,
           content: task.content,
-          inbox_state: "open",
+          status: "now",
         })
-      )
+
+        return db.tx.tasks[id].link(link).create({
+          ...data,
+          // @ts-expect-error -- instant db error with optionally indexed properties
+          status_time: data.status_time,
+        })
+      })
     )
 
     return NextResponse.json(

@@ -9,10 +9,10 @@ import { CircleCheckBigIcon } from "lucide-react"
 import { useAuth } from "../auth/use-auth"
 import { cn } from "~/smui/utils"
 import { db } from "@/database/db-client"
-import { Task } from "@/database/_models/task"
 import { Button } from "~/smui/button/components"
 import { Tooltip } from "~/smui/tooltip/components"
 import { Icon } from "~/smui/icon/components"
+import { Task } from "@/database/models/task"
 
 // TODO: Refactor
 export function TaskTotalCount() {
@@ -78,9 +78,9 @@ export function useAccountOpenTasks() {
     tasks: {
       $: {
         where: {
-          "inbox.owner.id": account?.id || "NO_ACCOUNT",
-          "inbox.is_archived": false,
-          "inbox_state": "open",
+          "scope.owner.id": account?.id || "NO_ACCOUNT",
+          "scope.is_inactive": false,
+          "status": "now",
         },
       },
     },

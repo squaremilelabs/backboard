@@ -2,16 +2,16 @@
 import { MenuIcon } from "lucide-react"
 import { AppUserTray } from "./app-user-tray"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
-import { useCurrentInboxView } from "@/modules/inbox/use-inbox-view"
-import { InboxTitle } from "@/modules/inbox/inbox-title"
+import { useCurrentScopeView } from "@/modules/scope/use-scope-views"
+import { ScopeTitle } from "@/modules/scope/scope-title"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
-import { InboxViewTabs } from "@/modules/inbox/inbox-view-tabs"
+import { ScopeViewTabs } from "@/modules/scope/scope-view-tabs"
 
 export function AppHeader() {
-  const { id: inboxId } = useCurrentInboxView()
+  const { id: scopeId } = useCurrentScopeView()
   const [sidebarOpen, setSidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
-  const isInboxView = !!inboxId
+  const isScopeView = !!scopeId
   return (
     <div className="flex flex-col">
       <div className="flex items-center">
@@ -25,16 +25,16 @@ export function AppHeader() {
           ]}
         >
           <Icon icon={<MenuIcon />} variants={{ size: "lg" }} />
-          {!isInboxView && <span className="text-neutral-muted-text font-semibold">Inboxes</span>}
+          {!isScopeView && <span className="text-neutral-muted-text font-semibold">Scopes</span>}
         </Button>
         {/* Title */}
-        {isInboxView && <InboxTitle inboxId={inboxId} />}
+        {isScopeView && <ScopeTitle scopeId={scopeId} />}
         <div className="grow" />
         <AppUserTray />
       </div>
-      {isInboxView && (
+      {isScopeView && (
         <div className="mt-8">
-          <InboxViewTabs inboxId={inboxId} />
+          <ScopeViewTabs scopeId={scopeId} />
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 "use client"
 import { ChevronsLeftIcon } from "lucide-react"
 import { AppLogo } from "./app-logo"
-import { InboxList } from "@/modules/inbox/inbox-list"
+import { ScopeList } from "@/modules/scope/scope-list"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
@@ -24,7 +24,7 @@ export function AppSidebar() {
         <div className="grow" />
         <Icon icon={<ChevronsLeftIcon />} className="text-neutral-muted-text !min-w-30" />
       </Button>
-      <InboxList />
+      <ScopeList />
     </div>
   )
 }

@@ -22,10 +22,6 @@ export default function LandingPage() {
             >
               Backboard
             </h1>
-            <h3 className="pl-2 text-lg">
-              <span className="text-neutral-text font-semibold">Inbox Zero</span>{" "}
-              <span className="text-primary-text font-medium">for your tasks</span>
-            </h3>
           </div>
         </div>
         <SignedOut>

@@ -5,24 +5,23 @@ import { startOfDay, subDays } from "date-fns"
 import { TaskActionBar } from "../task-actions"
 import { TaskListItem } from "./task-list-item"
 import { processItemKeys, reorderIds, sortItemsByIdOrder } from "@/common/utils/list-utils"
-import { updateInbox, useInboxQuery } from "@/database/_models/inbox"
-import { Task, TaskInboxState, TaskQueryParams, useTaskQuery } from "@/database/_models/task"
-import { InboxViewKey, useCurrentInboxView } from "@/modules/inbox/use-inbox-view"
+import { useCurrentScopeView } from "@/modules/scope/use-scope-views"
 import { GridList } from "~/smui/grid-list/components"
 import { CreateField } from "@/common/components/create-field"
 import { cn } from "~/smui/utils"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 import { typography } from "@/common/components/class-names"
-import { db } from "@/database/db-client"
-import { TaskCreateInput, TaskCreateSchema } from "@/database/models/task"
+import { db, useDBQuery } from "@/database/db-client"
+import { NowTask, parseTaskCreateInput, Task, TaskStatus } from "@/database/models/task"
+import { parseScopeUpdateInput } from "@/database/models/scope"
 
 export function TaskList() {
-  const { id: inboxId, view: inboxView } = useCurrentInboxView()
+  const { id: scopeId, view: scopeView } = useCurrentScopeView()
   const tasks = useTaskListTaskQuery()
 
   const [_, setIsTasksDragging] = useSessionStorageUtility("is-tasks-dragging", false)
 
-  const isReorderable = inboxView === "open"
+  const isReorderable = scopeView === "now"
   const { dragAndDropHooks } = useDragAndDrop({
     getItems: (keys) => processItemKeys(keys, tasks, "db/task"),
     onDragStart: () => setIsTasksDragging(true),
@@ -35,7 +34,8 @@ export function TaskList() {
             targetId: e.target.key as string,
             dropPosition: e.target.dropPosition,
           })
-          updateInbox(inboxId, { open_task_order: newOrder })
+          const { data } = parseScopeUpdateInput({ list_orders: { "tasks/now": newOrder } })
+          db.transact(db.tx.scopes[scopeId].merge(data))
         }
       : undefined,
     renderDragPreview: (items) => {
@@ -59,15 +59,20 @@ export function TaskList() {
     },
   })
 
-  const isCreateEnabled = inboxView === "open" || inboxView === "snoozed"
+  const isCreateEnabled = scopeView === "now" || scopeView === "later"
   const handleCreate = async (title: string) => {
-    const { id, data, link } = TaskCreateSchema.parse({
+    const { id, data, link } = parseTaskCreateInput({
       title,
-      scope_id: inboxId,
-      status: inboxView === "snoozed" ? "later" : "now",
-    } satisfies TaskCreateInput)
-
-    await db.transact([db.tx.tasks[id].link(link).create(data)])
+      scope_id: scopeId,
+      status: scopeView === "later" ? "later" : "now",
+    })
+    await db.transact([
+      db.tx.tasks[id].link(link).create({
+        ...data,
+        // @ts-expect-error -- instant db error with optionally indexed properties
+        status_time: data.status_time ?? null,
+      }),
+    ])
   }
 
   const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([])
@@ -111,7 +116,7 @@ export function TaskList() {
           }}
         />
       )}
-      {inboxView === "archived" && (
+      {scopeView === "done" && (
         <div className={cn("flex h-36 min-h-36 items-center px-8", "text-sm")}>
           <span className={typography({ type: "label" })}>Tasks done in the last 5 days</span>
         </div>
@@ -142,7 +147,7 @@ export function TaskList() {
           </p>
           <TaskActionBar
             selectedTaskIds={selectedTaskIds}
-            inboxState={inboxView as TaskInboxState}
+            currentStatus={scopeView as TaskStatus}
             onAfterAction={() => setSelectedTaskIds([])}
             display="buttons"
           />
@@ -153,62 +158,50 @@ export function TaskList() {
 }
 
 function useTaskListTaskQuery() {
-  const { id: inboxId, view: inboxView } = useCurrentInboxView()
+  const { id: scopeId, view: scopeView } = useCurrentScopeView()
 
-  const inboxQuery = useInboxQuery({
-    $: { where: { id: inboxId }, first: 1 },
+  const { scopes } = useDBQuery("scopes", {
+    $: { where: { id: scopeId }, first: 1 },
   })
 
-  const inbox = inboxQuery.data?.[0]
+  const scope = scopes?.[0]
 
-  const queryMap: Partial<Record<InboxViewKey, TaskQueryParams>> = {
-    open: {
-      $: { where: { "inbox.id": inboxId, "inbox_state": "open" } },
-    },
-    snoozed: {
-      $: {
-        where: {
-          "inbox.id": inboxId,
-          "inbox_state": "snoozed",
+  const { tasks: queriedTasks } = useDBQuery("tasks", {
+    $: {
+      where: {
+        "scope.id": scopeId,
+        "status": scopeView,
+        "status_time": {
+          $gte: scopeView === "later" ? startOfDay(subDays(new Date(), 5)).getTime() : 0,
         },
-        order: { snooze_date: "asc" },
+      },
+      order: {
+        status_time: scopeView === "later" ? "desc" : "asc",
       },
     },
-    archived: {
-      $: {
-        where: {
-          "inbox.id": inboxId,
-          "inbox_state": "archived",
-          "archive_date": { $gte: startOfDay(subDays(new Date(), 5)).getTime() },
-        },
-        order: { archive_date: "desc" },
-      },
-    },
-  }
+  })
 
-  const taskQuery = useTaskQuery(queryMap[inboxView])
+  const tasks = queriedTasks ?? []
 
-  const tasks: Task[] = taskQuery.data ?? []
-
-  if (inboxView === "open") {
+  if (scopeView === "now") {
     return sortItemsByIdOrder({
-      items: tasks,
-      idOrder: inbox?.open_task_order ?? [],
+      items: (tasks ?? []) as NowTask[],
+      idOrder: scope?.list_orders?.["tasks/now"] ?? [],
       missingIdsPosition: "start",
       sortMissingIds(left, right) {
-        return right.created_at - left.created_at
+        return right.status_time - left.status_time
       },
     })
   }
 
-  if (inboxView === "snoozed") {
+  if (scopeView === "later") {
     return [...tasks].sort((left, right) => {
-      if (left.snooze_date === right.snooze_date) {
+      if (left.status_time === right.status_time) {
         return left.created_at - right.created_at
       }
-      if (left.snooze_date == null) return 1
-      if (right.snooze_date == null) return -1
-      return left.snooze_date - right.snooze_date
+      if (left.status_time == null) return 1
+      if (right.status_time == null) return -1
+      return left.status_time - right.status_time
     })
   }
 

@@ -1,11 +1,9 @@
 "use client"
 import { useDragAndDrop } from "react-aria-components"
 import { EllipsisIcon } from "lucide-react"
-import { useCurrentInboxView } from "../use-inbox-view"
-import { InboxListItem } from "./list-item"
-import { createInbox, Inbox, useInboxQuery } from "@/database/_models/inbox"
+import { useCurrentScopeView } from "../use-scope-views"
+import { ScopeListItem } from "./list-item"
 import { useAuth } from "@/modules/auth/use-auth"
-import { Task, updateManyTasks } from "@/database/_models/task"
 import {
   processDropItems,
   processItemKeys,
@@ -20,28 +18,26 @@ import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { GridList } from "~/smui/grid-list/components"
 import { parseAccountUpdateInput } from "@/database/models/account"
-import { db } from "@/database/db-client"
+import { db, useDBQuery } from "@/database/db-client"
+import { parseScopeCreateInput, Scope } from "@/database/models/scope"
+import { Task } from "@/database/models/task"
 
-export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?: boolean }) {
+export function ScopeList({ disableDragAndDrop = false }: { disableDragAndDrop?: boolean }) {
   const { instantAccount: account } = useAuth()
-  const [showArchived, setShowArchived] = useSessionStorageUtility("show-archived-inboxes", false)
+  const [showInactive, setShowInactive] = useSessionStorageUtility("show-inactive-scopes", false)
 
-  const inboxQuery = useInboxQuery<Inbox & { tasks: Task[] }>(
-    account
-      ? {
-          $: {
-            where: {
-              "owner.id": account.id,
-              "is_archived": showArchived ? { $in: [true, false] } : false,
-            },
-          },
-          tasks: { $: { where: { inbox_state: "open" } } },
-        }
-      : null
-  )
+  const scopeQuery = useDBQuery<Scope & { tasks: Task[] }, "scopes">("scopes", {
+    $: {
+      where: {
+        "owner.id": account?.id || "NO_ACCOUNT",
+        "is_inactive": showInactive ? { $in: [true, false] } : false,
+      },
+    },
+    tasks: { $: { where: { status: "now" } } },
+  })
 
-  const inboxes = sortItemsByIdOrder({
-    items: inboxQuery.data ?? [],
+  const scopes = sortItemsByIdOrder({
+    items: scopeQuery.scopes ?? [],
     idOrder: account?.list_orders?.scopes ?? [],
     missingIdsPosition: "end",
     sortMissingIds: (left, right) => {
@@ -50,20 +46,17 @@ export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?:
   })
 
   const { dragAndDropHooks } = useDragAndDrop({
-    getItems: (keys) => processItemKeys(keys, inboxes, "db/inbox"),
-    acceptedDragTypes: ["db/task", "db/inbox"],
+    getItems: (keys) => processItemKeys(keys, scopes, "db/scope"),
+    acceptedDragTypes: ["db/task", "db/recurring-task", "db/scope"],
     shouldAcceptItemDrop: (_, types) => types.has("db/task"),
     onItemDrop: async (e) => {
-      const inboxId = e.target.key as string
+      const scopeId = e.target.key as string
       const tasks = await processDropItems<Task>(e.items, "db/task")
-      updateManyTasks(
-        tasks.map((task) => task.id),
-        { inbox_id: inboxId, inbox_state: "open", archive_date: null, snooze_date: null }
-      )
+      db.transact(db.tx.scopes[scopeId].link({ tasks: tasks.map((task) => task.id) }))
     },
     onReorder: (e) => {
       const newOrder = reorderIds({
-        prevOrder: [...inboxes].map((inbox) => inbox.id),
+        prevOrder: [...scopes].map((scope) => scope.id),
         droppedIds: [...e.keys] as string[],
         targetId: e.target.key as string,
         dropPosition: e.target.dropPosition,
@@ -75,29 +68,37 @@ export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?:
     },
   })
 
-  const { id: inboxId } = useCurrentInboxView()
+  const { id: scopeId } = useCurrentScopeView()
   const onCreate = async (title: string) => {
-    if (account) createInbox({ owner_id: account.id, title })
+    if (account) {
+      const { id, data, link } = parseScopeCreateInput({
+        title,
+        owner_id: account.id,
+        content: null,
+        icon: null,
+      })
+      db.transact(db.tx.scopes[id].link(link).create(data))
+    }
   }
 
   return (
     <div className="flex flex-col gap-2 p-2">
       <GridList
-        aria-label="Inbox List"
+        aria-label="Scope List"
         variants={{ variant: "nav-list" }}
-        dependencies={[inboxId, inboxes]}
-        items={inboxes}
+        dependencies={[scopeId, scopes]}
+        items={scopes}
         dragAndDropHooks={disableDragAndDrop ? undefined : dragAndDropHooks}
       >
-        {(inbox, classNames) => {
-          const isSelected = inboxId === inbox.id
-          return <InboxListItem inbox={inbox} className={classNames.item} isSelected={isSelected} />
+        {(scope, classNames) => {
+          const isSelected = scopeId === scope.id
+          return <ScopeListItem scope={scope} className={classNames.item} isSelected={isSelected} />
         }}
       </GridList>
       <CreateField
         onSubmit={onCreate}
         classNames={{ base: "py-6", input: "placeholder-neutral-muted-text" }}
-        placeholder="Add inbox"
+        placeholder="Add scope"
       />
       <PopoverTrigger>
         <Button variants={{ hover: "fill" }} className="self-start px-8">
@@ -112,9 +113,9 @@ export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?:
             <>
               <ToggleButton
                 autoFocus
-                isSelected={showArchived}
+                isSelected={showInactive}
                 onPress={() => {
-                  setShowArchived(!showArchived)
+                  setShowInactive(!showInactive)
                   close()
                 }}
                 className={["px-16 py-8 text-left text-sm", "text-neutral-text"]}

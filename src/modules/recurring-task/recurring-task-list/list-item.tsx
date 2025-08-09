@@ -1,13 +1,12 @@
 import { RefreshCwIcon } from "lucide-react"
 import { useState } from "react"
-import { format } from "date-fns"
-import { RecurringTaskModal } from "../recurring-task-modal"
-import { RecurringTask } from "@/database/_models/recurring-task"
+import { getRecurringTaskInfo } from "../recurring-task-info"
 import { GridListItem } from "~/smui/grid-list/components"
 import { Icon } from "~/smui/icon/components"
 import { ClassValue } from "~/smui/utils"
 import { Button } from "~/smui/button/components"
 import { typography } from "@/common/components/class-names"
+import { RecurringTask } from "@/database/models/recurring-task"
 
 export function RecurringTaskListItem({
   task,
@@ -16,7 +15,8 @@ export function RecurringTaskListItem({
   task: RecurringTask
   className: ClassValue
 }) {
-  const [panelOpen, setPanelOpen] = useState(false)
+  const [_, setPanelOpen] = useState(false)
+  const { label } = getRecurringTaskInfo(task)
   return (
     <GridListItem
       id={task.id}
@@ -32,43 +32,13 @@ export function RecurringTaskListItem({
               variants={{ size: "sm" }}
               className="text-neutral-muted-text"
             />
-            <RecurringTaskModal existingTask={task} isOpen={panelOpen} onOpenChange={setPanelOpen}>
-              <Button variants={{ hover: "underline" }} className="grow text-left">
-                {task.title || "-"}
-              </Button>
-            </RecurringTaskModal>
-            <span className={typography({ type: "label" })}>
-              {getDisplayedFrequency(task) || "-"}
-            </span>
+            <Button variants={{ hover: "underline" }} className="grow text-left">
+              {task.title || "-"}
+            </Button>
+            <span className={typography({ type: "label" })}>{label}</span>
           </>
         )
       }}
     </GridListItem>
   )
-}
-
-function getDisplayedFrequency(task: RecurringTask): string {
-  if (task.frequency?.type === "weekly") {
-    const weekdays = [
-      "Sundays",
-      "Mondays",
-      "Tuesdays",
-      "Wednesdays",
-      "Thursdays",
-      "Fridays",
-      "Saturdays",
-    ]
-    return `${weekdays[task.frequency.weekday]}`
-  }
-
-  if (task.frequency?.type === "monthly") {
-    const dayOfMonth = format(new Date(2020, 1, task.frequency.day), "do")
-    return `Monthly (${dayOfMonth} day)`
-  }
-
-  if (task.frequency?.type === "daily" && task.frequency.skip_weekends) {
-    return "Weekdays"
-  }
-
-  return "Daily"
 }

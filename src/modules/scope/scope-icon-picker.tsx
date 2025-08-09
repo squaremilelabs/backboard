@@ -8,22 +8,26 @@ import EmojiPicker, {
 import { CircleChevronDownIcon, XIcon } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "next-themes"
-import { Inbox, updateInbox } from "@/database/_models/inbox"
 import { Icon } from "~/smui/icon/components"
 import { Button } from "~/smui/button/components"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
+import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
+import { db } from "@/database/db-client"
 
-export function InboxIconPicker({ inbox }: { inbox: Inbox }) {
+export function ScopeIconPicker({ scope }: { scope: Scope }) {
   const [open, setOpen] = useState(false)
   const { resolvedTheme } = useTheme()
 
   const handleSelect = (emoji: EmojiClickData) => {
-    updateInbox(inbox.id, { emoji: emoji.unified })
+    const { data } = parseScopeUpdateInput({
+      icon: { type: "emoji", unified: emoji.unified, char: emoji.emoji },
+    })
+    db.transact(db.tx.scopes[scope.id].update(data))
     setOpen(false)
   }
 
   const handleRemove = () => {
-    updateInbox(inbox.id, { emoji: null })
+    db.transact(db.tx.scopes[scope.id].update({ icon: null }))
     setOpen(false)
   }
 
@@ -31,7 +35,13 @@ export function InboxIconPicker({ inbox }: { inbox: Inbox }) {
     <PopoverTrigger isOpen={open} onOpenChange={setOpen}>
       <Button>
         <Icon
-          icon={inbox.emoji ? <Emoji unified={inbox.emoji} /> : <CircleChevronDownIcon />}
+          icon={
+            scope.icon?.type === "emoji" ? (
+              <Emoji unified={scope.icon.unified} emojiStyle={EmojiStyle.APPLE} />
+            ) : (
+              <CircleChevronDownIcon />
+            )
+          }
           variants={{ size: "lg" }}
           className="text-neutral-muted-text"
         />
@@ -41,7 +51,7 @@ export function InboxIconPicker({ inbox }: { inbox: Inbox }) {
         offset={4}
         classNames={{ content: ["flex flex-col", "p-8 border bg-base-bg rounded-sm"] }}
       >
-        {inbox.emoji ? (
+        {scope.icon?.type === "emoji" ? (
           <Button
             className="text-neutral-muted-text flex items-center self-start p-8"
             onPress={handleRemove}

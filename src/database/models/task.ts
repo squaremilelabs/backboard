@@ -22,19 +22,19 @@ type BaseTask = {
   prev_status: TaskStatus | null
 }
 
-type NowTask = BaseTask & {
+export type NowTask = BaseTask & {
   status: "now"
   status_time: number
   prev_status: Omit<TaskStatus, "now"> | null
 }
 
-type LaterTask = BaseTask & {
+export type LaterTask = BaseTask & {
   status: "later"
   status_time: number | null
   prev_status: Omit<TaskStatus, "later"> | null
 }
 
-type DoneTask = BaseTask & {
+export type DoneTask = BaseTask & {
   status: "done"
   status_time: number
   prev_status: Omit<TaskStatus, "done">
@@ -63,7 +63,7 @@ export const TaskCreateSchema = z
       }),
       z.object({
         status: TaskStatusEnum.extract(["later"]),
-        status_time: z.number().nullish(),
+        status_time: z.number().nullish().default(null),
       }),
     ])
   )
@@ -97,7 +97,7 @@ export const TaskUpdateSchema = z
     z.object({
       scope_id: z.uuidv4().optional(),
       title: z.string().trim().min(1).optional(),
-      content: z.string().trim().min(1).optional(),
+      content: z.string().trim().min(1).nullish(),
     }),
     z.discriminatedUnion("status", [
       z.object({
