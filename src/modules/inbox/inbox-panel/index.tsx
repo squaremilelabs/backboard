@@ -4,7 +4,7 @@ import { ArchiveIcon, ArchiveRestoreIcon } from "lucide-react"
 import { InboxIconPicker } from "../inbox-icon-picker"
 import { TitleContentFields } from "@/common/components/title-content-fields"
 import { palette, panel } from "@/common/components/class-names"
-import { Inbox, updateInbox } from "@/database/models/inbox"
+import { Inbox, updateInbox } from "@/database/_models/inbox"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 

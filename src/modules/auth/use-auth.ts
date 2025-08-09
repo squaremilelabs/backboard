@@ -1,5 +1,5 @@
 import { useUser } from "@clerk/nextjs"
-import { Account, useAccountQuery } from "@/database/models/account"
+import { Account, useAccountQuery } from "@/database/_models/account"
 
 export function useAuth(): {
   instantAccount: Account | undefined

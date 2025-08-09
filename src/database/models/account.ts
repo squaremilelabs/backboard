@@ -1,43 +1,62 @@
-import { id, InstaQLParams } from "@instantdb/react"
-import { db } from "../db-client"
-import { AppSchema } from "../instant.schema"
+import z from "zod"
+import { v4 } from "uuid"
+import { Scope } from "./scope"
+
+export type AccountListOrderKey = keyof AccountListOrders
+
+export type AccountListOrders = z.infer<typeof AccountListOrdersSchema>
 
 export type Account = {
   id: string
-  inbox_order?: string[] | null
+  created_at: number
+  list_orders: AccountListOrders | null
+  api_key: string | null
 }
 
-export async function initializeAccount(userId: string) {
-  const accountQuery = await db.queryOnce({ accounts: { $: { where: { "user.id": userId } } } })
-  if (accountQuery.data?.accounts.length) return
-  return db.transact([db.tx.accounts[id()].link({ user: userId }).create({ inbox_order: [] })])
-}
-
-export type AccountUpdateParams = {
-  inbox_order?: string[]
-}
-
-export async function updateAccount(id: string, data: AccountUpdateParams) {
-  return db.transact([
-    db.tx.accounts[id].update({
-      inbox_order: data.inbox_order,
-    }),
-  ])
-}
-
-export type AccountQueryParams = InstaQLParams<AppSchema>["accounts"]
-
-export function useAccountQuery<T extends Account = Account>(
-  params: AccountQueryParams | null
-): {
-  data: T[] | undefined
-  isLoading: boolean
-  error: { message: string } | undefined
-} {
-  const { data, isLoading, error } = db.useQuery(params ? { accounts: params } : null)
-  return {
-    data: data?.accounts as T[],
-    isLoading,
-    error,
+export type AccountLinks = {
+  user: {
+    id: string
+    email: string
   }
+  scopes: Scope[]
 }
+
+const AccountListOrdersSchema = z.object({
+  "scopes": z.array(z.uuidv4()).nullish(),
+  "tasks/now": z.array(z.uuidv4()).nullish(),
+})
+
+export const AccountCreateSchema = z
+  .object({
+    id: z.uuidv4().optional(),
+    user_id: z.uuidv4(),
+  })
+  .transform(({ id, user_id }) => {
+    return {
+      id: id ?? v4(),
+      data: {
+        api_key: v4(),
+        list_orders: {
+          "scopes": [],
+          "tasks/now": [],
+        },
+      },
+      link: { user: user_id },
+    }
+  })
+
+export type AccountCreateInput = z.input<typeof AccountCreateSchema>
+export type AccountCreateOutput = z.output<typeof AccountCreateSchema>
+
+export const AccountUpdateSchema = z
+  .object({
+    list_orders: AccountListOrdersSchema.nullish(),
+  })
+  .transform(({ ...data }) => {
+    return {
+      data,
+    }
+  })
+
+export type AccountUpdateInput = z.input<typeof AccountUpdateSchema>
+export type AccountUpdateOutput = z.output<typeof AccountUpdateSchema>

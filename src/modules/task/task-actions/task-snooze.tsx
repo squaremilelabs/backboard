@@ -3,7 +3,7 @@ import { Calendar, CalendarCell, CalendarGrid, DateValue, Heading } from "react-
 import { AlarmClockIcon, ChevronLeftIcon, ChevronRightIcon, SunMoonIcon } from "lucide-react"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { Icon } from "~/smui/icon/components"
-import { updateManyTasks } from "@/database/models/task"
+import { updateManyTasks } from "@/database/_models/task"
 import { Button } from "~/smui/button/components"
 import { cn } from "~/smui/utils"
 import { Modal } from "~/smui/modal/components"

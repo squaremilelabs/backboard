@@ -9,7 +9,7 @@ import {
 } from "lucide-react"
 import { useRef, useState } from "react"
 import { TaskSnoozePicker } from "./task-snooze"
-import { deleteManyTasks, TaskInboxState, updateManyTasks } from "@/database/models/task"
+import { deleteManyTasks, TaskInboxState, updateManyTasks } from "@/database/_models/task"
 import { Button, ButtonGroup, ButtonProps } from "~/smui/button/components"
 import { Tooltip, TooltipTrigger } from "~/smui/tooltip/components"
 import { Icon } from "~/smui/icon/components"

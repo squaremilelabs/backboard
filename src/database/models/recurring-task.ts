@@ -1,95 +1,144 @@
-import { id, InstaQLParams } from "@instantdb/react"
-import { db } from "../db-client"
-import { AppSchema } from "../instant.schema"
+import z from "zod"
+import { v4 } from "uuid"
+import { Scope } from "./scope"
+import { Task } from "./task"
 
-export type RecurringTask = {
+export type RecurringTask = WeekdayRecurringTask | MonthdayRecurringTask
+
+export type RecurringTaskLinks = {
+  scope: Scope
+  tasks: Task[]
+}
+
+type BaseRecurringTask = {
   id: string
   created_at: number
   title: string
-  content?: string
-  frequency: RecurringTaskFrequency
-  is_archived: boolean
+  content: string | null
+  is_inactive: boolean
+  recur_day_type: RecurringTaskRecurDayType
+  recur_days: WeekdayInt[] | MonthdayInt[]
 }
 
-interface BaseRecurringTaskFrequency {
-  type: "daily" | "weekly" | "monthly"
+type RecurringTaskRecurDayType = z.infer<typeof RecurringTaskRecurDayTypeEnum>
+
+type WeekdayRecurringTask = BaseRecurringTask & {
+  recur_day_type: "weekday"
+  recur_days: WeekdayInt[]
 }
 
-interface DailyRecurringTaskFrequency extends BaseRecurringTaskFrequency {
-  type: "daily"
-  skip_weekends?: boolean
+type MonthdayRecurringTask = BaseRecurringTask & {
+  recur_day_type: "monthday"
+  recur_days: MonthdayInt[]
 }
 
-interface WeeklyRecurringTaskFrequency extends BaseRecurringTaskFrequency {
-  type: "weekly"
-  weekday: number // 0 (Sunday) to 6 (Saturday)
-}
+const RecurringTaskRecurDayTypeEnum = z.enum(["weekday", "monthday"])
 
-interface MonthlyRecurringTaskFrequency extends BaseRecurringTaskFrequency {
-  type: "monthly"
-  day: number // 1-31
-}
-
-export type RecurringTaskFrequency =
-  | DailyRecurringTaskFrequency
-  | WeeklyRecurringTaskFrequency
-  | MonthlyRecurringTaskFrequency
-
-export type RecurringTaskCreateParams = {
-  inbox_id: string
-  title: string
-  content?: string
-  frequency: RecurringTaskFrequency
-}
-
-export function createRecurringTask(data: RecurringTaskCreateParams) {
-  const now = new Date().getTime()
-  return db.transact([
-    db.tx.recurring_tasks[id()].link({ inbox: data.inbox_id }).create({
-      title: data.title,
-      content: data.content ?? null,
-      frequency: data.frequency,
-      is_archived: false,
-      created_at: now,
-    }),
-  ])
-}
-
-export type RecurringTaskUpdateParams = {
-  title?: string
-  content?: string
-  inbox_id?: string
-  frequency?: RecurringTaskFrequency
-  is_archived?: boolean
-}
-
-export function updateRecurringTask(id: string, data: RecurringTaskUpdateParams) {
-  return db.transact(
-    [
-      db.tx.recurring_tasks[id].update({
-        title: data.title,
-        content: data.content,
-        frequency: data.frequency,
-        is_archived: data.is_archived,
+export const RecurringTaskCreateSchema = z
+  .intersection(
+    z
+      .object({
+        id: z.uuidv4().optional(),
+        scope_id: z.uuidv4(),
+        title: z.string().trim().min(1),
+        content: z.string().trim().min(1).nullish(),
+        is_inactive: z.boolean().optional().default(false),
+      })
+      .transform((val) => ({
+        ...val,
+        created_at: Date.now(),
+      })),
+    z.discriminatedUnion("recur_day_type", [
+      z.object({
+        recur_day_type: RecurringTaskRecurDayTypeEnum.extract(["weekday"]),
+        recur_days: z.array(z.number().int().min(0).max(6)), // WeekdayInt
       }),
-      data.inbox_id ? db.tx.inboxes[data.inbox_id].link({ recurring_tasks: id }) : null,
-    ].filter((txn) => txn !== null)
+      z.object({
+        recur_day_type: RecurringTaskRecurDayTypeEnum.extract(["monthday"]),
+        recur_days: z.array(z.number().int().min(1).max(31)), // MonthdayInt
+      }),
+    ])
   )
-}
+  .transform(({ id, scope_id, ...data }) => {
+    return {
+      id: id ?? v4(),
+      data,
+      link: {
+        scope: scope_id,
+        // TODO: REMOVE
+        inbox: scope_id,
+      },
+    }
+  })
 
-export type RecurringTaskQueryParams = InstaQLParams<AppSchema>["recurring_tasks"]
+export type RecurringTaskCreateInput = z.input<typeof RecurringTaskCreateSchema>
+export type RecurringTaskCreateOutput = z.output<typeof RecurringTaskCreateSchema>
 
-export function useRecurringTaskQuery<T extends RecurringTask = RecurringTask>(
-  params: RecurringTaskQueryParams | null
-): {
-  data: T[] | undefined
-  isLoading: boolean
-  error: { message: string } | undefined
-} {
-  const { data, isLoading, error } = db.useQuery(params ? { recurring_tasks: params } : null)
-  return {
-    data: data?.recurring_tasks as T[],
-    isLoading,
-    error,
-  }
-}
+export const RecurringTaskUpdateSchema = z
+  .intersection(
+    z.object({
+      scope_id: z.uuidv4().optional(),
+      title: z.string().trim().min(1).optional(),
+      content: z.string().trim().min(1).optional(),
+    }),
+    z.discriminatedUnion("recur_day_type", [
+      z.object({
+        recur_day_type: RecurringTaskRecurDayTypeEnum.extract(["weekday"]),
+        recur_days: z.array(z.number().int().min(0).max(6)), // WeekdayInt
+      }),
+      z.object({
+        recur_day_type: RecurringTaskRecurDayTypeEnum.extract(["monthday"]),
+        recur_days: z.array(z.number().int().min(1).max(31)), // MonthdayInt
+      }),
+      z.object({
+        recur_day_type: z.undefined().optional(),
+        recur_days: z.undefined().optional(),
+      }),
+    ])
+  )
+  .transform(({ scope_id, ...data }) => {
+    return {
+      data,
+      link: scope_id ? { scope: scope_id } : undefined,
+    }
+  })
+
+export type RecurringTaskUpdateInput = z.input<typeof RecurringTaskUpdateSchema>
+export type RecurringTaskUpdateOutput = z.output<typeof RecurringTaskUpdateSchema>
+
+/** 0 to 6 (Starts Sunday) */
+type WeekdayInt = 0 | 1 | 2 | 3 | 4 | 5 | 6
+
+/** 1 to 31 */
+type MonthdayInt =
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 16
+  | 17
+  | 18
+  | 19
+  | 20
+  | 21
+  | 22
+  | 23
+  | 24
+  | 25
+  | 26
+  | 27
+  | 28
+  | 29
+  | 30
+  | 31

@@ -8,10 +8,10 @@ import {
 } from "lucide-react"
 import { useParams } from "next/navigation"
 import { startOfDay, subDays } from "date-fns"
-import { Task } from "@/database/models/task"
-import { TaskInboxState } from "@/database/models/task"
-import { RecurringTask } from "@/database/models/recurring-task"
-import { Inbox, useInboxQuery } from "@/database/models/inbox"
+import { Task } from "@/database/_models/task"
+import { TaskInboxState } from "@/database/_models/task"
+import { RecurringTask } from "@/database/_models/recurring-task"
+import { Inbox, useInboxQuery } from "@/database/_models/inbox"
 
 export type InboxViewKey = TaskInboxState | "recurring"
 export type InboxViewInfo = { key: InboxViewKey; title: string; Icon: LucideIcon }

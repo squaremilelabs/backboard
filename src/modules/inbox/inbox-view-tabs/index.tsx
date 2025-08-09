@@ -4,9 +4,9 @@ import { useState } from "react"
 import { INBOX_VIEWS, useCurrentInboxView, useCurrentInboxViewCounts } from "../use-inbox-view"
 import { InboxViewTab } from "./tab"
 import { ListBox } from "~/smui/list-box/components"
-import { useInboxQuery } from "@/database/models/inbox"
+import { useInboxQuery } from "@/database/_models/inbox"
 import { processDropItems } from "@/common/utils/list-utils"
-import { Task, updateManyTasks } from "@/database/models/task"
+import { Task, updateManyTasks } from "@/database/_models/task"
 import { TaskSnoozePicker } from "@/modules/task/task-actions/task-snooze"
 
 export function InboxViewTabs({ inboxId }: { inboxId: string }) {

@@ -65,6 +65,7 @@ const _schema = i.schema({
       content: i.string().optional(),
       icon: i.json().optional(), // ScopeIcon
       is_inactive: i.boolean(),
+      list_orders: i.json().optional(), // ScopeListOrders
     }),
   },
   links: {

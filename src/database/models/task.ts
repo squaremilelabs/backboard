@@ -1,106 +1,130 @@
-import { id, InstaQLParams } from "@instantdb/react"
-import { db } from "../db-client"
-import { AppSchema } from "../instant.schema"
+import * as z from "zod"
+import { v4 } from "uuid"
+import { RecurringTask } from "./recurring-task"
+import { Scope } from "./scope"
 
-export type Task = {
+export type Task = NowTask | LaterTask | DoneTask
+
+export type TaskStatus = z.infer<typeof TaskStatusEnum>
+
+export type TaskLinks = {
+  scope: Scope
+  recurring_task: RecurringTask | null
+}
+
+type BaseTask = {
   id: string
   created_at: number
   title: string
   content: string | null
-  inbox_state: TaskInboxState
-  snooze_date: number | null
-  archive_date: number | null
+  status: TaskStatus
+  status_time: number | null
+  prev_status: TaskStatus | null
 }
 
-export type TaskInboxState = "open" | "snoozed" | "archived"
-
-export type TaskCreateParams = {
-  inbox_id: string
-  title: string
-  content?: string | null
-  inbox_state: TaskInboxState
-  snooze_date?: number | null
+type NowTask = BaseTask & {
+  status: "now"
+  status_time: number
+  prev_status: Omit<TaskStatus, "now"> | null
 }
 
-export function createTask(data: TaskCreateParams) {
-  const now = new Date().getTime()
-  return db.transact([
-    db.tx.tasks[id()].link({ inbox: data.inbox_id }).create({
-      title: data.title,
-      content: data.content ?? null,
-      inbox_state: data.inbox_state,
-      // @ts-expect-error instantdb issue?
-      snooze_date: data.snooze_date,
-      // @ts-expect-error instantdb issue?
-      archive_date: data.inbox_state === "archived" ? now : null,
-      created_at: now,
-    }),
-  ])
+type LaterTask = BaseTask & {
+  status: "later"
+  status_time: number | null
+  prev_status: Omit<TaskStatus, "later"> | null
 }
 
-export type TaskUpdateParams = {
-  title?: string
-  content?: string | null
-  inbox_id?: string
-  inbox_state?: TaskInboxState
-  snooze_date?: number | null
-  archive_date?: number | null
+type DoneTask = BaseTask & {
+  status: "done"
+  status_time: number
+  prev_status: Omit<TaskStatus, "done">
 }
 
-export function updateTask(id: string, data: TaskUpdateParams) {
-  return db.transact(
-    [
-      db.tx.tasks[id].update({
-        title: data.title,
-        content: data.content,
-        inbox_state: data.inbox_state,
-        snooze_date: data.snooze_date,
-        archive_date: data.archive_date,
+const TaskStatusEnum = z.enum(["now", "later", "done"])
+
+export const TaskCreateSchema = z
+  .intersection(
+    z
+      .object({
+        id: z.uuidv4().optional(),
+        scope_id: z.uuidv4(),
+        recurring_task_id: z.uuidv4().nullish(),
+        title: z.string().trim().min(1),
+        content: z.string().trim().min(1).nullish(),
+      })
+      .transform((val) => ({
+        ...val,
+        created_at: Date.now(),
+      })),
+    z.discriminatedUnion("status", [
+      z.object({
+        status: TaskStatusEnum.extract(["now"]),
+        status_time: z.number().optional().default(Date.now()),
       }),
-      data.inbox_id ? db.tx.inboxes[data.inbox_id].link({ tasks: id }) : null,
-    ].filter((txn) => txn !== null)
+      z.object({
+        status: TaskStatusEnum.extract(["later"]),
+        status_time: z.number().nullish(),
+      }),
+    ])
   )
-}
+  .transform(({ id, scope_id, recurring_task_id, ...data }) => {
+    const link: Partial<Record<keyof TaskLinks, string>> = { scope: scope_id }
+    if (recurring_task_id) {
+      link.recurring_task = recurring_task_id
+    }
+    return {
+      id: id ?? v4(),
+      data: {
+        ...data,
+        // TODO: REMOVE
+        inbox_state: data.status === "later" ? "snoozed" : "open",
+      },
+      link: {
+        ...link,
+        // TODO: REMOVE
+        inbox: scope_id,
+      },
+    }
+  })
 
-export type TaskUpdateManyParams = {
-  inbox_id?: string
-  inbox_state?: TaskInboxState
-  snooze_date?: number | null
-  archive_date?: number | null
-}
+export type TaskCreateInput = z.input<typeof TaskCreateSchema>
+export type TaskCreateOutput = z.output<typeof TaskCreateSchema>
 
-export function updateManyTasks(ids: string[], data: TaskUpdateManyParams) {
-  return db.transact(
-    [
-      ...ids.map((id) =>
-        db.tx.tasks[id].update({
-          inbox_state: data.inbox_state,
-          snooze_date: data.snooze_date,
-          archive_date: data.archive_date,
-        })
-      ),
-      data.inbox_id ? db.tx.inboxes[data.inbox_id].link({ tasks: ids }) : null,
-    ].filter((txn) => txn !== null)
+export const TaskUpdateSchema = z
+  .intersection(
+    z.object({
+      scope_id: z.uuidv4().optional(),
+      title: z.string().trim().min(1).optional(),
+      content: z.string().trim().min(1).optional(),
+    }),
+    z.discriminatedUnion("status", [
+      z.object({
+        status: TaskStatusEnum.extract(["now"]),
+        status_time: z.number().optional().default(Date.now()),
+        prev_status: TaskStatusEnum.extract(["later", "done"]),
+      }),
+      z.object({
+        status: TaskStatusEnum.extract(["done"]),
+        status_time: z.number().optional().default(Date.now()),
+        prev_status: TaskStatusEnum.extract(["now", "later"]),
+      }),
+      z.object({
+        status: TaskStatusEnum.extract(["later"]),
+        status_time: z.number().nullable(),
+        prev_status: TaskStatusEnum.extract(["now", "done"]),
+      }),
+      z.object({
+        status: z.undefined().optional(),
+        status_time: z.number().nullish(),
+      }),
+    ])
   )
-}
+  .transform(({ scope_id, ...data }) => {
+    return {
+      data,
+      link: scope_id ? { scope: scope_id } : undefined,
+    }
+  })
 
-export function deleteManyTasks(ids: string[]) {
-  return db.transact([...ids.map((id) => db.tx.tasks[id].delete())])
-}
-
-export type TaskQueryParams = InstaQLParams<AppSchema>["tasks"]
-
-export function useTaskQuery<T extends Task = Task>(
-  params: TaskQueryParams | null
-): {
-  data: T[] | undefined
-  isLoading: boolean
-  error: { message: string } | undefined
-} {
-  const { data, isLoading, error } = db.useQuery(params ? { tasks: params } : null)
-  return {
-    data: data?.tasks as T[],
-    isLoading,
-    error,
-  }
-}
+export type TaskUpdateInput = z.input<typeof TaskUpdateSchema>
+export type TaskUpdateOutput = z.output<typeof TaskUpdateSchema>

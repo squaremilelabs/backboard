@@ -2,7 +2,7 @@ import { getTaskStateInfo } from "../task-state"
 import { TaskActionBar } from "../task-actions"
 import { TitleContentFields } from "@/common/components/title-content-fields"
 import { panel } from "@/common/components/class-names"
-import { Task, updateTask } from "@/database/models/task"
+import { Task, updateTask } from "@/database/_models/task"
 import { Icon } from "~/smui/icon/components"
 
 export function TaskPanel({ task }: { task: Task }) {

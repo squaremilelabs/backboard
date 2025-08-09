@@ -3,16 +3,16 @@ import { useDragAndDrop } from "react-aria-components"
 import { EllipsisIcon } from "lucide-react"
 import { useCurrentInboxView } from "../use-inbox-view"
 import { InboxListItem } from "./list-item"
-import { createInbox, Inbox, useInboxQuery } from "@/database/models/inbox"
+import { createInbox, Inbox, useInboxQuery } from "@/database/_models/inbox"
 import { useAuth } from "@/modules/auth/use-auth"
-import { Task, updateManyTasks } from "@/database/models/task"
+import { Task, updateManyTasks } from "@/database/_models/task"
 import {
   processDropItems,
   processItemKeys,
   reorderIds,
   sortItemsByIdOrder,
 } from "@/common/utils/list-utils"
-import { updateAccount } from "@/database/models/account"
+import { updateAccount } from "@/database/_models/account"
 import { CreateField } from "@/common/components/create-field"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 import { ToggleButton } from "~/smui/toggle-button/components"

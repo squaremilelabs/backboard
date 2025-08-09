@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import { currentUser } from "@clerk/nextjs/server"
 import { InboxPageRouter } from "@/modules/inbox/inbox-page-router"
-import { Inbox } from "@/database/models/inbox"
+import { Inbox } from "@/database/_models/inbox"
 import { db } from "@/database/db-admin"
 
 export async function generateMetadata({

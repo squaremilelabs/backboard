@@ -1,7 +1,7 @@
 "use client"
 import { Emoji } from "emoji-picker-react"
 import InboxPanel from "./inbox-panel"
-import { useInboxQuery } from "@/database/models/inbox"
+import { useInboxQuery } from "@/database/_models/inbox"
 import { Modal, ModalTrigger } from "~/smui/modal/components"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"

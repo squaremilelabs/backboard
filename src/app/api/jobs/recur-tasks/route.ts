@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { id } from "@instantdb/admin"
-import { RecurringTask } from "@/database/models/recurring-task"
+import { RecurringTask } from "@/database/_models/recurring-task"
 import { db } from "@/database/db-admin"
 
 export async function GET() {

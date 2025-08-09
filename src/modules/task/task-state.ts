@@ -9,7 +9,7 @@ import {
   SunMoonIcon,
 } from "lucide-react"
 import { formatDate } from "@/common/utils/date-utils"
-import { Task } from "@/database/models/task"
+import { Task } from "@/database/_models/task"
 
 export type TaskStateInfo = {
   Icon: LucideIcon

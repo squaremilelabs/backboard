@@ -7,7 +7,7 @@ import {
   RecurringTask,
   RecurringTaskFrequency,
   updateRecurringTask,
-} from "@/database/models/recurring-task"
+} from "@/database/_models/recurring-task"
 import { Modal, ModalTrigger } from "~/smui/modal/components"
 import { TextField, TextFieldInput, TextFieldTextArea } from "~/smui/text-field/components"
 import { FieldLabel } from "~/smui/field/components"

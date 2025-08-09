@@ -5,7 +5,7 @@ import { useTheme } from "next-themes"
 import { useEffect } from "react"
 import { dark } from "@clerk/themes"
 import { db } from "@/database/db-client"
-import { initializeAccount } from "@/database/models/account"
+import { initializeAccount } from "@/database/_models/account"
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useTheme()

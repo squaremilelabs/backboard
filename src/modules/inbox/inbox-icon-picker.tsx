@@ -8,7 +8,7 @@ import EmojiPicker, {
 import { CircleChevronDownIcon, XIcon } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "next-themes"
-import { Inbox, updateInbox } from "@/database/models/inbox"
+import { Inbox, updateInbox } from "@/database/_models/inbox"
 import { Icon } from "~/smui/icon/components"
 import { Button } from "~/smui/button/components"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
