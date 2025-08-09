@@ -1,5 +1,6 @@
 import { useUser } from "@clerk/nextjs"
-import { Account, useAccountQuery } from "@/database/_models/account"
+import { useDBQuery } from "@/database/db-client"
+import { Account } from "@/database/models/account"
 
 export function useAuth(): {
   instantAccount: Account | undefined
@@ -7,9 +8,9 @@ export function useAuth(): {
 } {
   const { user: clerkUser } = useUser()
   const userEmail = clerkUser?.primaryEmailAddress?.emailAddress
-  const accountQuery = useAccountQuery({
+  const { accounts } = useDBQuery("accounts", {
     $: { where: { "user.email": userEmail ?? "NO_USER" } },
   })
-  const instantAccount = accountQuery.data?.[0]
+  const instantAccount = accounts?.[0]
   return { instantAccount, clerkUser }
 }

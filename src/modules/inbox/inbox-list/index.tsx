@@ -12,7 +12,6 @@ import {
   reorderIds,
   sortItemsByIdOrder,
 } from "@/common/utils/list-utils"
-import { updateAccount } from "@/database/_models/account"
 import { CreateField } from "@/common/components/create-field"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 import { ToggleButton } from "~/smui/toggle-button/components"
@@ -20,6 +19,8 @@ import { Popover, PopoverTrigger } from "~/smui/popover/components"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { GridList } from "~/smui/grid-list/components"
+import { parseAccountUpdateInput } from "@/database/models/account"
+import { db } from "@/database/db-client"
 
 export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?: boolean }) {
   const { instantAccount: account } = useAuth()
@@ -41,7 +42,7 @@ export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?:
 
   const inboxes = sortItemsByIdOrder({
     items: inboxQuery.data ?? [],
-    idOrder: account?.inbox_order ?? [],
+    idOrder: account?.list_orders?.scopes ?? [],
     missingIdsPosition: "end",
     sortMissingIds: (left, right) => {
       return left.created_at - right.created_at
@@ -67,7 +68,10 @@ export function InboxList({ disableDragAndDrop = false }: { disableDragAndDrop?:
         targetId: e.target.key as string,
         dropPosition: e.target.dropPosition,
       })
-      if (account) updateAccount(account.id, { inbox_order: newOrder })
+      if (account) {
+        const { data } = parseAccountUpdateInput({ list_orders: { scopes: newOrder } })
+        db.transact(db.tx.accounts[account.id].merge(data))
+      }
     },
   })
 

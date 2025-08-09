@@ -15,7 +15,7 @@ const _schema = i.schema({
       // MAINTAIN
       api_key: i.string().unique().optional(),
       // DEPRECATE
-      inbox_order: i.json(), // array of inbox IDs (strings)
+      inbox_order: i.json().optional(), // array of inbox IDs (strings)
       // ADD
       created_at: i.date().indexed().optional(), // TODO: remove optional after migration
       list_orders: i.json().optional(), // AccountListOrdersType

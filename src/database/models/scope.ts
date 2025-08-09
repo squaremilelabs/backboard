@@ -64,6 +64,8 @@ export const ScopeCreateSchema = z
 export type ScopeCreateInput = z.input<typeof ScopeCreateSchema>
 export type ScopeCreateOutput = z.output<typeof ScopeCreateSchema>
 
+export const parseScopeCreateInput = (input: ScopeCreateInput) => ScopeCreateSchema.parse(input)
+
 export const ScopeUpdateSchema = z
   .object({
     title: z.string().trim().min(1).optional(),
@@ -90,3 +92,5 @@ export const ScopeUpdateSchema = z
 
 export type ScopeUpdateInput = z.input<typeof ScopeUpdateSchema>
 export type ScopeUpdateOutput = z.output<typeof ScopeUpdateSchema>
+
+export const parseScopeUpdateInput = (input: ScopeUpdateInput) => ScopeUpdateSchema.parse(input)

@@ -74,6 +74,9 @@ export const RecurringTaskCreateSchema = z
 export type RecurringTaskCreateInput = z.input<typeof RecurringTaskCreateSchema>
 export type RecurringTaskCreateOutput = z.output<typeof RecurringTaskCreateSchema>
 
+export const parseRecurringTaskCreateInput = (input: RecurringTaskCreateInput) =>
+  RecurringTaskCreateSchema.parse(input)
+
 export const RecurringTaskUpdateSchema = z
   .intersection(
     z.object({
@@ -105,6 +108,9 @@ export const RecurringTaskUpdateSchema = z
 
 export type RecurringTaskUpdateInput = z.input<typeof RecurringTaskUpdateSchema>
 export type RecurringTaskUpdateOutput = z.output<typeof RecurringTaskUpdateSchema>
+
+export const parseRecurringTaskUpdateInput = (input: RecurringTaskUpdateInput) =>
+  RecurringTaskUpdateSchema.parse(input)
 
 /** 0 to 6 (Starts Sunday) */
 type WeekdayInt = 0 | 1 | 2 | 3 | 4 | 5 | 6

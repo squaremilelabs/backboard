@@ -48,6 +48,9 @@ export const AccountCreateSchema = z
 export type AccountCreateInput = z.input<typeof AccountCreateSchema>
 export type AccountCreateOutput = z.output<typeof AccountCreateSchema>
 
+export const parseAccountCreateInput = (input: AccountCreateInput) =>
+  AccountCreateSchema.parse(input)
+
 export const AccountUpdateSchema = z
   .object({
     list_orders: AccountListOrdersSchema.nullish(),
@@ -60,3 +63,6 @@ export const AccountUpdateSchema = z
 
 export type AccountUpdateInput = z.input<typeof AccountUpdateSchema>
 export type AccountUpdateOutput = z.output<typeof AccountUpdateSchema>
+
+export const parseAccountUpdateInput = (input: AccountUpdateInput) =>
+  AccountUpdateSchema.parse(input)

@@ -90,6 +90,8 @@ export const TaskCreateSchema = z
 export type TaskCreateInput = z.input<typeof TaskCreateSchema>
 export type TaskCreateOutput = z.output<typeof TaskCreateSchema>
 
+export const parseTaskCreateInput = (input: TaskCreateInput) => TaskCreateSchema.parse(input)
+
 export const TaskUpdateSchema = z
   .intersection(
     z.object({
@@ -128,3 +130,5 @@ export const TaskUpdateSchema = z
 
 export type TaskUpdateInput = z.input<typeof TaskUpdateSchema>
 export type TaskUpdateOutput = z.output<typeof TaskUpdateSchema>
+
+export const parseTaskUpdateInput = (input: TaskUpdateInput) => TaskUpdateSchema.parse(input)
