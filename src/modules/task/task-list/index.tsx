@@ -6,19 +6,15 @@ import { TaskActionBar } from "../task-actions"
 import { TaskListItem } from "./task-list-item"
 import { processItemKeys, reorderIds, sortItemsByIdOrder } from "@/common/utils/list-utils"
 import { updateInbox, useInboxQuery } from "@/database/models/inbox"
-import {
-  createTask,
-  Task,
-  TaskInboxState,
-  TaskQueryParams,
-  useTaskQuery,
-} from "@/database/models/task"
+import { Task, TaskInboxState, TaskQueryParams, useTaskQuery } from "@/database/models/task"
 import { InboxViewKey, useCurrentInboxView } from "@/modules/inbox/use-inbox-view"
 import { GridList } from "~/smui/grid-list/components"
 import { CreateField } from "@/common/components/create-field"
 import { cn } from "~/smui/utils"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 import { typography } from "@/common/components/class-names"
+import { db } from "@/database/db-client"
+import { TaskCreateInput, TaskCreateSchema } from "@/database/types/task"
 
 export function TaskList() {
   const { id: inboxId, view: inboxView } = useCurrentInboxView()
@@ -65,11 +61,13 @@ export function TaskList() {
 
   const isCreateEnabled = inboxView === "open" || inboxView === "snoozed"
   const handleCreate = async (title: string) => {
-    createTask({
+    const { id, data, link } = TaskCreateSchema.parse({
       title,
-      inbox_id: inboxId,
-      inbox_state: inboxView === "snoozed" ? "snoozed" : "open",
-    })
+      scope_id: inboxId,
+      status: inboxView === "snoozed" ? "later" : "now",
+    } satisfies TaskCreateInput)
+
+    await db.transact([db.tx.tasks[id].link(link).create(data)])
   }
 
   const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([])

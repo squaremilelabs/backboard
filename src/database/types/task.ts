@@ -69,48 +69,63 @@ export const TaskCreateSchema = z
     ])
   )
   .transform(({ id, scope_id, recurring_task_id, ...data }) => {
+    const link: Partial<Record<keyof TaskLinks, string>> = { scope: scope_id }
+    if (recurring_task_id) {
+      link.recurring_task = recurring_task_id
+    }
     return {
       id: id ?? v4(),
-      data,
-      link: { scope: scope_id, recurring_task: recurring_task_id ?? undefined },
+      data: {
+        ...data,
+        // TODO: REMOVE
+        inbox_state: data.status === "later" ? "snoozed" : "open",
+      },
+      link: {
+        ...link,
+        // TODO: REMOVE
+        inbox: scope_id,
+      },
     }
   })
 
 export type TaskCreateInput = z.input<typeof TaskCreateSchema>
+export type TaskCreateOutput = z.output<typeof TaskCreateSchema>
 
-export const TaskUpdateSchema = z.intersection(
-  z.object({
-    scope_id: z.uuidv4().optional(),
-    title: z.string().trim().min(1).optional(),
-    content: z.string().trim().min(1).optional(),
-  }),
-  z.discriminatedUnion("status", [
+export const TaskUpdateSchema = z
+  .intersection(
     z.object({
-      status: TaskStatusEnum.extract(["now"]),
-      status_time: z.number().optional().default(Date.now()),
-      prev_status: TaskStatusEnum.extract(["later", "done"]),
+      scope_id: z.uuidv4().optional(),
+      title: z.string().trim().min(1).optional(),
+      content: z.string().trim().min(1).optional(),
     }),
-    z.object({
-      status: TaskStatusEnum.extract(["done"]),
-      status_time: z.number().optional().default(Date.now()),
-      prev_status: TaskStatusEnum.extract(["now", "later"]),
-    }),
-    z.object({
-      status: TaskStatusEnum.extract(["later"]),
-      status_time: z.number().nullable(),
-      prev_status: TaskStatusEnum.extract(["now", "done"]),
-    }),
-    z.object({
-      status: z.undefined().optional(),
-      status_time: z.number().nullish(),
-      // prev_status: z.undefined().optional(),
-    }),
-  ])
-)
+    z.discriminatedUnion("status", [
+      z.object({
+        status: TaskStatusEnum.extract(["now"]),
+        status_time: z.number().optional().default(Date.now()),
+        prev_status: TaskStatusEnum.extract(["later", "done"]),
+      }),
+      z.object({
+        status: TaskStatusEnum.extract(["done"]),
+        status_time: z.number().optional().default(Date.now()),
+        prev_status: TaskStatusEnum.extract(["now", "later"]),
+      }),
+      z.object({
+        status: TaskStatusEnum.extract(["later"]),
+        status_time: z.number().nullable(),
+        prev_status: TaskStatusEnum.extract(["now", "done"]),
+      }),
+      z.object({
+        status: z.undefined().optional(),
+        status_time: z.number().nullish(),
+      }),
+    ])
+  )
+  .transform(({ scope_id, ...data }) => {
+    return {
+      data,
+      link: scope_id ? { scope: scope_id } : undefined,
+    }
+  })
 
 export type TaskUpdateInput = z.input<typeof TaskUpdateSchema>
 export type TaskUpdateOutput = z.output<typeof TaskUpdateSchema>
-
-const test: TaskUpdateInput = {
-  status_time: 1,
-}

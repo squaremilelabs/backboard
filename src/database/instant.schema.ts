@@ -36,12 +36,12 @@ const _schema = i.schema({
       title: i.string().indexed(),
       content: i.string().optional(),
       // DEPRECATE
-      inbox_state: i.string(), // "open", "snoozed", "archived" (validated in permissions)
+      inbox_state: i.string().optional(), // "open", "snoozed", "archived" (validated in permissions)
       snooze_date: i.date().indexed().optional(),
       archive_date: i.date().indexed().optional(),
       // ADD
       status: i.string().optional(), // TaskStatus // TODO: remove optional after migration
-      status_time: i.date().indexed().optional(),
+      status_time: i.date().optional(), // TODO: add indexed after migration
       prev_status: i.string().optional(),
     }),
     // MAINTAIN
