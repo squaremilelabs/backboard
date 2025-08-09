@@ -80,6 +80,12 @@ importers:
       usehooks-ts:
         specifier: ^3.1.1
         version: 3.1.1(react@19.1.1)
+      uuid:
+        specifier: ^11.1.0
+        version: 11.1.0
+      zod:
+        specifier: ^4.0.16
+        version: 4.0.16
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.3.1
@@ -2999,6 +3005,9 @@ packages:
 
   zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
+
+  zod@4.0.16:
+    resolution: {integrity: sha512-Djo/cM339grjI7/HmN+ixYO2FzEMcWr/On50UlQ/RjrWK1I/hPpWhpC76heCptnRFpH0LMwrEbUY50HDc0V8wg==}
 
 snapshots:
 
@@ -6532,3 +6541,5 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod@3.22.4: {}
+
+  zod@4.0.16: {}

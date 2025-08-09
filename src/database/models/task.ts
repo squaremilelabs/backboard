@@ -6,10 +6,10 @@ export type Task = {
   id: string
   created_at: number
   title: string
-  content?: string
+  content: string | null
   inbox_state: TaskInboxState
-  snooze_date?: number
-  archive_date?: number
+  snooze_date: number | null
+  archive_date: number | null
 }
 
 export type TaskInboxState = "open" | "snoozed" | "archived"
