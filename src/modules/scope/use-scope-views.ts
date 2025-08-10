@@ -2,8 +2,8 @@
 import {
   AlarmClockIcon,
   CircleCheckBigIcon,
-  CircleDashedIcon,
   LucideIcon,
+  PlayIcon,
   RefreshCwIcon,
 } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -17,7 +17,7 @@ export type ScopeViewKey = TaskStatus | "recurring"
 export type ScopeViewInfo = { key: ScopeViewKey; title: string; Icon: LucideIcon }
 
 export const SCOPE_VIEWS: Array<ScopeViewInfo> = [
-  { key: "now", title: "Now", Icon: CircleDashedIcon },
+  { key: "now", title: "Now", Icon: PlayIcon },
   { key: "later", title: "Later", Icon: AlarmClockIcon },
   { key: "done", title: "Done", Icon: CircleCheckBigIcon },
   { key: "recurring", title: "Recurring", Icon: RefreshCwIcon },

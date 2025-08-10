@@ -2,10 +2,10 @@ import {
   AlarmClockIcon,
   AlarmClockOffIcon,
   CircleCheckBigIcon,
-  CircleFadingArrowUpIcon,
-  ClockArrowUpIcon,
+  ClipboardClockIcon,
   LucideIcon,
   Trash2Icon,
+  Undo2Icon,
 } from "lucide-react"
 import { useRef, useState } from "react"
 import { TaskLaterPicker } from "./task-later"
@@ -122,8 +122,8 @@ function TaskNowActionButton({
 
   return (
     <TaskActionButton
-      label={currentStatus === "done" ? `Undo` : `Unsnooze`}
-      Icon={currentStatus === "done" ? CircleFadingArrowUpIcon : AlarmClockOffIcon}
+      label={currentStatus === "later" ? "Unsnooze" : "Reopen"}
+      Icon={currentStatus === "later" ? AlarmClockOffIcon : Undo2Icon}
       palette="neutral-flat"
       display={display}
       onPress={onPress}
@@ -144,7 +144,7 @@ function TaskLaterActionButton({
       <TaskActionButton
         forwardRef={ref}
         label={currentStatus === "now" ? `Snooze` : `Reschedule`}
-        Icon={currentStatus === "now" ? AlarmClockIcon : ClockArrowUpIcon}
+        Icon={currentStatus === "now" ? AlarmClockIcon : ClipboardClockIcon}
         display={display}
         palette="neutral-flat"
         onPress={() => setOpen(true)}

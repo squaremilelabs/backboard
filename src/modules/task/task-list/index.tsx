@@ -14,6 +14,7 @@ import { typography } from "@/common/components/class-names"
 import { db, useDBQuery } from "@/database/db-client"
 import { NowTask, parseTaskCreateInput, Task, TaskStatus } from "@/database/models/task"
 import { parseScopeUpdateInput } from "@/database/models/scope"
+import { RecurringTask } from "@/database/models/recurring-task"
 
 export function TaskList() {
   const { id: scopeId, view: scopeView } = useCurrentScopeView()
@@ -131,8 +132,15 @@ export function TaskList() {
         classNames={{ base: "gap-2" }}
         dragAndDropHooks={dragAndDropHooks}
         renderEmptyState={() => <div className="h-36" />}
+        dependencies={[tasks, selectedTaskIds]}
       >
-        {(task, classNames) => <TaskListItem task={task} className={classNames.item} />}
+        {(task, classNames) => (
+          <TaskListItem
+            task={task}
+            className={classNames.item}
+            disableActionBar={selectedTaskIds.length > 1}
+          />
+        )}
       </GridList>
       {isBatchActionsVisible && (
         <div
@@ -166,26 +174,37 @@ function useTaskListTaskQuery() {
 
   const scope = scopes?.[0]
 
-  const { tasks: queriedTasks } = useDBQuery("tasks", {
-    $: {
-      where: {
-        "scope.id": scopeId,
-        "status": scopeView,
-        "status_time": {
-          $gte: scopeView === "later" ? startOfDay(subDays(new Date(), 5)).getTime() : 0,
+  const { tasks: queriedTasks } = useDBQuery<Task & { recurring_task?: RecurringTask }, "tasks">(
+    "tasks",
+    {
+      $: {
+        where: {
+          "scope.id": scopeId,
+          "status": scopeView,
+          "or": [
+            {
+              status_time: {
+                $gte: scopeView === "later" ? startOfDay(subDays(new Date(), 5)).getTime() : 0,
+              },
+            },
+            {
+              status_time: { $isNull: true },
+            },
+          ],
+        },
+        order: {
+          status_time: scopeView === "later" ? "desc" : "asc",
         },
       },
-      order: {
-        status_time: scopeView === "later" ? "desc" : "asc",
-      },
-    },
-  })
+      recurring_task: {},
+    }
+  )
 
   const tasks = queriedTasks ?? []
 
   if (scopeView === "now") {
     return sortItemsByIdOrder({
-      items: (tasks ?? []) as NowTask[],
+      items: tasks as (NowTask & { recurring_task?: RecurringTask })[],
       idOrder: scope?.list_orders?.["tasks/now"] ?? [],
       missingIdsPosition: "start",
       sortMissingIds(left, right) {

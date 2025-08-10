@@ -98,7 +98,7 @@ export function ScopeList({ disableDragAndDrop = false }: { disableDragAndDrop?:
       <CreateField
         onSubmit={onCreate}
         classNames={{ base: "py-6", input: "placeholder-neutral-muted-text" }}
-        placeholder="Add scope"
+        placeholder="Add scope of work"
       />
       <PopoverTrigger>
         <Button variants={{ hover: "fill" }} className="self-start px-8">
@@ -121,7 +121,7 @@ export function ScopeList({ disableDragAndDrop = false }: { disableDragAndDrop?:
                 className={["px-16 py-8 text-left text-sm", "text-neutral-text"]}
                 variants={{ hover: "underline" }}
               >
-                {({ isSelected }) => (isSelected ? "Hide archived" : "Show archived")}
+                {({ isSelected }) => (isSelected ? "Hide inactive" : "Show inactive")}
               </ToggleButton>
             </>
           )}

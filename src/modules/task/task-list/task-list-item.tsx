@@ -12,8 +12,17 @@ import { cn } from "~/smui/utils"
 import { typography } from "@/common/components/class-names"
 import { Checkbox } from "~/smui/checkbox/components"
 import { Task } from "@/database/models/task"
+import { RecurringTask } from "@/database/models/recurring-task"
 
-export function TaskListItem({ task, className }: { task: Task; className: ClassValue }) {
+export function TaskListItem({
+  task,
+  className,
+  disableActionBar,
+}: {
+  task: Task & { recurring_task?: RecurringTask }
+  className: ClassValue
+  disableActionBar?: boolean
+}) {
   const [panelOpen, setPanelOpen] = useState(false)
 
   const statusInfo = getTaskStatusInfo(task)
@@ -65,14 +74,20 @@ export function TaskListItem({ task, className }: { task: Task; className: Class
               </Modal>
             </ModalTrigger>
             <div className="grow" />
-            <div className={cn(isHovered ? "visible" : "hidden")}>
+            <div className={cn(isHovered && !disableActionBar ? "visible" : "hidden")}>
               <TaskActionBar
                 currentStatus={task.status}
                 selectedTaskIds={[task.id]}
                 display="icons"
               />
             </div>
-            <span className={typography({ type: "label" })}>{statusInfo.text}</span>
+            <span className={typography({ type: "label", className: "flex items-center gap-2" })}>
+              <Icon
+                icon={<statusInfo.Icon strokeWidth={2.5} absoluteStrokeWidth />}
+                variants={{ size: "sm" }}
+              />
+              {statusInfo.text}
+            </span>
           </>
         )
       }}

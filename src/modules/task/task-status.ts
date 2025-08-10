@@ -1,27 +1,54 @@
 "use client"
 
 import {
-  AlarmClockIcon,
-  CircleCheckBigIcon,
-  CircleDashedIcon,
+  AlarmClockOffIcon,
+  CheckIcon,
   CircleIcon,
+  CirclePlusIcon,
+  ClockFadingIcon,
   LucideIcon,
+  RefreshCcwDotIcon,
   SunMoonIcon,
+  Undo2Icon,
 } from "lucide-react"
 import { formatDate } from "@/common/utils/date-utils"
 import { Task } from "@/database/models/task"
+import { RecurringTask } from "@/database/models/recurring-task"
 
 export type TaskStatusInfo = {
   Icon: LucideIcon
   text: string
 }
 
-export function getTaskStatusInfo(task: Task, options?: { verbose?: boolean }): TaskStatusInfo {
+export function getTaskStatusInfo(
+  task: Task & { recurring_task?: RecurringTask },
+  options?: { verbose?: boolean }
+): TaskStatusInfo {
   if (task.status === "now") {
-    const date = formatDate(new Date(task.status_time), { withTime: true })
+    const date = formatDate(new Date(task.status_time), {
+      withTime: options?.verbose ? true : false,
+    })
+    if (task.prev_status === "later") {
+      return {
+        text: options?.verbose ? `Unsnoozed ${date}` : date,
+        Icon: AlarmClockOffIcon,
+      }
+    }
+    if (task.prev_status === "done") {
+      return {
+        text: options?.verbose ? `Reopened ${date}` : date,
+        Icon: Undo2Icon,
+      }
+    }
+    if (task.recurring_task) {
+      return {
+        text: options?.verbose ? `Recurred ${date}` : date,
+        Icon: RefreshCcwDotIcon,
+      }
+    }
     return {
-      text: options?.verbose ? `Since ${date}` : date,
-      Icon: CircleDashedIcon,
+      text: options?.verbose ? `Added ${date}` : date,
+      Icon: CirclePlusIcon,
     }
   }
 
@@ -35,8 +62,8 @@ export function getTaskStatusInfo(task: Task, options?: { verbose?: boolean }): 
 
     const date = formatDate(new Date(task.status_time))
     return {
-      text: options?.verbose ? `Snoozed until ${date}` : `Until ${date}`,
-      Icon: AlarmClockIcon,
+      text: options?.verbose ? `Snoozed until ${date}` : `${date}`,
+      Icon: ClockFadingIcon,
     }
   }
 
@@ -44,7 +71,7 @@ export function getTaskStatusInfo(task: Task, options?: { verbose?: boolean }): 
     const date = task.status_time ? formatDate(new Date(task.status_time), { withTime: true }) : "-"
     return {
       text: options?.verbose ? `Done ${date}` : date,
-      Icon: CircleCheckBigIcon,
+      Icon: CheckIcon,
     }
   }
 
