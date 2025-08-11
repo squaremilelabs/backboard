@@ -12,12 +12,12 @@ export default function LandingPage() {
     <div className="flex flex-col items-center px-8 pt-[10dvh]">
       <div className="flex w-400 max-w-full flex-col gap-[5dvh]">
         <div className="flex flex-wrap items-start gap-16">
-          <Image src="/images/backboard-logo.svg" alt="Backboard Logo" height={80} width={80} />
+          <Image src="/images/backboard-logo.svg" alt="Backboard Logo" height={60} width={60} />
           <div className="flex w-fit flex-col gap-6">
             <h1
               className={typography({
                 type: "gradient-title",
-                className: "text-[60px] leading-[80px]",
+                className: "text-[60px] leading-[60px]",
               })}
             >
               Backboard

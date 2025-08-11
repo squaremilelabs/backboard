@@ -2,7 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { getAccountFromApiRequest } from "./modules/auth/api-auth"
 
-const isClerkProtectedRoute = createRouteMatcher(["/scope(.*)"])
+const isClerkProtectedRoute = createRouteMatcher(["/scope(.*)", "/current(.*)"])
 const isApiRoute = createRouteMatcher(["/api(.*)"])
 const isCronRoute = createRouteMatcher(["/api/jobs(.*)"])
 
