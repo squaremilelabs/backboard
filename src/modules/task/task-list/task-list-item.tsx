@@ -59,6 +59,12 @@ export function TaskListItem({
                 ],
               }}
             />
+            {showScopeIcon && task.scope?.icon?.type === "emoji" && (
+              <Icon
+                icon={<Emoji unified={task.scope.icon.unified} emojiStyle={EmojiStyle.APPLE} />}
+                variants={{ size: "sm" }}
+              />
+            )}
             <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
               <Button
                 className="flex items-center gap-4 truncate"
@@ -72,12 +78,6 @@ export function TaskListItem({
                     className="text-neutral-muted-text"
                   />
                 ) : null}
-                {showScopeIcon && task.scope?.icon?.type === "emoji" && (
-                  <Icon
-                    icon={<Emoji unified={task.scope.icon.unified} emojiStyle={EmojiStyle.APPLE} />}
-                    variants={{ size: "sm" }}
-                  />
-                )}
               </Button>
               <Modal isDismissable>
                 <TaskPanel task={task} />
