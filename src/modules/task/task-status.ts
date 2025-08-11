@@ -6,8 +6,8 @@ import {
   CircleIcon,
   ClockFadingIcon,
   LucideIcon,
-  PlusIcon,
   RefreshCwIcon,
+  SparkleIcon,
   SunMoonIcon,
   Undo2Icon,
 } from "lucide-react"
@@ -48,7 +48,7 @@ export function getTaskStatusInfo(
     }
     return {
       text: options?.verbose ? `Added ${date}` : date,
-      Icon: PlusIcon,
+      Icon: SparkleIcon,
     }
   }
 

@@ -46,8 +46,8 @@ export function AppHeader() {
               !!tasks?.length ? "text-primary-text" : "text-neutral-text"
             )}
           >
-            <Icon icon={<SparkleIcon strokeWidth={3} />} />
-            <h1 className="p-2 text-lg font-semibold">Current</h1>
+            <Icon icon={<SparkleIcon />} variants={{ size: "lg" }} />
+            <h1 className="p-2 text-lg font-semibold">All current tasks</h1>
           </div>
         )}
         <div className="grow" />
