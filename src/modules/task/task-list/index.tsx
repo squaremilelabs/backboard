@@ -1,4 +1,7 @@
 "use client"
+
+// TODO: Refactor alongside task-list
+
 import { Selection, useDragAndDrop } from "react-aria-components"
 import { useEffect, useState } from "react"
 import { startOfDay, subDays } from "date-fns"

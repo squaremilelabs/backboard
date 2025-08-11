@@ -1,4 +1,7 @@
 "use client"
+
+// TODO: refactor alongside task-list
+
 import { Selection, useDragAndDrop } from "react-aria-components"
 import { useEffect, useState } from "react"
 import { TaskListItem } from "../task-list/task-list-item"
