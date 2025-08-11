@@ -54,8 +54,6 @@ export const RecurringTaskCreateSchema = z
       data,
       link: {
         scope: scope_id,
-        // TODO: REMOVE
-        inbox: scope_id,
       },
     }
   })

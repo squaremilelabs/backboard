@@ -75,16 +75,8 @@ export const TaskCreateSchema = z
     }
     return {
       id: id ?? v4(),
-      data: {
-        ...data,
-        // TODO: REMOVE
-        inbox_state: data.status === "later" ? "snoozed" : "open",
-      },
-      link: {
-        ...link,
-        // TODO: REMOVE
-        inbox: scope_id,
-      },
+      data,
+      link,
     }
   })
 

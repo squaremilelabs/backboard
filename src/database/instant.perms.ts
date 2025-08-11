@@ -10,12 +10,12 @@ const rules = {
     bind: ["IS_SELF", "auth.id in data.ref('user.id')"],
   },
   // TODO: REMOVE
-  inboxes: {
-    allow: {
-      $default: "IS_OWNER",
-    },
-    bind: ["IS_OWNER", "auth.id in data.ref('owner.user.id')"],
-  },
+  // inboxes: {
+  //   allow: {
+  //     $default: "IS_OWNER",
+  //   },
+  //   bind: ["IS_OWNER", "auth.id in data.ref('owner.user.id')"],
+  // },
   scopes: {
     allow: {
       $default: "IS_OWNER",
@@ -24,24 +24,24 @@ const rules = {
   },
   tasks: {
     allow: {
-      $default: "IS_OWNER_OF_INBOX || IS_OWNER_OF_SCOPE",
+      $default: "IS_OWNER_OF_SCOPE",
     },
     bind: [
       // TODO: REMOVE
-      "IS_OWNER_OF_INBOX",
-      "auth.id in data.ref('inbox.owner.user.id')",
+      // "IS_OWNER_OF_INBOX",
+      // "auth.id in data.ref('inbox.owner.user.id')",
       "IS_OWNER_OF_SCOPE",
       "auth.id in data.ref('scope.owner.user.id')",
     ],
   },
   recurring_tasks: {
     allow: {
-      $default: "IS_OWNER_OF_INBOX || IS_OWNER_OF_SCOPE",
+      $default: "IS_OWNER_OF_SCOPE",
     },
     bind: [
       // TODO: REMOVE
-      "IS_OWNER_OF_INBOX",
-      "auth.id in data.ref('inbox.owner.user.id')",
+      // "IS_OWNER_OF_INBOX",
+      // "auth.id in data.ref('inbox.owner.user.id')",
       "IS_OWNER_OF_SCOPE",
       "auth.id in data.ref('scope.owner.user.id')",
     ],

@@ -15,20 +15,20 @@ const _schema = i.schema({
       // MAINTAIN
       api_key: i.string().unique().optional(),
       // TODO: DEPRECATE
-      inbox_order: i.json().optional(), // array of inbox IDs (strings)
+      // inbox_order: i.json().optional(), // array of inbox IDs (strings)
       // ADD
       created_at: i.date().indexed().optional(), // TODO: remove optional after migration
       list_orders: i.json().optional(), // AccountListOrdersType
     }),
     // TODO: DEPRECATE (replaced by scopes)
-    inboxes: i.entity({
-      created_at: i.date().indexed(),
-      title: i.string().indexed(),
-      emoji: i.string().optional(),
-      content: i.string().optional(),
-      open_task_order: i.json(), // array of task IDs (strings)
-      is_archived: i.boolean(),
-    }),
+    // inboxes: i.entity({
+    //   created_at: i.date().indexed(),
+    //   title: i.string().indexed(),
+    //   emoji: i.string().optional(),
+    //   content: i.string().optional(),
+    //   open_task_order: i.json(), // array of task IDs (strings)
+    //   is_archived: i.boolean(),
+    // }),
     // MAINTAIN
     tasks: i.entity({
       // MAINTAIN
@@ -36,9 +36,9 @@ const _schema = i.schema({
       title: i.string().indexed(),
       content: i.string().optional(),
       // TODO: DEPRECATE
-      inbox_state: i.string().optional(), // "open", "snoozed", "archived" (validated in permissions)
-      snooze_date: i.date().indexed().optional(),
-      archive_date: i.date().indexed().optional(),
+      // inbox_state: i.string().optional(), // "open", "snoozed", "archived" (validated in permissions)
+      // snooze_date: i.date().indexed().optional(),
+      // archive_date: i.date().indexed().optional(),
       // ADD
       status: i.string().optional(), // TaskStatus // TODO: remove optional after migration
       status_time: i.date().indexed().optional(), // TODO: add indexed after migration
@@ -51,8 +51,8 @@ const _schema = i.schema({
       title: i.string().indexed(),
       content: i.string().optional(),
       // TODO: DEPRECATE
-      frequency: i.json().optional(),
-      is_archived: i.boolean().optional(),
+      // frequency: i.json().optional(),
+      // is_archived: i.boolean().optional(),
       // ADD
       is_inactive: i.boolean().optional(), // TODO: remove optional after migration
       recur_day_type: i.string().optional(), // RecurringTaskRecurDayType // TODO: remove optional after migration
@@ -75,34 +75,34 @@ const _schema = i.schema({
       reverse: { on: "$users", has: "one", label: "account" },
     },
     // TODO: DEPRECATE (replaced by account_scopes)
-    account_inboxes: {
-      forward: { on: "inboxes", has: "one", label: "owner", required: true, onDelete: "cascade" },
-      reverse: { on: "accounts", has: "many", label: "inboxes" },
-    },
+    // account_inboxes: {
+    //   forward: { on: "inboxes", has: "one", label: "owner", required: true, onDelete: "cascade" },
+    //   reverse: { on: "accounts", has: "many", label: "inboxes" },
+    // },
     // ADD (replaces account_inboxes)
     account_scopes: {
       forward: { on: "scopes", has: "one", label: "owner" }, // TODO: Make required & delete=cascade after migration
       reverse: { on: "accounts", has: "many", label: "scopes" },
     },
     // TODO: DEPRECATE (replaced by scope_tasks)
-    inbox_tasks: {
-      forward: { on: "tasks", has: "one", label: "inbox" }, // TODO: remove required & cascade in UI
-      reverse: { on: "inboxes", has: "many", label: "tasks" },
-    },
+    // inbox_tasks: {
+    //   forward: { on: "tasks", has: "one", label: "inbox" }, // TODO: remove required & cascade in UI
+    //   reverse: { on: "inboxes", has: "many", label: "tasks" },
+    // },
     // ADD (replaces inbox_tasks)
     scope_tasks: {
       forward: { on: "tasks", has: "one", label: "scope" }, // TODO: Make required & delete=cascade after migration
       reverse: { on: "scopes", has: "many", label: "tasks" },
     },
     // TODO: DEPRECATE (replaced by scope_recurring_tasks)
-    inbox_recurring_tasks: {
-      forward: {
-        on: "recurring_tasks",
-        has: "one",
-        label: "inbox",
-      }, // TODO: remove required & cascade in UI
-      reverse: { on: "inboxes", has: "many", label: "recurring_tasks" },
-    },
+    // inbox_recurring_tasks: {
+    //   forward: {
+    //     on: "recurring_tasks",
+    //     has: "one",
+    //     label: "inbox",
+    //   }, // TODO: remove required & cascade in UI
+    //   reverse: { on: "inboxes", has: "many", label: "recurring_tasks" },
+    // },
     // ADD (replaces inbox_recurring_tasks)
     scope_recurring_tasks: {
       forward: {
