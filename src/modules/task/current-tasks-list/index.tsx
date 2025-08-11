@@ -110,7 +110,7 @@ export function CurrentTaskList() {
       )}
     >
       <GridList
-        aria-label="Now Task List"
+        aria-label="Current Tasks"
         variants={{ variant: "task-list" }}
         items={tasks}
         selectionMode="multiple"
@@ -119,7 +119,7 @@ export function CurrentTaskList() {
         classNames={{ base: "gap-2" }}
         dragAndDropHooks={dragAndDropHooks}
         renderEmptyState={() => (
-          <div className="flex h-full w-full items-center justify-center">
+          <div className="flex h-[50%] w-full items-center justify-center">
             <ZeroButton />
           </div>
         )}

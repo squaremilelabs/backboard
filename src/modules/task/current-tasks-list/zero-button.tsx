@@ -1,10 +1,12 @@
 "use client"
 
+import { CircleCheckBigIcon } from "lucide-react"
 import { useState } from "react"
 import ReactConfetti from "react-confetti"
 import { createPortal } from "react-dom"
 import { useWindowSize } from "usehooks-ts"
 import { Button } from "~/smui/button/components"
+import { Icon } from "~/smui/icon/components"
 
 export default function ZeroButton() {
   const { width, height } = useWindowSize()
@@ -13,10 +15,15 @@ export default function ZeroButton() {
     <>
       <Button
         isDisabled={isConfettiOn}
-        className={["text-primary-text text-lg font-semibold", isConfettiOn && "animate-bounce"]}
+        className={[
+          "flex items-center gap-8",
+          `text-neutral-muted-fg bg-neutral-muted-bg rounded-full px-16 py-8 pr-24 text-lg
+          font-semibold`,
+          isConfettiOn && "bg-primary-bg text-primary-fg animate-bounce",
+        ]}
         onPress={() => setIsConfettiOn(true)}
       >
-        All done! 🎉
+        <Icon icon={<CircleCheckBigIcon />} variants={{ size: "lg" }} />0
       </Button>
       {createPortal(
         <ReactConfetti

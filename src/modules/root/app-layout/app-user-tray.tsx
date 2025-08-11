@@ -9,9 +9,11 @@ import {
   Laptop2Icon,
   MapIcon,
   MoonIcon,
+  SparkleIcon,
   SunIcon,
 } from "lucide-react"
 import { useTheme } from "next-themes"
+import { usePathname } from "next/navigation"
 import { FEEDBACK_URL, ROADMAP_URL } from "./links"
 import { cn } from "~/smui/utils"
 import { Icon } from "~/smui/icon/components"
@@ -22,25 +24,28 @@ import { ToggleButton, ToggleButtonGroup } from "~/smui/toggle-button/components
 import { typography } from "@/common/components/class-names"
 
 export function AppUserTray() {
+  const pathname = usePathname()
   const { tasks: nowTasks } = useAccountOpenTasks()
   const nowTaskCount = nowTasks?.length || 0
   return (
     <SignedIn>
       <div className="flex items-center gap-4">
-        <Link
-          href="/now"
-          className={cn(
-            "flex items-center justify-center gap-2 px-4",
-            "font-bold",
-            "hover:opacity-70",
-            nowTaskCount > 0
-              ? "text-primary-text border-primary-text"
-              : "text-neutral-muted-text hover:text-primary-text"
-          )}
-        >
-          {nowTaskCount === 0 ? <Icon icon={<CircleCheckBigIcon strokeWidth={3} />} /> : null}
-          {nowTaskCount}
-        </Link>
+        {pathname !== "/current" && (
+          <Link
+            href="/current"
+            className={cn(
+              "flex items-center justify-center gap-2 px-4",
+              "font-bold",
+              "hover:opacity-70",
+              nowTaskCount > 0
+                ? "text-primary-text border-primary-text"
+                : "text-neutral-muted-text hover:text-primary-text"
+            )}
+          >
+            <Icon icon={nowTaskCount === 0 ? <CircleCheckBigIcon /> : <SparkleIcon />} />
+            {nowTaskCount}
+          </Link>
+        )}
         <div />
         <UserButton />
         <PopoverTrigger>
