@@ -18,7 +18,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     if (isMobile) setSidebarOpen(false)
   }, [isMobile, setSidebarOpen, pathname])
   return (
-    <div className={cn("h-dvh max-h-dvh w-dvw max-w-dvw", "grid grid-cols-[auto_1fr]")}>
+    <div
+      className={cn(
+        "h-dvh max-h-dvh w-dvw max-w-dvw",
+        "grid grid-cols-[auto_1fr]",
+        "overflow-hidden"
+      )}
+    >
       <nav
         className={cn(
           "hidden md:flex",
@@ -49,7 +55,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           "h-full max-h-full w-full max-w-full",
           // single cell grid with centered content
           "grid grid-cols-1 grid-rows-1 justify-items-center-safe",
-          "overflow-auto"
+          "overflow-hidden"
         )}
       >
         <div
@@ -65,7 +71,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </header>
           <main
             className={cn(
-              "grid h-full max-h-full grid-cols-1 grid-rows-1 overflow-auto",
+              "grid h-full max-h-full grid-cols-1 grid-rows-1 overflow-hidden",
               "md:px-16 md:pb-16"
             )}
           >

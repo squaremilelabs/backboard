@@ -19,8 +19,8 @@ export type ScopeViewInfo = { key: ScopeViewKey; title: string; Icon: LucideIcon
 export const SCOPE_VIEWS: Array<ScopeViewInfo> = [
   { key: "now", title: "Now", Icon: PlayIcon },
   { key: "later", title: "Later", Icon: AlarmClockIcon },
-  { key: "done", title: "Done", Icon: CircleCheckBigIcon },
   { key: "recurring", title: "Recurring", Icon: RefreshCwIcon },
+  { key: "done", title: "Done", Icon: CircleCheckBigIcon },
 ]
 
 export function useCurrentScopeView() {
@@ -47,8 +47,7 @@ export function useCurrentScopeViewCounts(): Record<ScopeViewKey, number | null>
       $: {
         where: {
           or: [
-            { status: "now" },
-            { status: "later" },
+            { status: { $in: ["now", "later"] } },
             {
               status: "done",
               status_time: { $gte: startOfDay(subDays(new Date(), 5)).getTime() },

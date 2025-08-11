@@ -1,12 +1,9 @@
 "use client"
-
-import { PlusIcon } from "lucide-react"
 import { getRecurringTaskInfo, RecurringTaskFrequencyType } from "../recurring-task-info"
 import { RecurringTaskListItem } from "./list-item"
+import { RecurringTaskListCreateBox } from "./create-box"
 import { useCurrentScopeView } from "@/modules/scope/use-scope-views"
-import { Button } from "~/smui/button/components"
 import { GridList } from "~/smui/grid-list/components"
-import { Icon } from "~/smui/icon/components"
 import { cn } from "~/smui/utils"
 import { useDBQuery } from "@/database/db-client"
 import { RecurringTask } from "@/database/models/recurring-task"
@@ -15,7 +12,7 @@ export function RecurringTaskList() {
   const { id: scopeId } = useCurrentScopeView()
 
   const taskQuery = useDBQuery("recurring_tasks", {
-    $: { where: { "scope.id": scopeId, "is_archived": false } },
+    $: { where: { "scope.id": scopeId, "is_inactive": false } },
   })
 
   const tasks = sortRecurringTasks(taskQuery.recurring_tasks || [])
@@ -27,18 +24,7 @@ export function RecurringTaskList() {
         "overflow-auto"
       )}
     >
-      <Button
-        className={[
-          "flex items-center gap-8",
-          "bg-base-bg/50 hover:bg-base-bg w-full",
-          "min-h-fit p-8",
-          tasks.length === 0 && "bg-base-bg/70",
-        ]}
-        variants={{ hover: "none" }}
-      >
-        <Icon icon={<PlusIcon />} />
-        <span className={"opacity-50"}>Add recurring task</span>
-      </Button>
+      <RecurringTaskListCreateBox />
       <GridList
         aria-label="Recurring Task List"
         variants={{ variant: "task-list" }}

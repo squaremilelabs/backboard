@@ -2,6 +2,7 @@
 import { SignedIn, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
 import {
+  CircleCheckBigIcon,
   EllipsisVerticalIcon,
   ExternalLinkIcon,
   HeartHandshakeIcon,
@@ -16,15 +17,30 @@ import { cn } from "~/smui/utils"
 import { Icon } from "~/smui/icon/components"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
 import { Button } from "~/smui/button/components"
-import { TaskTotalCount } from "@/modules/task/task-total-count"
+import { useAccountOpenTasks } from "@/modules/task/task-total-count"
 import { ToggleButton, ToggleButtonGroup } from "~/smui/toggle-button/components"
 import { typography } from "@/common/components/class-names"
 
 export function AppUserTray() {
+  const { tasks: nowTasks } = useAccountOpenTasks()
+  const nowTaskCount = nowTasks?.length || 0
   return (
     <SignedIn>
       <div className="flex items-center gap-4">
-        <TaskTotalCount />
+        <Link
+          href="/now"
+          className={cn(
+            "flex items-center justify-center gap-2 px-4",
+            "font-bold",
+            "hover:opacity-70",
+            nowTaskCount > 0
+              ? "text-primary-text border-primary-text"
+              : "text-neutral-muted-text hover:text-primary-text"
+          )}
+        >
+          {nowTaskCount === 0 ? <Icon icon={<CircleCheckBigIcon strokeWidth={3} />} /> : null}
+          {nowTaskCount}
+        </Link>
         <div />
         <UserButton />
         <PopoverTrigger>

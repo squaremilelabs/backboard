@@ -184,16 +184,18 @@ function useTaskListTaskQuery() {
           "or": [
             {
               status_time: {
-                $gte: scopeView === "later" ? startOfDay(subDays(new Date(), 5)).getTime() : 0,
+                $gte: scopeView === "done" ? startOfDay(subDays(new Date(), 5)).getTime() : 0,
               },
             },
-            {
-              status_time: { $isNull: true },
-            },
-          ],
+            scopeView === "later"
+              ? {
+                  status_time: { $isNull: true },
+                }
+              : null,
+          ].filter((d) => d !== null),
         },
         order: {
-          status_time: scopeView === "later" ? "desc" : "asc",
+          status_time: scopeView === "done" ? "desc" : "asc",
         },
       },
       recurring_task: {},

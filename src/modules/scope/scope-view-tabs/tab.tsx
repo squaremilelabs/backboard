@@ -71,9 +71,7 @@ export function ScopeViewTab({
           "data-selected:border-primary-muted-border",
           "data-selected:divide-primary-muted-border",
         ],
-        (hasRecentAddition || (isTasksDragging && isDroppable)) && [
-          "outline-primary-bg outline-1 outline-dashed",
-        ],
+        isTasksDragging && isDroppable && ["outline-primary-bg outline-1 outline-dashed"],
         ["data-drop-target:outline-2", "data-drop-target:outline-solid"],
       ]}
       textValue={view.title}

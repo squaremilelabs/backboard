@@ -70,7 +70,7 @@ export const RecurringTaskUpdateSchema = z
     z.object({
       scope_id: z.uuidv4().optional(),
       title: z.string().trim().min(1).optional(),
-      content: z.string().trim().min(1).optional(),
+      content: z.string().trim().min(1).nullish(),
     }),
     z.discriminatedUnion("recur_day_type", [
       z.object({

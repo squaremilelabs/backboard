@@ -52,7 +52,7 @@ const _schema = i.schema({
       content: i.string().optional(),
       // DEPRECATE
       frequency: i.json().optional(),
-      is_archived: i.boolean(),
+      is_archived: i.boolean().optional(),
       // ADD
       is_inactive: i.boolean().optional(), // TODO: remove optional after migration
       recur_day_type: i.string().optional(), // RecurringTaskRecurDayType // TODO: remove optional after migration

@@ -59,6 +59,7 @@ html {
   .react-aria-DropIndicator {
     &[data-drop-target] {
       height: 2px;
+      min-height: 2px;
       background: var(--color-base-outline);
     }
   

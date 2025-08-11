@@ -28,3 +28,31 @@ export function AppSidebar() {
     </div>
   )
 }
+
+// function NowTaskLink() {
+//   const pathname = usePathname()
+//   const { tasks: nowTasks } = useAccountOpenTasks()
+//   const nowTaskCount = nowTasks?.length || 0
+
+//   const isSelected = pathname === "/now"
+//   return (
+//     <Link
+//       href="/now"
+//       className={cn(
+//         "flex items-center gap-4 truncate",
+//         "rounded-sm px-8 py-6",
+//         "text-sm font-medium",
+//         "hover:bg-neutral-muted-bg/50",
+//         isSelected && "bg-neutral-muted-bg text-base-text border"
+//       )}
+//     >
+//       <Icon
+//         icon={nowTaskCount > 0 ? <PlayIcon /> : <CircleCheckBigIcon />}
+//         variants={{ size: "sm" }}
+//       />
+//       <span>
+//         {nowTaskCount} task{nowTaskCount === 1 ? "" : "s"} left
+//       </span>
+//     </Link>
+//   )
+// }

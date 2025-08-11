@@ -4,9 +4,9 @@ import {
   AlarmClockOffIcon,
   CheckIcon,
   CircleIcon,
-  CirclePlusIcon,
   ClockFadingIcon,
   LucideIcon,
+  PlusIcon,
   RefreshCcwDotIcon,
   SunMoonIcon,
   Undo2Icon,
@@ -48,7 +48,7 @@ export function getTaskStatusInfo(
     }
     return {
       text: options?.verbose ? `Added ${date}` : date,
-      Icon: CirclePlusIcon,
+      Icon: PlusIcon,
     }
   }
 

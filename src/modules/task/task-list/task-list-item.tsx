@@ -1,6 +1,7 @@
 import { ClassValue } from "tailwind-variants"
 import { GripVerticalIcon, TextIcon } from "lucide-react"
 import { useState } from "react"
+import { Emoji, EmojiStyle } from "emoji-picker-react"
 import { TaskPanel } from "../task-panel"
 import { getTaskStatusInfo } from "../task-status"
 import { TaskActionBar } from "../task-actions"
@@ -13,15 +14,18 @@ import { typography } from "@/common/components/class-names"
 import { Checkbox } from "~/smui/checkbox/components"
 import { Task } from "@/database/models/task"
 import { RecurringTask } from "@/database/models/recurring-task"
+import { Scope } from "@/database/models/scope"
 
 export function TaskListItem({
   task,
   className,
   disableActionBar,
+  showScopeIcon,
 }: {
-  task: Task & { recurring_task?: RecurringTask }
+  task: Task & { recurring_task?: RecurringTask; scope?: Scope }
   className: ClassValue
   disableActionBar?: boolean
+  showScopeIcon?: boolean
 }) {
   const [panelOpen, setPanelOpen] = useState(false)
 
@@ -68,6 +72,12 @@ export function TaskListItem({
                     className="text-neutral-muted-text"
                   />
                 ) : null}
+                {showScopeIcon && task.scope?.icon?.type === "emoji" && (
+                  <Icon
+                    icon={<Emoji unified={task.scope.icon.unified} emojiStyle={EmojiStyle.APPLE} />}
+                    variants={{ size: "sm" }}
+                  />
+                )}
               </Button>
               <Modal isDismissable>
                 <TaskPanel task={task} />
@@ -82,11 +92,11 @@ export function TaskListItem({
               />
             </div>
             <span className={typography({ type: "label", className: "flex items-center gap-2" })}>
+              {statusInfo.text}
               <Icon
                 icon={<statusInfo.Icon strokeWidth={2.5} absoluteStrokeWidth />}
                 variants={{ size: "sm" }}
               />
-              {statusInfo.text}
             </span>
           </>
         )
