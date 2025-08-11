@@ -42,14 +42,10 @@ export function AppHeader() {
         {isScopeView && <ScopeTitle scopeId={scopeId} />}
         {isNowTaskView && (
           <div className={cn("flex items-center gap-2")}>
-            {/* <Icon icon={<SparkleIcon strokeWidth={2.5} />} className="text-primary-text" /> */}
             <h1
               className={typography({
                 type: "gradient-title",
-                className: [
-                  "p-2 text-lg font-bold tracking-normal",
-                  // tasks?.length !== 0 && "text-neutral-text",
-                ],
+                className: ["p-2 text-lg font-bold tracking-normal"],
               })}
             >
               {tasks?.length ?? 0} Current Task{tasks?.length === 1 ? "" : "s"}

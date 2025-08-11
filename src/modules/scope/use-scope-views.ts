@@ -3,8 +3,8 @@ import {
   AlarmClockIcon,
   CircleCheckBigIcon,
   LucideIcon,
-  SparkleIcon,
   RefreshCwIcon,
+  DiamondIcon,
 } from "lucide-react"
 import { useParams } from "next/navigation"
 import { startOfDay, subDays } from "date-fns"
@@ -17,7 +17,7 @@ export type ScopeViewKey = TaskStatus | "recurring"
 export type ScopeViewInfo = { key: ScopeViewKey; title: string; Icon: LucideIcon }
 
 export const SCOPE_VIEWS: Array<ScopeViewInfo> = [
-  { key: "current", title: "Current", Icon: SparkleIcon },
+  { key: "current", title: "Current", Icon: DiamondIcon },
   { key: "snoozed", title: "Snoozed", Icon: AlarmClockIcon },
   { key: "recurring", title: "Recurring", Icon: RefreshCwIcon },
   { key: "done", title: "Done", Icon: CircleCheckBigIcon },

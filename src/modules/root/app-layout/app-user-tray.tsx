@@ -3,13 +3,13 @@ import { SignedIn, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
 import {
   CircleCheckBigIcon,
+  DiamondIcon,
   EllipsisVerticalIcon,
   ExternalLinkIcon,
   HeartHandshakeIcon,
   Laptop2Icon,
   MapIcon,
   MoonIcon,
-  SparkleIcon,
   SunIcon,
 } from "lucide-react"
 import { useTheme } from "next-themes"
@@ -42,7 +42,7 @@ export function AppUserTray() {
                 : "text-neutral-muted-text hover:text-primary-text"
             )}
           >
-            <Icon icon={nowTaskCount === 0 ? <CircleCheckBigIcon /> : <SparkleIcon />} />
+            <Icon icon={nowTaskCount === 0 ? <CircleCheckBigIcon /> : <DiamondIcon />} />
             {nowTaskCount}
           </Link>
         )}
