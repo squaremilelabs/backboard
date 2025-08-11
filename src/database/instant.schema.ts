@@ -1,6 +1,6 @@
 // Docs: https://www.instantdb.com/docs/modeling-data
 
-import { i } from "@instantdb/admin"
+import { i } from "@instantdb/core"
 
 const _schema = i.schema({
   entities: {

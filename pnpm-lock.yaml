@@ -17,6 +17,9 @@ importers:
       '@instantdb/admin':
         specifier: ^0.20.10
         version: 0.20.12
+      '@instantdb/core':
+        specifier: ^0.20.22
+        version: 0.20.22
       '@instantdb/react':
         specifier: ^0.20.9
         version: 0.20.12(react@19.1.1)
@@ -409,10 +412,16 @@ packages:
   '@instantdb/core@0.20.12':
     resolution: {integrity: sha512-Mz0sAqElarKCsJxWRVhzrXEy6P9QrNQ1HQqYVVDuE/hYzj+ms9k2nPH82OFdyCpOzUC4VnuDyFRZCnCZQTMBzQ==}
 
+  '@instantdb/core@0.20.22':
+    resolution: {integrity: sha512-4eI4+qilIOPsVBptM1aVZeKeNRwVIeUJBcgAIIbtDO7D7jeAkErGSxPe81wC2FosBKC0zo6FubQDzdljEMOVQQ==}
+
   '@instantdb/react@0.20.12':
     resolution: {integrity: sha512-gOosibMmNleJbWfVsRx5BUyrxe84MtQneT+OYcTV5QkSAWpJza9uumjsFbQ1wpTTUMZE7YnWfovGTAzRISwk6Q==}
     peerDependencies:
       react: '>=16'
+
+  '@instantdb/version@0.20.22':
+    resolution: {integrity: sha512-V6UKjSS0hwq9cxFZVY5OH8U5EaOAdNdoHzzhov7P7scV0ewg+P7TNd79sHmvGJ+d7mAyGaKOSjIqMQW4cy2QrQ==}
 
   '@internationalized/date@3.8.2':
     resolution: {integrity: sha512-/wENk7CbvLbkUvX1tu0mwq49CVkkWpkXubGel6birjRPyo6uQ4nQpnq5xZu823zRCwwn82zgHrvgF1vZyvmVgA==}
@@ -3277,10 +3286,18 @@ snapshots:
       mutative: 1.2.0
       uuid: 11.1.0
 
+  '@instantdb/core@0.20.22':
+    dependencies:
+      '@instantdb/version': 0.20.22
+      mutative: 1.2.0
+      uuid: 11.1.0
+
   '@instantdb/react@0.20.12(react@19.1.1)':
     dependencies:
       '@instantdb/core': 0.20.12
       react: 19.1.1
+
+  '@instantdb/version@0.20.22': {}
 
   '@internationalized/date@3.8.2':
     dependencies:

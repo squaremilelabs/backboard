@@ -14,6 +14,7 @@
     "@clerk/nextjs": "^6.25.3",
     "@clerk/themes": "^2.4.2",
     "@instantdb/admin": "^0.20.10",
+    "@instantdb/core": "^0.20.22",
     "@instantdb/react": "^0.20.9",
     "@internationalized/date": "^3.8.2",
     "@tanstack/react-query": "^5.81.5",
