@@ -45,7 +45,7 @@ export async function GET() {
           scope_id: task.scope.id,
           recurring_task_id: task.id,
           title: task.title,
-          content: task.content,
+          content: task.content || null,
           status: "now",
         })
 

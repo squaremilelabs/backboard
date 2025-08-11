@@ -15,6 +15,7 @@ import { db, useDBQuery } from "@/database/db-client"
 import { NowTask, parseTaskCreateInput, Task, TaskStatus } from "@/database/models/task"
 import { parseScopeUpdateInput } from "@/database/models/scope"
 import { RecurringTask } from "@/database/models/recurring-task"
+import { useAuth } from "@/modules/auth/use-auth"
 
 export function TaskList() {
   const { id: scopeId, view: scopeView } = useCurrentScopeView()
@@ -147,7 +148,8 @@ export function TaskList() {
           className={cn(
             "flex items-center gap-16 px-16 py-8 md:gap-32",
             "bg-base-bg border-2",
-            "justify-center-safe overflow-x-auto"
+            "justify-center-safe overflow-x-auto",
+            "min-h-fit"
           )}
         >
           <p className={typography({ type: "label", className: "text-neutral-text" })}>
@@ -166,6 +168,7 @@ export function TaskList() {
 }
 
 function useTaskListTaskQuery() {
+  const { instantAccount } = useAuth()
   const { id: scopeId, view: scopeView } = useCurrentScopeView()
 
   const { scopes } = useDBQuery("scopes", {
@@ -181,6 +184,7 @@ function useTaskListTaskQuery() {
         where: {
           "scope.id": scopeId,
           "status": scopeView,
+          "scope.owner.id": instantAccount?.id ?? "NO_ACCOUNT",
           "or": [
             {
               status_time: {

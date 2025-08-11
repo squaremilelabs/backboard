@@ -1,5 +1,5 @@
 "use client"
-import { MenuIcon } from "lucide-react"
+import { MenuIcon, PlayIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { AppUserTray } from "./app-user-tray"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
@@ -8,6 +8,8 @@ import { ScopeTitle } from "@/modules/scope/scope-title"
 import { Button } from "~/smui/button/components"
 import { Icon } from "~/smui/icon/components"
 import { ScopeViewTabs } from "@/modules/scope/scope-view-tabs"
+import { useAccountOpenTasks } from "@/modules/task/task-total-count"
+import { cn } from "~/smui/utils"
 
 export function AppHeader() {
   const pathname = usePathname()
@@ -16,6 +18,8 @@ export function AppHeader() {
 
   const isNowTaskView = pathname === "/now"
   const isScopeView = !!scopeId
+
+  const { tasks } = useAccountOpenTasks()
   return (
     <div className="flex flex-col">
       <div className="flex items-center">
@@ -36,7 +40,15 @@ export function AppHeader() {
         {/* Title */}
         {isScopeView && <ScopeTitle scopeId={scopeId} />}
         {isNowTaskView && (
-          <h1 className="text-neutral-text p-2 text-lg font-semibold">All current tasks</h1>
+          <div
+            className={cn(
+              "flex items-center gap-2",
+              !!tasks?.length ? "text-primary-text" : "text-neutral-text"
+            )}
+          >
+            <Icon icon={<PlayIcon strokeWidth={3} />} />
+            <h1 className="p-2 text-lg font-semibold">Now</h1>
+          </div>
         )}
         <div className="grow" />
         <AppUserTray />

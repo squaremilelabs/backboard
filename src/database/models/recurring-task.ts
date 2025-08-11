@@ -29,11 +29,12 @@ export const RecurringTaskCreateSchema = z
         id: z.uuidv4().optional(),
         scope_id: z.uuidv4(),
         title: z.string().trim().min(1),
-        content: z.string().trim().min(1).nullish(),
+        content: z.string().trim().nullish(),
         is_inactive: z.boolean().optional().default(false),
       })
       .transform((val) => ({
         ...val,
+        content: val.content || null,
         created_at: Date.now(),
       })),
     z.discriminatedUnion("recur_day_type", [

@@ -50,7 +50,7 @@ const _schema = i.schema({
       created_at: i.date().indexed(),
       title: i.string().indexed(),
       content: i.string().optional(),
-      // DEPRECATE
+      // TODO: DEPRECATE
       frequency: i.json().optional(),
       is_archived: i.boolean().optional(),
       // ADD

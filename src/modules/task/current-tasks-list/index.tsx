@@ -106,7 +106,8 @@ export function CurrentTaskList() {
     <div
       className={cn(
         "bg-neutral-muted-bg flex h-full max-h-full flex-col gap-2 rounded-sm border p-2",
-        "overflow-hidden"
+        "overflow-hidden",
+        tasks.length === 0 && "bg-transparent"
       )}
     >
       <GridList
@@ -119,7 +120,7 @@ export function CurrentTaskList() {
         classNames={{ base: "gap-2" }}
         dragAndDropHooks={dragAndDropHooks}
         renderEmptyState={() => (
-          <div className="flex h-full w-full flex-col items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center">
             <ZeroButton />
           </div>
         )}
@@ -139,7 +140,8 @@ export function CurrentTaskList() {
           className={cn(
             "flex items-center gap-16 px-16 py-8 md:gap-32",
             "bg-base-bg border-2",
-            "justify-center-safe overflow-x-auto"
+            "justify-center-safe overflow-x-auto",
+            "min-h-fit"
           )}
         >
           <p className={typography({ type: "label", className: "text-neutral-text" })}>

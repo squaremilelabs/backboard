@@ -7,7 +7,7 @@ import {
   ClockFadingIcon,
   LucideIcon,
   PlusIcon,
-  RefreshCcwDotIcon,
+  RefreshCwIcon,
   SunMoonIcon,
   Undo2Icon,
 } from "lucide-react"
@@ -43,7 +43,7 @@ export function getTaskStatusInfo(
     if (task.recurring_task) {
       return {
         text: options?.verbose ? `Recurred ${date}` : date,
-        Icon: RefreshCcwDotIcon,
+        Icon: RefreshCwIcon,
       }
     }
     return {

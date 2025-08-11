@@ -54,6 +54,7 @@ export const TaskCreateSchema = z
       })
       .transform((val) => ({
         ...val,
+        content: val.content || null,
         created_at: Date.now(),
       })),
     z.discriminatedUnion("status", [
