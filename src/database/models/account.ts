@@ -35,6 +35,7 @@ export const AccountCreateSchema = z
     return {
       id: id ?? v4(),
       data: {
+        created_at: Date.now(),
         api_key: v4(),
         list_orders: {
           "scopes": [],
