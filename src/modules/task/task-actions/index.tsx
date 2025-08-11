@@ -8,7 +8,7 @@ import {
   Undo2Icon,
 } from "lucide-react"
 import { useRef, useState } from "react"
-import { TaskLaterPicker } from "./task-later"
+import { TaskSnoozePicker } from "./task-snooze"
 import { Button, ButtonGroup, ButtonProps } from "~/smui/button/components"
 import { Tooltip, TooltipTrigger } from "~/smui/tooltip/components"
 import { Icon } from "~/smui/icon/components"
@@ -149,7 +149,7 @@ function TaskLaterActionButton({
         palette="neutral-flat"
         onPress={() => setOpen(true)}
       />
-      <TaskLaterPicker
+      <TaskSnoozePicker
         isOpen={open}
         onOpenChange={setOpen}
         selectedTaskIds={selectedTaskIds}

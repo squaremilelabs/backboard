@@ -5,7 +5,7 @@ import { SCOPE_VIEWS, useCurrentScopeView, useCurrentScopeViewCounts } from "../
 import { ScopeViewTab } from "./tab"
 import { ListBox } from "~/smui/list-box/components"
 import { processDropItems } from "@/common/utils/list-utils"
-import { TaskLaterPicker } from "@/modules/task/task-actions/task-later"
+import { TaskSnoozePicker } from "@/modules/task/task-actions/task-snooze"
 import { db, useDBQuery } from "@/database/db-client"
 import { parseTaskUpdateInput, Task, TaskStatus } from "@/database/models/task"
 
@@ -88,7 +88,7 @@ export function ScopeViewTabs({ scopeId }: { scopeId: string }) {
           )
         }}
       </ListBox>
-      <TaskLaterPicker
+      <TaskSnoozePicker
         isOpen={snoozeModalOpen}
         onOpenChange={setSnoozeModalOpen}
         selectedTaskIds={droppedTasks.map((task) => task.id)}

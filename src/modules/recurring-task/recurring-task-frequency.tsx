@@ -4,7 +4,8 @@ import { useState } from "react"
 import { Heading } from "react-aria-components"
 import { CheckCheckIcon, CheckIcon, RefreshCwIcon } from "lucide-react"
 import { getRecurringTaskInfo, monthdayOptions, weekdayOptions } from "./recurring-task-info"
-import { RecurringTask, RecurringTaskRecurDayType } from "@/database/models/recurring-task"
+import { RecurringTaskFrequencyValues } from "./recurring-task-info"
+import { RecurringTaskRecurDayType } from "@/database/models/recurring-task"
 import { ListBox, ListBoxItem } from "~/smui/list-box/components"
 import { Select, SelectButton, SelectPopover } from "~/smui/select/components"
 import { Modal } from "~/smui/modal/components"
@@ -13,8 +14,6 @@ import { cn } from "~/smui/utils"
 import { ToggleButton, ToggleButtonGroup } from "~/smui/toggle-button/components"
 import { Icon } from "~/smui/icon/components"
 import { Button } from "~/smui/button/components"
-
-export type RecurringTaskFrequencyValues = Pick<RecurringTask, "recur_days" | "recur_day_type">
 
 export function RecurringTaskFrequencyPicker({
   isOpen,

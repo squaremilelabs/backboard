@@ -11,7 +11,7 @@ import { db } from "@/database/db-client"
 import { parseTaskUpdateInput, TaskStatus, TaskUpdateOutput } from "@/database/models/task"
 
 // TODO: Create calendar component in SMUI
-export function TaskLaterPicker({
+export function TaskSnoozePicker({
   isOpen,
   onOpenChange,
   selectedTaskIds,

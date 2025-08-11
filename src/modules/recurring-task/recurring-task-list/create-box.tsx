@@ -1,11 +1,9 @@
 import { useState } from "react"
 import { Group } from "react-aria-components"
 import { ArrowLeftRightIcon } from "lucide-react"
-import {
-  RecurringTaskFrequencyPicker,
-  RecurringTaskFrequencyValues,
-} from "../recurring-task-frequency"
+import { RecurringTaskFrequencyPicker } from "../recurring-task-frequency"
 import { getRecurringTaskInfo } from "../recurring-task-info"
+import { RecurringTaskFrequencyValues } from "../recurring-task-info"
 import { CreateField } from "@/common/components/create-field"
 import { cn } from "~/smui/utils"
 import { Button } from "~/smui/button/components"
