@@ -24,11 +24,11 @@ export function getTaskStatusInfo(
   task: Task & { recurring_task?: RecurringTask },
   options?: { verbose?: boolean }
 ): TaskStatusInfo {
-  if (task.status === "now") {
+  if (task.status === "current") {
     const date = formatDate(new Date(task.status_time), {
       withTime: options?.verbose ? true : false,
     })
-    if (task.prev_status === "later") {
+    if (task.prev_status === "snoozed") {
       return {
         text: options?.verbose ? `Unsnoozed ${date}` : date,
         Icon: AlarmClockOffIcon,
@@ -52,7 +52,7 @@ export function getTaskStatusInfo(
     }
   }
 
-  if (task.status === "later") {
+  if (task.status === "snoozed") {
     if (!task.status_time) {
       return {
         text: options?.verbose ? "Snoozed until Someday" : "Someday",

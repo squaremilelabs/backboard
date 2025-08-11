@@ -42,7 +42,7 @@ export function ScopeViewTab({
     return () => setHasRecentAddition(false)
   }, [scopeId, view.key, count])
 
-  const isAccented = view.key === "now" && !!count
+  const isAccented = view.key === "current" && !!count
   const [isTasksDragging] = useSessionStorageUtility("is-tasks-dragging", false)
   const isDroppable = view.key !== "recurring" && currentView !== view.key
 

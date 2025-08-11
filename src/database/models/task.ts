@@ -3,7 +3,7 @@ import { v4 } from "uuid"
 import { RecurringTask } from "./recurring-task"
 import { Scope } from "./scope"
 
-export type Task = NowTask | LaterTask | DoneTask
+export type Task = CurrentTask | SnoozedTask | DoneTask
 
 export type TaskStatus = z.infer<typeof TaskStatusEnum>
 
@@ -22,16 +22,16 @@ type BaseTask = {
   prev_status: TaskStatus | null
 }
 
-export type NowTask = BaseTask & {
-  status: "now"
+export type CurrentTask = BaseTask & {
+  status: "current"
   status_time: number
-  prev_status: Omit<TaskStatus, "now"> | null
+  prev_status: Omit<TaskStatus, "current"> | null
 }
 
-export type LaterTask = BaseTask & {
-  status: "later"
+export type SnoozedTask = BaseTask & {
+  status: "snoozed"
   status_time: number | null
-  prev_status: Omit<TaskStatus, "later"> | null
+  prev_status: Omit<TaskStatus, "snoozed"> | null
 }
 
 export type DoneTask = BaseTask & {
@@ -40,7 +40,7 @@ export type DoneTask = BaseTask & {
   prev_status: Omit<TaskStatus, "done">
 }
 
-const TaskStatusEnum = z.enum(["now", "later", "done"])
+const TaskStatusEnum = z.enum(["current", "snoozed", "done"])
 
 export const TaskCreateSchema = z
   .intersection(
@@ -59,11 +59,11 @@ export const TaskCreateSchema = z
       })),
     z.discriminatedUnion("status", [
       z.object({
-        status: TaskStatusEnum.extract(["now"]),
+        status: TaskStatusEnum.extract(["current"]),
         status_time: z.number().optional().default(Date.now()),
       }),
       z.object({
-        status: TaskStatusEnum.extract(["later"]),
+        status: TaskStatusEnum.extract(["snoozed"]),
         status_time: z.number().nullish().default(null),
       }),
     ])
@@ -94,19 +94,19 @@ export const TaskUpdateSchema = z
     }),
     z.discriminatedUnion("status", [
       z.object({
-        status: TaskStatusEnum.extract(["now"]),
+        status: TaskStatusEnum.extract(["current"]),
         status_time: z.number().optional().default(Date.now()),
-        prev_status: TaskStatusEnum.extract(["later", "done"]),
+        prev_status: TaskStatusEnum.extract(["snoozed", "done"]),
       }),
       z.object({
         status: TaskStatusEnum.extract(["done"]),
         status_time: z.number().optional().default(Date.now()),
-        prev_status: TaskStatusEnum.extract(["now", "later"]),
+        prev_status: TaskStatusEnum.extract(["current", "snoozed"]),
       }),
       z.object({
-        status: TaskStatusEnum.extract(["later"]),
+        status: TaskStatusEnum.extract(["snoozed"]),
         status_time: z.number().nullable(),
-        prev_status: TaskStatusEnum.extract(["now", "done"]),
+        prev_status: TaskStatusEnum.extract(["current", "done"]),
       }),
       z.object({
         status: z.undefined().optional(),

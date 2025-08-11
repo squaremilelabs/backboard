@@ -25,7 +25,7 @@ export function CurrentTaskList() {
     $: {
       where: {
         "scope.owner.id": instantAccount?.id ?? "NO_ACCOUNT",
-        "status": "now",
+        "status": "current",
         "scope.is_inactive": false,
       },
       order: {
@@ -38,7 +38,7 @@ export function CurrentTaskList() {
 
   const tasks = sortItemsByIdOrder({
     items: queriedTasks ?? [],
-    idOrder: instantAccount?.list_orders?.["tasks/now"] ?? [],
+    idOrder: instantAccount?.list_orders?.["tasks/current"] ?? [],
     missingIdsPosition: "start",
     sortMissingIds(left, right) {
       return (right.status_time ?? 0) - (left.status_time ?? 0)
@@ -55,7 +55,7 @@ export function CurrentTaskList() {
             targetId: e.target.key as string,
             dropPosition: e.target.dropPosition,
           })
-          const { data } = parseAccountUpdateInput({ list_orders: { "tasks/now": newOrder } })
+          const { data } = parseAccountUpdateInput({ list_orders: { "tasks/current": newOrder } })
           db.transact(db.tx.accounts[instantAccount.id].merge(data))
         }
       : undefined,
@@ -148,7 +148,7 @@ export function CurrentTaskList() {
           </p>
           <TaskActionBar
             selectedTaskIds={selectedTaskIds}
-            currentStatus={"now"}
+            currentStatus={"current"}
             onAfterAction={() => setSelectedTaskIds([])}
             display="buttons"
           />

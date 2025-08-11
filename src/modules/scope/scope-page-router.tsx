@@ -7,7 +7,7 @@ import { ScopeViewKey, useCurrentScopeView } from "./use-scope-views"
 export function ScopePageRouter() {
   const { view } = useCurrentScopeView()
 
-  const isTaskListView = (["now", "later", "done"] as ScopeViewKey[]).includes(view)
+  const isTaskListView = (["current", "snoozed", "done"] as ScopeViewKey[]).includes(view)
   const isRecurringTaskListView = view === "recurring"
 
   if (isTaskListView) {

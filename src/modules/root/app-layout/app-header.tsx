@@ -1,5 +1,5 @@
 "use client"
-import { MenuIcon, PlayIcon } from "lucide-react"
+import { MenuIcon, SparkleIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { AppUserTray } from "./app-user-tray"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
@@ -46,8 +46,8 @@ export function AppHeader() {
               !!tasks?.length ? "text-primary-text" : "text-neutral-text"
             )}
           >
-            <Icon icon={<PlayIcon strokeWidth={3} />} />
-            <h1 className="p-2 text-lg font-semibold">Now</h1>
+            <Icon icon={<SparkleIcon strokeWidth={3} />} />
+            <h1 className="p-2 text-lg font-semibold">Current</h1>
           </div>
         )}
         <div className="grow" />

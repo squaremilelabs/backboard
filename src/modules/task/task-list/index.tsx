@@ -12,7 +12,7 @@ import { cn } from "~/smui/utils"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
 import { typography } from "@/common/components/class-names"
 import { db, useDBQuery } from "@/database/db-client"
-import { NowTask, parseTaskCreateInput, Task, TaskStatus } from "@/database/models/task"
+import { parseTaskCreateInput, Task, TaskStatus } from "@/database/models/task"
 import { parseScopeUpdateInput } from "@/database/models/scope"
 import { RecurringTask } from "@/database/models/recurring-task"
 import { useAuth } from "@/modules/auth/use-auth"
@@ -23,7 +23,7 @@ export function TaskList() {
 
   const [_, setIsTasksDragging] = useSessionStorageUtility("is-tasks-dragging", false)
 
-  const isReorderable = scopeView === "now"
+  const isReorderable = scopeView === "current"
   const { dragAndDropHooks } = useDragAndDrop({
     getItems: (keys) => processItemKeys(keys, tasks, "db/task"),
     onDragStart: () => setIsTasksDragging(true),
@@ -36,7 +36,7 @@ export function TaskList() {
             targetId: e.target.key as string,
             dropPosition: e.target.dropPosition,
           })
-          const { data } = parseScopeUpdateInput({ list_orders: { "tasks/now": newOrder } })
+          const { data } = parseScopeUpdateInput({ list_orders: { "tasks/current": newOrder } })
           db.transact(db.tx.scopes[scopeId].merge(data))
         }
       : undefined,
@@ -61,12 +61,12 @@ export function TaskList() {
     },
   })
 
-  const isCreateEnabled = scopeView === "now" || scopeView === "later"
+  const isCreateEnabled = scopeView === "current" || scopeView === "snoozed"
   const handleCreate = async (title: string) => {
     const { id, data, link } = parseTaskCreateInput({
       title,
       scope_id: scopeId,
-      status: scopeView === "later" ? "later" : "now",
+      status: scopeView === "snoozed" ? "snoozed" : "current",
     })
     await db.transact([
       db.tx.tasks[id].link(link).create({
@@ -191,7 +191,7 @@ function useTaskListTaskQuery() {
                 $gte: scopeView === "done" ? startOfDay(subDays(new Date(), 5)).getTime() : 0,
               },
             },
-            scopeView === "later"
+            scopeView === "snoozed"
               ? {
                   status_time: { $isNull: true },
                 }
@@ -208,18 +208,18 @@ function useTaskListTaskQuery() {
 
   const tasks = queriedTasks ?? []
 
-  if (scopeView === "now") {
+  if (scopeView === "current") {
     return sortItemsByIdOrder({
-      items: tasks as (NowTask & { recurring_task?: RecurringTask })[],
-      idOrder: scope?.list_orders?.["tasks/now"] ?? [],
+      items: tasks,
+      idOrder: scope?.list_orders?.["tasks/current"] ?? [],
       missingIdsPosition: "start",
       sortMissingIds(left, right) {
-        return right.status_time - left.status_time
+        return (right.status_time ?? 0) - (left.status_time ?? 0)
       },
     })
   }
 
-  if (scopeView === "later") {
+  if (scopeView === "snoozed") {
     return [...tasks].sort((left, right) => {
       if (left.status_time === right.status_time) {
         return left.created_at - right.created_at

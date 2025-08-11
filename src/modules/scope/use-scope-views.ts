@@ -3,7 +3,7 @@ import {
   AlarmClockIcon,
   CircleCheckBigIcon,
   LucideIcon,
-  PlayIcon,
+  SparkleIcon,
   RefreshCwIcon,
 } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -17,15 +17,15 @@ export type ScopeViewKey = TaskStatus | "recurring"
 export type ScopeViewInfo = { key: ScopeViewKey; title: string; Icon: LucideIcon }
 
 export const SCOPE_VIEWS: Array<ScopeViewInfo> = [
-  { key: "now", title: "Now", Icon: PlayIcon },
-  { key: "later", title: "Later", Icon: AlarmClockIcon },
+  { key: "current", title: "Current", Icon: SparkleIcon },
+  { key: "snoozed", title: "Snoozed", Icon: AlarmClockIcon },
   { key: "recurring", title: "Recurring", Icon: RefreshCwIcon },
   { key: "done", title: "Done", Icon: CircleCheckBigIcon },
 ]
 
 export function useCurrentScopeView() {
   const { id, view } = useParams<{ id: string; view?: string[] }>()
-  let resolvedView: ScopeViewKey = "now"
+  let resolvedView: ScopeViewKey = "current"
   if (view) {
     const viewKey = view[0] as ScopeViewKey
     if (SCOPE_VIEWS.some((v) => v.key === viewKey)) {
@@ -47,7 +47,7 @@ export function useCurrentScopeViewCounts(): Record<ScopeViewKey, number | null>
       $: {
         where: {
           or: [
-            { status: { $in: ["now", "later"] } },
+            { status: { $in: ["current", "snoozed"] } },
             {
               status: "done",
               status_time: { $gte: startOfDay(subDays(new Date(), 5)).getTime() },
@@ -70,14 +70,14 @@ export function useCurrentScopeViewCounts(): Record<ScopeViewKey, number | null>
   const tasks = scope?.tasks || []
   const recurringTasks = scope?.recurring_tasks || []
 
-  const nowCount = tasks.filter((task) => task.status === "now").length || null
-  const laterCount = tasks.filter((task) => task.status === "later").length || null
+  const currentCount = tasks.filter((task) => task.status === "current").length || null
+  const snoozedCount = tasks.filter((task) => task.status === "snoozed").length || null
   const doneCount = tasks.filter((task) => task.status === "done").length || null
   const recurringCount = recurringTasks.length || null
 
   return {
-    now: nowCount,
-    later: laterCount,
+    current: currentCount,
+    snoozed: snoozedCount,
     done: doneCount,
     recurring: recurringCount,
   }

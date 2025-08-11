@@ -12,7 +12,7 @@ export function useAccountOpenTasks() {
         where: {
           "scope.owner.id": account?.id || "NO_ACCOUNT",
           "scope.is_inactive": false,
-          "status": "now",
+          "status": "current",
         },
       },
     },

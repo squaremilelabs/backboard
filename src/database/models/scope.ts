@@ -38,7 +38,7 @@ const ScopeIconSchema = z.discriminatedUnion("type", [
 ])
 
 const ScopeListOrdersSchema = z.object({
-  "tasks/now": z.array(z.uuidv4()).nullish(),
+  "tasks/current": z.array(z.uuidv4()).nullish(),
 })
 
 export const ScopeCreateSchema = z
@@ -59,7 +59,7 @@ export const ScopeCreateSchema = z
       },
       link: { owner: owner_id },
       list_orders: {
-        "tasks/now": [],
+        "tasks/current": [],
       } satisfies ScopeListOrders,
     }
   })

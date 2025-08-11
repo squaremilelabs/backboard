@@ -33,7 +33,7 @@ export function ScopeList({ disableDragAndDrop = false }: { disableDragAndDrop?:
         "is_inactive": showInactive ? { $in: [true, false] } : false,
       },
     },
-    tasks: { $: { where: { status: "now" } } },
+    tasks: { $: { where: { status: "current" } } },
   })
 
   const scopes = sortItemsByIdOrder({

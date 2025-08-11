@@ -24,12 +24,12 @@ export type TaskActionButonProps = {
   display: "buttons" | "icons"
 }
 
-type TaskActionKey = "now" | "later" | "done" | "delete"
+type TaskActionKey = "current" | "snooze" | "done" | "delete"
 
 const TASK_STATUS_TO_ACTION_MAP: Record<TaskStatus, TaskActionKey[]> = {
-  now: ["done", "later", "delete"],
-  later: ["now", "later", "done", "delete"],
-  done: ["now", "delete"],
+  current: ["done", "snooze", "delete"],
+  snoozed: ["current", "snooze", "done", "delete"],
+  done: ["current", "delete"],
 }
 
 export function TaskActionBar(props: TaskActionButonProps) {
@@ -43,8 +43,8 @@ export function TaskActionBar(props: TaskActionButonProps) {
       {(_) => (
         <>
           {displayedActions.map((action) => {
-            if (action === "now") return <TaskNowActionButton key={action} {...props} />
-            if (action === "later") return <TaskLaterActionButton key={action} {...props} />
+            if (action === "current") return <TaskCurrentActionButton key={action} {...props} />
+            if (action === "snooze") return <TaskSnoozeActionButton key={action} {...props} />
             if (action === "done") return <TaskDoneActionButton key={action} {...props} />
             if (action === "delete") return <TaskDeleteActionButton key={action} {...props} />
             return null
@@ -100,7 +100,7 @@ function TaskActionButton({
   )
 }
 
-function TaskNowActionButton({
+function TaskCurrentActionButton({
   currentStatus,
   display,
   selectedTaskIds,
@@ -110,8 +110,8 @@ function TaskNowActionButton({
     db.transact(
       selectedTaskIds.map((id) => {
         const { data } = parseTaskUpdateInput({
-          status: "now",
-          prev_status: currentStatus as "later" | "done",
+          status: "current",
+          prev_status: currentStatus as "snoozed" | "done",
         })
         return db.tx.tasks[id].update(data)
       })
@@ -122,8 +122,8 @@ function TaskNowActionButton({
 
   return (
     <TaskActionButton
-      label={currentStatus === "later" ? "Unsnooze" : "Reopen"}
-      Icon={currentStatus === "later" ? AlarmClockOffIcon : Undo2Icon}
+      label={currentStatus === "snoozed" ? "Unsnooze" : "Undo"}
+      Icon={currentStatus === "snoozed" ? AlarmClockOffIcon : Undo2Icon}
       palette="neutral-flat"
       display={display}
       onPress={onPress}
@@ -131,7 +131,7 @@ function TaskNowActionButton({
   )
 }
 
-function TaskLaterActionButton({
+function TaskSnoozeActionButton({
   currentStatus,
   display,
   selectedTaskIds,
@@ -143,8 +143,8 @@ function TaskLaterActionButton({
     <>
       <TaskActionButton
         forwardRef={ref}
-        label={currentStatus === "now" ? `Snooze` : `Reschedule`}
-        Icon={currentStatus === "now" ? AlarmClockIcon : ClipboardClockIcon}
+        label={currentStatus === "current" ? `Snooze` : `Reschedule`}
+        Icon={currentStatus === "current" ? AlarmClockIcon : ClipboardClockIcon}
         display={display}
         palette="neutral-flat"
         onPress={() => setOpen(true)}
@@ -170,7 +170,7 @@ function TaskDoneActionButton({
       selectedTaskIds.map((id) => {
         const { data } = parseTaskUpdateInput({
           status: "done",
-          prev_status: currentStatus as "now" | "later",
+          prev_status: currentStatus as "current" | "snoozed",
         })
         return db.tx.tasks[id].update(data)
       })
@@ -184,7 +184,7 @@ function TaskDoneActionButton({
       Icon={CircleCheckBigIcon}
       display={display}
       onPress={onPress}
-      palette={currentStatus === "now" ? "primary-flat" : "neutral-flat"}
+      palette={currentStatus === "current" ? "primary-flat" : "neutral-flat"}
     />
   )
 }

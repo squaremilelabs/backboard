@@ -46,7 +46,7 @@ export async function GET() {
           recurring_task_id: task.id,
           title: task.title,
           content: task.content || null,
-          status: "now",
+          status: "current",
         })
 
         return db.tx.tasks[id].link(link).create({

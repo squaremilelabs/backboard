@@ -26,14 +26,14 @@ export function TaskSnoozePicker({
     db.transact(
       selectedTaskIds.map((id) => {
         let data: TaskUpdateOutput["data"] = {}
-        if (currentStatus === "later") {
+        if (currentStatus === "snoozed") {
           const { data: narrowedData } = parseTaskUpdateInput({
             status_time: date.toDate(getLocalTimeZone()).getTime(),
           })
           data = narrowedData
         } else {
           const { data: narrowedData } = parseTaskUpdateInput({
-            status: "later",
+            status: "snoozed",
             status_time: date.toDate(getLocalTimeZone()).getTime(),
             prev_status: currentStatus,
           })
@@ -50,12 +50,12 @@ export function TaskSnoozePicker({
     db.transact(
       selectedTaskIds.map((id) => {
         let data: TaskUpdateOutput["data"] = {}
-        if (currentStatus === "later") {
+        if (currentStatus === "snoozed") {
           const { data: narrowedData } = parseTaskUpdateInput({ status_time: null })
           data = narrowedData
         } else {
           const { data: narrowedData } = parseTaskUpdateInput({
-            status: "later",
+            status: "snoozed",
             status_time: null,
             prev_status: currentStatus,
           })

@@ -5,11 +5,11 @@ import { parseTaskUpdateInput } from "@/database/models/task"
 export async function GET() {
   try {
     const now = new Date().getTime()
-    const tasksToRenew = await db.query({
+    const tasksToUnsnooze = await db.query({
       tasks: {
         $: {
           where: {
-            "status": "later",
+            "status": "snoozed",
             "status_time": { $lte: now },
             "scope.is_inactive": false,
           },
@@ -17,10 +17,10 @@ export async function GET() {
         },
       },
     })
-    const taskIds = tasksToRenew.tasks.map((task: { id: string }) => task.id)
+    const taskIds = tasksToUnsnooze.tasks.map((task: { id: string }) => task.id)
     await db.transact(
       taskIds.map((id) => {
-        const { data } = parseTaskUpdateInput({ status: "now", prev_status: "later" })
+        const { data } = parseTaskUpdateInput({ status: "current", prev_status: "snoozed" })
         return db.tx.tasks[id].update(data)
       })
     )

@@ -23,7 +23,7 @@ export type AccountLinks = {
 
 const AccountListOrdersSchema = z.object({
   "scopes": z.array(z.uuidv4()).nullish(),
-  "tasks/now": z.array(z.uuidv4()).nullish(),
+  "tasks/current": z.array(z.uuidv4()).nullish(),
 })
 
 export const AccountCreateSchema = z
@@ -39,7 +39,7 @@ export const AccountCreateSchema = z
         api_key: v4(),
         list_orders: {
           "scopes": [],
-          "tasks/now": [],
+          "tasks/current": [],
         },
       },
       link: { user: user_id },

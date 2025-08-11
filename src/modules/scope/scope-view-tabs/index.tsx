@@ -30,13 +30,13 @@ export function ScopeViewTabs({ scopeId }: { scopeId: string }) {
     onItemDrop: async (e) => {
       const droppedOnStatus = e.target.key as TaskStatus
       const tasks = await processDropItems<Task>(e.items, "db/task")
-      if (droppedOnStatus === "now") {
+      if (droppedOnStatus === "current") {
         db.transact(
           tasks
-            .filter((task) => task.status !== "now")
+            .filter((task) => task.status !== "current")
             .map((task) => {
               const { data } = parseTaskUpdateInput({
-                status: "now",
+                status: "current",
                 prev_status: task.status,
               })
               return db.tx.tasks[task.id].update(data)
@@ -56,7 +56,7 @@ export function ScopeViewTabs({ scopeId }: { scopeId: string }) {
             })
         )
       }
-      if (droppedOnStatus === "later") {
+      if (droppedOnStatus === "snoozed") {
         setDroppedTasks(tasks)
         setSnoozeModalOpen(true)
       }
