@@ -61,7 +61,7 @@ export function RecurringTaskFrequencyPicker({
               value: "grow text-left font-medium",
               icon: "size-14",
             },
-            popover: "bg-base-bg rounded-sm border p-4 w-(--trigger-width)",
+            popover: "bg-base-bg rounded-sm border-2 p-4 w-(--trigger-width)",
           }}
           selectedKey={values.recur_day_type}
           disabledKeys={[values.recur_day_type]}
@@ -79,11 +79,11 @@ export function RecurringTaskFrequencyPicker({
               <SelectButton classNames={classNames.button}>
                 {({ defaultChildren }) => defaultChildren}
               </SelectButton>
-              <SelectPopover className={classNames.popover}>
+              <SelectPopover className={classNames.popover} offset={0}>
                 <ListBox
                   items={[
-                    { value: "weekday", label: "Daily or Weekly" },
-                    { value: "monthday", label: "Monthly" },
+                    { value: "weekday", label: "Daily or Weekly..." },
+                    { value: "monthday", label: "Monthly..." },
                   ]}
                   classNames={{
                     base: [],

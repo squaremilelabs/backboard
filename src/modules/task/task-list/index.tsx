@@ -1,6 +1,6 @@
 "use client"
 
-// TODO: Refactor alongside task-list
+// TODO: Refactor alongside current-task-list
 
 import { Selection, useDragAndDrop } from "react-aria-components"
 import { useEffect, useState } from "react"
