@@ -1,5 +1,5 @@
 "use client"
-import { cn } from "~/smui/utils"
+import { typography } from "@/common/components/class-names"
 
 export function AppLogo({ withTitle }: { withTitle?: boolean }) {
   return (
@@ -12,12 +12,7 @@ export function AppLogo({ withTitle }: { withTitle?: boolean }) {
         className="shadow"
       /> */}
       {withTitle && (
-        <p
-          className={cn(
-            "decoration-primary-text font-bold tracking-tight text-neutral-700 underline",
-            "decoration-2"
-          )}
-        >
+        <p className={typography({ type: "backboard-type", className: "decoration-2" })}>
           Backboard
         </p>
       )}

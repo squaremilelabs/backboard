@@ -8,11 +8,9 @@ export const typography = tv({
         "text-sm text-neutral-muted-text uppercase",
         "min-w-fit tracking-wider font-semibold",
       ],
-      "gradient-title": [
+      "backboard-type": [
         "font-bold tracking-tighter",
-        "inline-block bg-clip-text",
-        "from-neutral-text to-primary-text bg-gradient-to-br from-20% via-80% to-95%",
-        "text-transparent",
+        "text-neutral-700 underline decoration-primary-text",
       ],
     },
   },
