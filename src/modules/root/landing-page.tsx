@@ -17,7 +17,8 @@ export default function LandingPage() {
             <h1
               className={typography({
                 type: "gradient-title",
-                className: "text-[60px] leading-[60px]",
+                className:
+                  "decoration-primary-text text-[60px] leading-[60px] text-neutral-700 underline",
               })}
             >
               Backboard

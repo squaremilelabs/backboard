@@ -54,7 +54,7 @@ export function RecurringTaskListCreateBox() {
             <CreateField
               onSubmit={handleTitleSubmit}
               placeholder={`Add recurring task`}
-              classNames={{ base: "!outline-0 grow !bg-transparent p-8 " }}
+              classNames={{ base: "!outline-0 grow !bg-transparent p-8 gap-8" }}
             />
           </>
         )}

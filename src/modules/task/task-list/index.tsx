@@ -110,7 +110,7 @@ export function TaskList() {
       {isCreateEnabled && (
         <CreateField
           onSubmit={handleCreate}
-          placeholder="Add task"
+          placeholder={scopeView === "current" ? "Add current task" : `Add "someday" task`}
           classNames={{
             base: [
               "p-8 gap-8 self-stretch",
