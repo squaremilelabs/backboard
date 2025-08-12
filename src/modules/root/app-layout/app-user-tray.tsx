@@ -3,10 +3,13 @@ import { SignedIn, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
 import {
   CircleCheckBigIcon,
+  ClipboardCheckIcon,
+  ClipboardIcon,
   DiamondIcon,
   EllipsisVerticalIcon,
   ExternalLinkIcon,
   HeartHandshakeIcon,
+  InfoIcon,
   Laptop2Icon,
   MapIcon,
   MoonIcon,
@@ -14,7 +17,8 @@ import {
 } from "lucide-react"
 import { useTheme } from "next-themes"
 import { usePathname } from "next/navigation"
-import { FEEDBACK_URL, ROADMAP_URL } from "./links"
+import { useCopyToClipboard } from "usehooks-ts"
+import { FEEDBACK_URL, INTEGRATE_WITH_ZAPIER_URL, ROADMAP_URL } from "./links"
 import { cn } from "~/smui/utils"
 import { Icon } from "~/smui/icon/components"
 import { Popover, PopoverTrigger } from "~/smui/popover/components"
@@ -22,6 +26,7 @@ import { Button } from "~/smui/button/components"
 import { useAccountOpenTasks } from "@/modules/task/task-total-count"
 import { ToggleButton, ToggleButtonGroup } from "~/smui/toggle-button/components"
 import { typography } from "@/common/components/class-names"
+import { useAuth } from "@/modules/auth/use-auth"
 
 export function AppUserTray() {
   const pathname = usePathname()
@@ -64,6 +69,7 @@ export function AppUserTray() {
           >
             <AppThemeSelect />
             <AppRoadmapLinks />
+            <AppIntegrateWithZapier />
           </Popover>
         </PopoverTrigger>
       </div>
@@ -145,6 +151,44 @@ function AppThemeSelect() {
           )
         }}
       </ToggleButtonGroup>
+    </div>
+  )
+}
+
+function AppIntegrateWithZapier() {
+  const { instantAccount } = useAuth()
+  const [copiedText, copy] = useCopyToClipboard()
+
+  const handleCopyApiKey = () => {
+    copy(instantAccount?.api_key ?? "INVALID_API_KEY")
+  }
+  return (
+    <div className="flex flex-col">
+      <p className={typography({ type: "label", className: "p-4" })}>Integrate with Zapier</p>
+      <Link
+        className={cn(
+          "flex items-center gap-2 p-4 text-sm",
+          "text-neutral-text hover:text-base-text cursor-pointer",
+          "hover:underline"
+        )}
+        href={INTEGRATE_WITH_ZAPIER_URL}
+        target="_blank"
+      >
+        <Icon icon={<InfoIcon />} />
+        <span className="grow">Learn More</span>
+        <Icon icon={<ExternalLinkIcon />} />
+      </Link>
+      <Button
+        className={cn(
+          "flex items-center gap-2 p-4 text-sm",
+          "text-neutral-text hover:text-base-text cursor-pointer",
+          "hover:underline"
+        )}
+        onPress={handleCopyApiKey}
+      >
+        <Icon icon={copiedText ? <ClipboardCheckIcon /> : <ClipboardIcon />} />
+        <span className="grow text-left">{copiedText ? "Keep this safe!" : "Copy API Key"}</span>
+      </Button>
     </div>
   )
 }
