@@ -11,25 +11,84 @@ export function reorderIds({
   targetId: string
   dropPosition: "before" | "after" | "on"
 }) {
+  // No-op if nothing to move or target is not in the list
+  if (
+    droppedIds.length === 0 ||
+    !prevOrder.includes(targetId) ||
+    droppedIds.every((id) => !prevOrder.includes(id))
+  ) {
+    return prevOrder
+  }
+
+  // If the target is one of the dragged items, treat as a no-op
+  // (dropping an item/block onto itself should not change order)
+  if (droppedIds.includes(targetId)) {
+    return prevOrder
+  }
+
+  // Remove droppedIds from prevOrder
   const filteredOrder = prevOrder.filter((id) => !droppedIds.includes(id))
   const targetIdx = filteredOrder.indexOf(targetId)
-  let newOrder: string[] = []
 
-  if (dropPosition === "before") {
-    // Insert dropped tasks before the target task
-    newOrder = [
-      ...filteredOrder.slice(0, targetIdx),
-      ...droppedIds,
-      ...filteredOrder.slice(targetIdx),
-    ]
-  } else if (dropPosition === "after" || dropPosition === "on") {
-    // Insert dropped tasks after the target task
-    newOrder = [
-      ...filteredOrder.slice(0, targetIdx + 1),
-      ...droppedIds,
-      ...filteredOrder.slice(targetIdx + 1),
-    ]
+  // Calculate intended insertIdx
+  let insertIdx =
+    dropPosition === "before"
+      ? targetIdx
+      : dropPosition === "after" || dropPosition === "on"
+        ? targetIdx + 1
+        : targetIdx
+
+  // Clamp insertIdx
+  if (insertIdx < 0) insertIdx = 0
+  if (insertIdx > filteredOrder.length) insertIdx = filteredOrder.length
+
+  // Find the indices of the dropped items in the original order
+  const currentIndices = droppedIds.map((id) => prevOrder.indexOf(id))
+  const minCurrentIdx = Math.min(...currentIndices)
+  const maxCurrentIdx = Math.max(...currentIndices)
+
+  // If dropping before itself (first dropped item), no-op
+  if (
+    droppedIds.length === 1 &&
+    ((dropPosition === "before" &&
+      prevOrder.indexOf(droppedIds[0]) === prevOrder.indexOf(targetId)) ||
+      (dropPosition === "after" &&
+        prevOrder.indexOf(droppedIds[0]) === prevOrder.indexOf(targetId) + 1) ||
+      (dropPosition === "on" &&
+        prevOrder.indexOf(droppedIds[0]) === prevOrder.indexOf(targetId) + 1))
+  ) {
+    return prevOrder
   }
+
+  // For multi-select, check if the block is being dropped at its own position
+  if (
+    droppedIds.length > 1 &&
+    minCurrentIdx === prevOrder.indexOf(targetId) &&
+    maxCurrentIdx === prevOrder.indexOf(targetId) + droppedIds.length - 1 &&
+    (dropPosition === "before" || dropPosition === "on")
+  ) {
+    return prevOrder
+  }
+  if (
+    droppedIds.length > 1 &&
+    minCurrentIdx === prevOrder.indexOf(targetId) - droppedIds.length + 1 &&
+    maxCurrentIdx === prevOrder.indexOf(targetId) &&
+    dropPosition === "after"
+  ) {
+    return prevOrder
+  }
+
+  // Adjust insertIdx if moving forward in the list (i.e., after its current position)
+  // If the first dropped item's original index is before insertIdx in prevOrder, subtract droppedIds.length
+  // Note: insertIdx is computed against filteredOrder (which already excludes droppedIds),
+  // so no additional adjustment is needed here. Extra adjustments can lead to no-ops or wrong positions.
+
+  // Insert droppedIds at insertIdx
+  const newOrder: string[] = [
+    ...filteredOrder.slice(0, insertIdx),
+    ...droppedIds,
+    ...filteredOrder.slice(insertIdx),
+  ]
 
   return newOrder
 }
