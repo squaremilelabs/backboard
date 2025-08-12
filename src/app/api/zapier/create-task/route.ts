@@ -7,7 +7,7 @@ import { parseTaskCreateInput } from "@/database/models/task"
 const CreateTaskPayloadSchema = z.strictObject({
   scope_id: z.uuidv4(),
   title: z.string().trim().min(1),
-  content: z.string().trim().min(1).nullish(),
+  content: z.string().trim().nullish(),
 })
 
 type CreateTaskPayloadType = z.infer<typeof CreateTaskPayloadSchema>
