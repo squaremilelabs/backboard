@@ -52,7 +52,7 @@ export function AppUserTray() {
           <Button className="text-neutral-muted-text hover:text-primary-text">
             <Icon
               icon={<EllipsisVerticalIcon />}
-              className="!w-fit !min-w-fit"
+              className="!w-fit !min-w-fit px-6 md:px-0"
               variants={{ size: "md" }}
             />
           </Button>

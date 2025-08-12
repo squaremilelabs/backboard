@@ -1,5 +1,5 @@
 import { ClassValue } from "tailwind-variants"
-import { GripVerticalIcon, TextIcon } from "lucide-react"
+import { GripIcon, GripVerticalIcon, TextIcon } from "lucide-react"
 import { useState } from "react"
 import { Emoji, EmojiStyle } from "emoji-picker-react"
 import { TaskPanel } from "../task-panel"
@@ -43,7 +43,7 @@ export function TaskListItem({
             {allowsDragging && (
               <Button slot="drag" className="hidden md:flex">
                 <Icon
-                  icon={<GripVerticalIcon strokeWidth={isUnordered ? 3 : 2} />}
+                  icon={isUnordered ? <GripIcon /> : <GripVerticalIcon />}
                   className={[
                     "!w-fit !min-w-fit",
                     isUnordered ? "text-primary-text" : "text-neutral-muted-text",
