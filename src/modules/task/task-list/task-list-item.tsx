@@ -12,20 +12,20 @@ import { Modal, ModalTrigger } from "~/smui/modal/components"
 import { cn } from "~/smui/utils"
 import { typography } from "@/common/components/class-names"
 import { Checkbox } from "~/smui/checkbox/components"
-import { Task } from "@/database/models/task"
-import { RecurringTask } from "@/database/models/recurring-task"
-import { Scope } from "@/database/models/scope"
+import { Task, TaskLinks } from "@/database/models/task"
 
 export function TaskListItem({
   task,
   className,
   disableActionBar,
-  showScopeIcon,
+  showScopeInfo,
+  isUnordered,
 }: {
-  task: Task & { recurring_task?: RecurringTask; scope?: Scope }
+  task: Task & Partial<TaskLinks>
   className: ClassValue
   disableActionBar?: boolean
-  showScopeIcon?: boolean
+  showScopeInfo?: boolean
+  isUnordered?: boolean
 }) {
   const [panelOpen, setPanelOpen] = useState(false)
 
@@ -43,8 +43,11 @@ export function TaskListItem({
             {allowsDragging && (
               <Button slot="drag" className="hidden md:flex">
                 <Icon
-                  icon={<GripVerticalIcon />}
-                  className="text-neutral-muted-text !w-fit !min-w-fit"
+                  icon={<GripVerticalIcon strokeWidth={isUnordered ? 3 : 2} />}
+                  className={[
+                    "!w-fit !min-w-fit",
+                    isUnordered ? "text-primary-text" : "text-neutral-muted-text",
+                  ]}
                   variants={{ size: "sm" }}
                 />
               </Button>
@@ -59,12 +62,6 @@ export function TaskListItem({
                 ],
               }}
             />
-            {showScopeIcon && task.scope?.icon?.type === "emoji" && (
-              <Icon
-                icon={<Emoji unified={task.scope.icon.unified} emojiStyle={EmojiStyle.APPLE} />}
-                variants={{ size: "sm" }}
-              />
-            )}
             <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
               <Button
                 className="flex items-center gap-4 truncate"
@@ -91,13 +88,31 @@ export function TaskListItem({
                 display="icons"
               />
             </div>
-            <span className={typography({ type: "label", className: "flex items-center gap-2" })}>
-              {statusInfo.text}
-              <Icon
-                icon={<statusInfo.Icon strokeWidth={2.5} absoluteStrokeWidth />}
-                variants={{ size: "sm" }}
-              />
-            </span>
+            {showScopeInfo ? (
+              <span
+                className={typography({
+                  type: "label",
+                  className: "flex items-center gap-2",
+                })}
+              >
+                {task.scope?.icon?.type === "emoji" && (
+                  <Icon
+                    icon={<Emoji unified={task.scope.icon.unified} emojiStyle={EmojiStyle.APPLE} />}
+                    variants={{ size: "sm" }}
+                    className={["opacity-70"]}
+                  />
+                )}
+                {task.scope?.title}
+              </span>
+            ) : (
+              <span className={typography({ type: "label", className: "flex items-center gap-2" })}>
+                {statusInfo.text}
+                <Icon
+                  icon={<statusInfo.Icon strokeWidth={2.5} absoluteStrokeWidth />}
+                  variants={{ size: "sm" }}
+                />
+              </span>
+            )}
           </>
         )
       }}

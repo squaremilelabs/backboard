@@ -1,5 +1,4 @@
 "use client"
-
 // TODO: refactor alongside task-list
 
 import { Selection, useDragAndDrop } from "react-aria-components"
@@ -8,9 +7,7 @@ import { TaskListItem } from "../task-list/task-list-item"
 import { TaskActionBar } from "../task-actions"
 import ZeroButton from "./zero-button"
 import { db, useDBQuery } from "@/database/db-client"
-import { RecurringTask } from "@/database/models/recurring-task"
-import { Scope } from "@/database/models/scope"
-import { Task } from "@/database/models/task"
+import { Task, TaskLinks } from "@/database/models/task"
 import { useAuth } from "@/modules/auth/use-auth"
 import { GridList } from "~/smui/grid-list/components"
 import { cn } from "~/smui/utils"
@@ -21,10 +18,7 @@ import { typography } from "@/common/components/class-names"
 export function CurrentTaskList() {
   const { instantAccount } = useAuth()
 
-  const { tasks: queriedTasks } = useDBQuery<
-    Task & { recurring_task?: RecurringTask; scope: Scope },
-    "tasks"
-  >("tasks", {
+  const { tasks: queriedTasks } = useDBQuery<Task & TaskLinks, "tasks">("tasks", {
     $: {
       where: {
         "scope.owner.id": instantAccount?.id ?? "NO_ACCOUNT",
@@ -42,9 +36,20 @@ export function CurrentTaskList() {
   const tasks = sortItemsByIdOrder({
     items: queriedTasks ?? [],
     idOrder: instantAccount?.list_orders?.["tasks/current"] ?? [],
-    missingIdsPosition: "start",
+    missingIdsPosition: "end",
     sortMissingIds(left, right) {
-      return (right.status_time ?? 0) - (left.status_time ?? 0)
+      const leftScopeTitle = left.scope?.title ?? ""
+      const rightScopeTitle = right.scope?.title ?? ""
+      if (leftScopeTitle !== rightScopeTitle) {
+        return leftScopeTitle.localeCompare(rightScopeTitle)
+      }
+      const leftScopePosition = left.scope?.list_orders?.["tasks/current"]?.indexOf(left.id) ?? -1
+      const rightScopePosition =
+        right.scope?.list_orders?.["tasks/current"]?.indexOf(right.id) ?? -1
+      if (leftScopePosition !== rightScopePosition) {
+        return leftScopePosition - rightScopePosition
+      }
+      return left.created_at - right.created_at
     },
   })
 
@@ -133,7 +138,8 @@ export function CurrentTaskList() {
             task={task}
             className={classNames.item}
             disableActionBar={selectedTaskIds.length > 1}
-            showScopeIcon
+            showScopeInfo
+            isUnordered={!instantAccount.list_orders?.["tasks/current"]?.includes(task.id)}
           />
         )}
       </GridList>

@@ -22,7 +22,7 @@ import { useAuth } from "@/modules/auth/use-auth"
 
 export function TaskList() {
   const { id: scopeId, view: scopeView } = useCurrentScopeView()
-  const tasks = useTaskListTaskQuery()
+  const { tasks, order } = useTaskListTaskQuery()
 
   const [_, setIsTasksDragging] = useSessionStorageUtility("is-tasks-dragging", false)
 
@@ -143,6 +143,7 @@ export function TaskList() {
             task={task}
             className={classNames.item}
             disableActionBar={selectedTaskIds.length > 1}
+            isUnordered={isReorderable && !order.includes(task.id)}
           />
         )}
       </GridList>
@@ -209,13 +210,13 @@ function useTaskListTaskQuery() {
     }
   )
 
-  const tasks = queriedTasks ?? []
+  let tasks = queriedTasks ?? []
 
   if (scopeView === "current") {
-    return sortItemsByIdOrder({
+    tasks = sortItemsByIdOrder({
       items: tasks,
       idOrder: scope?.list_orders?.["tasks/current"] ?? [],
-      missingIdsPosition: "start",
+      missingIdsPosition: "end",
       sortMissingIds(left, right) {
         return (right.status_time ?? 0) - (left.status_time ?? 0)
       },
@@ -223,7 +224,7 @@ function useTaskListTaskQuery() {
   }
 
   if (scopeView === "snoozed") {
-    return [...tasks].sort((left, right) => {
+    tasks = [...tasks].sort((left, right) => {
       if (left.status_time === right.status_time) {
         return left.created_at - right.created_at
       }
@@ -233,5 +234,5 @@ function useTaskListTaskQuery() {
     })
   }
 
-  return tasks
+  return { tasks, order: scope?.list_orders?.["tasks/current"] ?? [] }
 }

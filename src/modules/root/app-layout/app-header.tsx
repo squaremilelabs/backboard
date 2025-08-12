@@ -1,5 +1,5 @@
 "use client"
-import { MenuIcon } from "lucide-react"
+import { CircleCheckBigIcon, DiamondIcon, MenuIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { AppUserTray } from "./app-user-tray"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
@@ -10,7 +10,6 @@ import { Icon } from "~/smui/icon/components"
 import { ScopeViewTabs } from "@/modules/scope/scope-view-tabs"
 import { useAccountOpenTasks } from "@/modules/task/task-total-count"
 import { cn } from "~/smui/utils"
-import { typography } from "@/common/components/class-names"
 
 export function AppHeader() {
   const pathname = usePathname()
@@ -41,13 +40,23 @@ export function AppHeader() {
         {/* Title */}
         {isScopeView && <ScopeTitle scopeId={scopeId} />}
         {isNowTaskView && (
-          <div className={cn("flex items-center gap-2")}>
-            <h1
-              className={typography({
-                type: "gradient-title",
-                className: ["p-2 text-lg font-bold tracking-normal"],
-              })}
-            >
+          <div
+            className={cn(
+              "flex items-center gap-4",
+              tasks?.length === 0 ? "text-neutral-muted-text" : "text-primary-text"
+            )}
+          >
+            <Icon
+              icon={
+                tasks?.length === 0 ? (
+                  <CircleCheckBigIcon strokeWidth={3} />
+                ) : (
+                  <DiamondIcon strokeWidth={3} />
+                )
+              }
+              variants={{ size: "md" }}
+            />
+            <h1 className={cn(["p-2 text-lg font-semibold"])}>
               {tasks?.length ?? 0} Current Task{tasks?.length === 1 ? "" : "s"}
             </h1>
           </div>

@@ -1,5 +1,4 @@
 "use client"
-
 import {
   AlarmClockOffIcon,
   CheckIcon,
@@ -12,8 +11,7 @@ import {
   Undo2Icon,
 } from "lucide-react"
 import { formatDate } from "@/common/utils/date-utils"
-import { Task } from "@/database/models/task"
-import { RecurringTask } from "@/database/models/recurring-task"
+import { Task, TaskLinks } from "@/database/models/task"
 
 export type TaskStatusInfo = {
   Icon: LucideIcon
@@ -21,7 +19,7 @@ export type TaskStatusInfo = {
 }
 
 export function getTaskStatusInfo(
-  task: Task & { recurring_task?: RecurringTask },
+  task: Task & Partial<TaskLinks>,
   options?: { verbose?: boolean }
 ): TaskStatusInfo {
   if (task.status === "current") {
