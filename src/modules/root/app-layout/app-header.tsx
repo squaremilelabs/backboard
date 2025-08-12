@@ -10,7 +10,6 @@ import { Icon } from "~/smui/icon/components"
 import { ScopeViewTabs } from "@/modules/scope/scope-view-tabs"
 import { useAccountOpenTasks } from "@/modules/task/task-total-count"
 import { cn } from "~/smui/utils"
-import { typography } from "@/common/components/class-names"
 
 export function AppHeader() {
   const pathname = usePathname()
@@ -41,7 +40,12 @@ export function AppHeader() {
         {/* Title */}
         {isScopeView && <ScopeTitle scopeId={scopeId} />}
         {isNowTaskView && (
-          <div className={cn("flex items-center gap-4")}>
+          <div
+            className={cn(
+              "flex items-center gap-4",
+              tasks?.length === 0 ? "text-neutral-text" : "text-primary-text"
+            )}
+          >
             <Icon
               icon={
                 tasks?.length === 0 ? (
@@ -50,12 +54,9 @@ export function AppHeader() {
                   <DiamondIcon strokeWidth={3} />
                 )
               }
-              className={tasks?.length === 0 ? "text-neutral-700" : "text-primary-text"}
               variants={{ size: "md" }}
             />
-            <h1
-              className={typography({ type: "backboard-type", className: "text-lg decoration-2" })}
-            >
+            <h1 className={"text-lg font-bold"}>
               {tasks?.length ?? 0} Current Task{tasks?.length === 1 ? "" : "s"}
             </h1>
           </div>
