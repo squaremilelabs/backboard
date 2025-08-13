@@ -27,13 +27,7 @@ export async function POST(req: NextRequest) {
     })
     const scopedDb = db.asUser({ email: account.user.email })
 
-    await scopedDb.transact(
-      db.tx.tasks[id].link(link).create({
-        ...data,
-        // @ts-expect-error -- instantdb error on optionally required indexes
-        status_time: Date.now(),
-      })
-    )
+    await scopedDb.transact(db.tx.tasks[id].link(link).create(data))
 
     const createdTaskQuery = await scopedDb.query({ tasks: { $: { where: { id }, first: 1 } } })
     const createdTask = createdTaskQuery.tasks[0]

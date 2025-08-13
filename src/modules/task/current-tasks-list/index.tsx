@@ -18,20 +18,25 @@ import { typography } from "@/common/components/class-names"
 export function CurrentTaskList() {
   const { instantAccount } = useAuth()
 
-  const { tasks: queriedTasks } = useDBQuery<Task & TaskLinks, "tasks">("tasks", {
-    $: {
-      where: {
-        "scope.owner.id": instantAccount?.id ?? "NO_ACCOUNT",
-        "status": "current",
-        "scope.is_inactive": false,
-      },
-      order: {
-        status_time: "asc",
-      },
-    },
-    recurring_task: {},
-    scope: {},
-  })
+  const { tasks: queriedTasks } = useDBQuery<Task & TaskLinks, "tasks">(
+    "tasks",
+    instantAccount
+      ? {
+          $: {
+            where: {
+              "scope.owner.id": instantAccount?.id, // random placeholder
+              "status": "current",
+              "scope.is_inactive": false,
+            },
+            order: {
+              status_time: "asc",
+            },
+          },
+          recurring_task: {},
+          scope: {},
+        }
+      : null
+  )
 
   const tasks = sortItemsByIdOrder({
     items: queriedTasks ?? [],

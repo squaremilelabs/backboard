@@ -49,11 +49,7 @@ export async function GET() {
           status: "current",
         })
 
-        return db.tx.tasks[id].link(link).create({
-          ...data,
-          // @ts-expect-error -- instant db error with optionally indexed properties
-          status_time: data.status_time,
-        })
+        return db.tx.tasks[id].link(link).create(data)
       })
     )
 

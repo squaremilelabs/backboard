@@ -26,15 +26,20 @@ export function ScopeList({ disableDragAndDrop = false }: { disableDragAndDrop?:
   const { instantAccount: account } = useAuth()
   const [showInactive, setShowInactive] = useSessionStorageUtility("show-inactive-scopes", false)
 
-  const scopeQuery = useDBQuery<Scope & { tasks: Task[] }, "scopes">("scopes", {
-    $: {
-      where: {
-        "owner.id": account?.id || "NO_ACCOUNT",
-        "is_inactive": showInactive ? { $in: [true, false] } : false,
-      },
-    },
-    tasks: { $: { where: { status: "current" } } },
-  })
+  const scopeQuery = useDBQuery<Scope & { tasks: Task[] }, "scopes">(
+    "scopes",
+    account
+      ? {
+          $: {
+            where: {
+              "owner.id": account.id, // random id placeholder for no account
+              "is_inactive": showInactive ? { $in: [true, false] } : false,
+            },
+          },
+          tasks: { $: { where: { status: "current" } } },
+        }
+      : null
+  )
 
   const scopes = sortItemsByIdOrder({
     items: scopeQuery.scopes ?? [],

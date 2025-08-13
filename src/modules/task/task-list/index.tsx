@@ -1,5 +1,4 @@
 "use client"
-
 // TODO: Refactor alongside current-task-list
 
 import { Selection, useDragAndDrop } from "react-aria-components"
@@ -71,13 +70,7 @@ export function TaskList() {
       scope_id: scopeId,
       status: scopeView === "snoozed" ? "snoozed" : "current",
     })
-    await db.transact([
-      db.tx.tasks[id].link(link).create({
-        ...data,
-        // @ts-expect-error -- instant db error with optionally indexed properties
-        status_time: data.status_time ?? null,
-      }),
-    ])
+    await db.transact([db.tx.tasks[id].link(link).create(data)])
   }
 
   const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([])
@@ -183,31 +176,33 @@ function useTaskListTaskQuery() {
 
   const { tasks: queriedTasks } = useDBQuery<Task & { recurring_task?: RecurringTask }, "tasks">(
     "tasks",
-    {
-      $: {
-        where: {
-          "scope.id": scopeId,
-          "status": scopeView,
-          "scope.owner.id": instantAccount?.id ?? "NO_ACCOUNT",
-          "or": [
-            {
-              status_time: {
-                $gte: scopeView === "done" ? startOfDay(subDays(new Date(), 5)).getTime() : 0,
-              },
+    instantAccount
+      ? {
+          $: {
+            where: {
+              "scope.id": scopeId,
+              "status": scopeView,
+              "scope.owner.id": instantAccount?.id, // random placeholder
+              "or": [
+                {
+                  status_time: {
+                    $gte: scopeView === "done" ? startOfDay(subDays(new Date(), 5)) : new Date(0),
+                  },
+                },
+                scopeView === "snoozed"
+                  ? {
+                      status_time: { $isNull: true },
+                    }
+                  : null,
+              ].filter((d) => d !== null),
             },
-            scopeView === "snoozed"
-              ? {
-                  status_time: { $isNull: true },
-                }
-              : null,
-          ].filter((d) => d !== null),
-        },
-        order: {
-          status_time: scopeView === "done" ? "desc" : "asc",
-        },
-      },
-      recurring_task: {},
-    }
+            order: {
+              status_time: scopeView === "done" ? "desc" : "asc",
+            },
+          },
+          recurring_task: {},
+        }
+      : null
   )
 
   let tasks = queriedTasks ?? []

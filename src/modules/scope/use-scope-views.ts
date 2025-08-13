@@ -50,7 +50,7 @@ export function useCurrentScopeViewCounts(): Record<ScopeViewKey, number | null>
             { status: { $in: ["current", "snoozed"] } },
             {
               status: "done",
-              status_time: { $gte: startOfDay(subDays(new Date(), 5)).getTime() },
+              status_time: { $gte: startOfDay(subDays(new Date(), 5)) },
             },
           ],
         },

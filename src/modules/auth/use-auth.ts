@@ -9,7 +9,7 @@ export function useAuth(): {
   const { user: clerkUser } = useUser()
   const userEmail = clerkUser?.primaryEmailAddress?.emailAddress
   const { accounts } = useDBQuery("accounts", {
-    $: { where: { "user.email": userEmail ?? "NO_USER" } },
+    $: { where: { "user.email": userEmail ?? "none@none.com" } },
   })
   const instantAccount = accounts?.[0]
   return { instantAccount, clerkUser }

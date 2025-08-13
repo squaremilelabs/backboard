@@ -8,9 +8,14 @@ import { typography } from "@/common/components/class-names"
 import { useDBQuery } from "@/database/db-client"
 
 export function ScopeTitle({ scopeId }: { scopeId: string | null | undefined }) {
-  const { scopes } = useDBQuery("scopes", {
-    $: { where: { id: scopeId ?? "NO_SCOPE_ID" }, first: 1 },
-  })
+  const { scopes } = useDBQuery(
+    "scopes",
+    scopeId
+      ? {
+          $: { where: { id: scopeId }, first: 1 },
+        }
+      : null
+  )
   const scope = scopes?.[0]
 
   return (

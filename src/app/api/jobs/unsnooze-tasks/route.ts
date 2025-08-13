@@ -4,7 +4,7 @@ import { parseTaskUpdateInput } from "@/database/models/task"
 
 export async function GET() {
   try {
-    const now = new Date().getTime()
+    const now = new Date()
     const tasksToUnsnooze = await db.query({
       tasks: {
         $: {

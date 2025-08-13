@@ -12,7 +12,7 @@ export async function generateMetadata({
   const user = await currentUser()
   const { id: scopeId } = await params
   const scopeQuery = await db
-    .asUser({ email: user?.primaryEmailAddress?.emailAddress ?? "NO_USER" })
+    .asUser({ email: user?.primaryEmailAddress?.emailAddress ?? "none@none.com" })
     .query({
       scopes: {
         $: {
