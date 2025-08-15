@@ -5,8 +5,6 @@ import { parseTaskCreateInput } from "@/database/models/task"
 
 export async function GET() {
   try {
-    // WeekdayQuery
-
     const query = await db.query({
       recurring_tasks: {
         $: {

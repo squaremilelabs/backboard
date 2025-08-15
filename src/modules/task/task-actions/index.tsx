@@ -111,6 +111,7 @@ function TaskCurrentActionButton({
       selectedTaskIds.map((id) => {
         const { data } = parseTaskUpdateInput({
           status: "current",
+          status_time: Date.now(),
           prev_status: currentStatus as "snoozed" | "done",
         })
         return db.tx.tasks[id].update(data)
@@ -170,6 +171,7 @@ function TaskDoneActionButton({
       selectedTaskIds.map((id) => {
         const { data } = parseTaskUpdateInput({
           status: "done",
+          status_time: Date.now(),
           prev_status: currentStatus as "current" | "snoozed",
         })
         return db.tx.tasks[id].update(data)

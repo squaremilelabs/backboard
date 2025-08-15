@@ -1,3 +1,5 @@
+"use client"
+
 import { getTaskStatusInfo } from "../task-status"
 import { TaskActionBar } from "../task-actions"
 import {
@@ -8,9 +10,13 @@ import { panel } from "@/common/components/class-names"
 import { Icon } from "~/smui/icon/components"
 import { parseTaskUpdateInput, Task } from "@/database/models/task"
 import { db } from "@/database/db-client"
+import { useAuth } from "@/modules/auth/use-auth"
 
 export function TaskPanel({ task }: { task: Task }) {
-  const { Icon: StateIcon, text } = getTaskStatusInfo(task, { verbose: true })
+  const { instantAccount } = useAuth()
+  const { Icon: StateIcon, text } = getTaskStatusInfo(task, instantAccount?.custom_work_hours, {
+    verbose: true,
+  })
   const { base, section } = panel()
 
   const handleTitleContentSave = (values: TitleContentFieldValues) => {

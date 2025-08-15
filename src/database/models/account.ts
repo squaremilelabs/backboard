@@ -1,16 +1,14 @@
 import z from "zod"
 import { v4 } from "uuid"
 import { Scope } from "./scope"
-
-export type AccountListOrderKey = keyof AccountListOrders
-
-export type AccountListOrders = z.infer<typeof AccountListOrdersSchema>
+import { isWorkHoursValid } from "@/modules/auth/account-hours"
 
 export type Account = {
   id: string
   created_at: number
   list_orders: AccountListOrders | null
   api_key: string | null
+  custom_work_hours: AccountCustomWorkHours | null
 }
 
 export type AccountLinks = {
@@ -25,6 +23,26 @@ const AccountListOrdersSchema = z.object({
   "scopes": z.array(z.uuidv4()).nullish(),
   "tasks/current": z.array(z.uuidv4()).nullish(),
 })
+
+export type AccountListOrderKey = keyof AccountListOrders
+export type AccountListOrders = z.infer<typeof AccountListOrdersSchema>
+
+const timezones = Intl.supportedValuesOf("timeZone")
+export const AccountCustomWorkHoursSchema = z
+  .object({
+    tz: z.string().refine((val) => timezones.includes(val), { error: "Invalid timezone" }),
+    start: z.number().min(0).max(12),
+    mid: z.number().min(1).max(35).nullish(),
+    last: z.number().min(1).max(35).nullish(),
+  })
+  .refine(
+    (val) => {
+      return isWorkHoursValid(val)
+    },
+    { message: "Invalid work hours" }
+  )
+
+export type AccountCustomWorkHours = z.infer<typeof AccountCustomWorkHoursSchema>
 
 export const AccountCreateSchema = z
   .object({
@@ -55,6 +73,7 @@ export const parseAccountCreateInput = (input: AccountCreateInput) =>
 export const AccountUpdateSchema = z
   .object({
     list_orders: AccountListOrdersSchema.nullish(),
+    custom_work_hours: AccountCustomWorkHoursSchema.nullish(),
   })
   .transform(({ ...data }) => {
     return {

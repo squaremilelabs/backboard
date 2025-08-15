@@ -1,3 +1,5 @@
+"use client"
+
 import { ClassValue } from "tailwind-variants"
 import { GripIcon, GripVerticalIcon, TextIcon } from "lucide-react"
 import { useState } from "react"
@@ -13,6 +15,7 @@ import { cn } from "~/smui/utils"
 import { typography } from "@/common/components/class-names"
 import { Checkbox } from "~/smui/checkbox/components"
 import { Task, TaskLinks } from "@/database/models/task"
+import { useAuth } from "@/modules/auth/use-auth"
 
 export function TaskListItem({
   task,
@@ -28,8 +31,11 @@ export function TaskListItem({
   isUnordered?: boolean
 }) {
   const [panelOpen, setPanelOpen] = useState(false)
+  const { instantAccount } = useAuth()
 
-  const statusInfo = getTaskStatusInfo(task)
+  const statusInfo = getTaskStatusInfo(task, instantAccount?.custom_work_hours, {
+    verbose: false,
+  })
   return (
     <GridListItem
       id={task.id}

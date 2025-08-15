@@ -15,6 +15,7 @@ const _schema = i.schema({
       api_key: i.string().unique().optional(),
       created_at: i.date().indexed(),
       list_orders: i.json().optional(), // AccountListOrdersType
+      custom_work_hours: i.json().optional(),
     }),
     tasks: i.entity({
       created_at: i.date().indexed(),

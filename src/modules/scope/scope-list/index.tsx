@@ -86,6 +86,8 @@ export function ScopeList({ disableDragAndDrop = false }: { disableDragAndDrop?:
     }
   }
 
+  if (!account) return null
+
   return (
     <div className="flex flex-col gap-2 p-2">
       <GridList

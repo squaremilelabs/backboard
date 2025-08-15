@@ -213,7 +213,7 @@ function useTaskListTaskQuery() {
       idOrder: scope?.list_orders?.["tasks/current"] ?? [],
       missingIdsPosition: "end",
       sortMissingIds(left, right) {
-        return (right.status_time ?? 0) - (left.status_time ?? 0)
+        return (left.status_time ?? 0) - (right.status_time ?? 0)
       },
     })
   }
