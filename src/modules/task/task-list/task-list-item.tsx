@@ -1,7 +1,7 @@
 "use client"
 
 import { ClassValue } from "tailwind-variants"
-import { GripIcon, GripVerticalIcon, TextIcon } from "lucide-react"
+import { GripVerticalIcon, TextIcon } from "lucide-react"
 import { useState } from "react"
 import { Emoji, EmojiStyle } from "emoji-picker-react"
 import { TaskPanel } from "../task-panel"
@@ -40,7 +40,11 @@ export function TaskListItem({
     <GridListItem
       id={task.id}
       textValue={task.title}
-      className={[className, "rounded-sm"]}
+      className={[
+        className,
+        "rounded-sm",
+        isUnordered && "border-l-primary-muted-border border-l-2",
+      ]}
       onAction={() => setPanelOpen(true)}
     >
       {({ allowsDragging, isHovered }) => {
@@ -49,7 +53,7 @@ export function TaskListItem({
             {allowsDragging && (
               <Button slot="drag" className="hidden md:flex">
                 <Icon
-                  icon={isUnordered ? <GripIcon /> : <GripVerticalIcon />}
+                  icon={<GripVerticalIcon />}
                   className={[
                     "!w-fit !min-w-fit",
                     isUnordered ? "text-primary-text" : "text-neutral-muted-text",
