@@ -18,7 +18,7 @@ export default function ScopePanel({ scope }: { scope: Scope }) {
     db.transact(db.tx.scopes[scope.id].update({ is_inactive: !scope.is_inactive }))
   }
 
-  const onTitleContentSave = (values: TitleContentFieldValues) => {
+  const onTitleContentSave = (values: Partial<TitleContentFieldValues>) => {
     const { data } = parseScopeUpdateInput(values)
     db.transact(db.tx.scopes[scope.id].update(data))
   }

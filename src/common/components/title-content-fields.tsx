@@ -1,18 +1,14 @@
 "use client"
-
 import { TextIcon } from "lucide-react"
-import { useEffect, useState } from "react"
-import { useDebounceCallback } from "usehooks-ts"
+import { useEffect } from "react"
+import { useDebouncedTypings } from "../utils/use-debounced"
+import { TextEditor } from "./text-editor"
 import { Icon } from "~/smui/icon/components"
 import { TextField, TextFieldTextArea } from "~/smui/text-field/components"
 
 export type TitleContentFieldValues = {
   title: string
   content: string | null | undefined
-}
-
-const isEqual = (a: TitleContentFieldValues, b: TitleContentFieldValues) => {
-  return a.title === b.title && (a.content || null) === (b.content || null)
 }
 
 export function TitleContentFields({
@@ -22,28 +18,25 @@ export function TitleContentFields({
   titleStartContent,
 }: {
   initialValues: TitleContentFieldValues
-  handleSaveValues: (values: TitleContentFieldValues) => void
+  handleSaveValues: (values: Partial<TitleContentFieldValues>) => void
   saveDelay?: number
   titleStartContent?: React.ReactNode
 }) {
-  const [typedValues, setTypedValues] = useState<TitleContentFieldValues>(initialValues)
-  const [persistedValues, setPersistedValues] = useState<TitleContentFieldValues>(initialValues)
-  const debouncedSetPersistedValues = useDebounceCallback(setPersistedValues, saveDelay)
+  const {
+    typedValue: title,
+    setTypedValue: setTitle,
+    settledValue: settledTitle,
+  } = useDebouncedTypings(initialValues.title, saveDelay)
 
-  const validateThenSaveValues = (values: TitleContentFieldValues) => {
-    if (!values.title.trim()) return
-    if (isEqual(values, initialValues)) return
-    handleSaveValues({ title: values.title.trim(), content: values.content?.trim() || null })
+  useEffect(() => {
+    handleSaveTitle(settledTitle)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settledTitle])
+
+  const handleSaveTitle = (title: string) => {
+    if (!title.trim()) return
+    handleSaveValues({ title: title.trim() })
   }
-
-  useEffect(() => {
-    debouncedSetPersistedValues(typedValues)
-  }, [typedValues, debouncedSetPersistedValues])
-
-  useEffect(() => {
-    validateThenSaveValues(persistedValues)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only want to run this when persistedValues change
-  }, [persistedValues])
 
   return (
     <div className="bg-base-bg flex w-full grow flex-col gap-12 rounded-sm p-12">
@@ -57,17 +50,17 @@ export function TitleContentFields({
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault()
-            validateThenSaveValues(typedValues)
+            handleSaveTitle(title)
           } else if (e.key === "Escape") {
-            validateThenSaveValues(typedValues)
+            handleSaveTitle(title)
             e.continuePropagation()
           } else {
             e.continuePropagation()
           }
         }}
-        onBlur={() => validateThenSaveValues(typedValues)}
-        value={typedValues.title}
-        onChange={(title) => setTypedValues((prev) => ({ ...prev, title }))}
+        onBlur={() => handleSaveTitle(title)}
+        value={title}
+        onChange={(title) => setTitle(title)}
         isRequired
       >
         {(_, classNames) => (
@@ -82,36 +75,16 @@ export function TitleContentFields({
           </>
         )}
       </TextField>
-      <TextField
-        aria-label="Content"
-        classNames={{
-          base: "flex items-start w-full gap-8 grow overflow-auto max-h-[400px]",
-          textarea: "w-full !outline-0",
-        }}
-        value={typedValues.content || ""}
-        onChange={(content) => setTypedValues((prev) => ({ ...prev, content: content || null }))}
-        onBlur={() => validateThenSaveValues(typedValues)}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            validateThenSaveValues(typedValues)
-          }
-          e.continuePropagation()
-        }}
-        name="content"
-        isRequired
-      >
-        {(_, classNames) => (
-          <>
-            <Icon icon={<TextIcon />} className="text-neutral-muted-text w-24" />
-            <TextFieldTextArea
-              className={classNames.textarea}
-              minRows={5}
-              placeholder="Notes..."
-              spellCheck={false}
-            />
-          </>
-        )}
-      </TextField>
+      <div className="flex items-start gap-8">
+        <Icon icon={<TextIcon />} className="text-neutral-muted-text w-24" />
+        <div className="max-h-400 grow overflow-auto">
+          <TextEditor
+            initialContent={initialValues?.content || null}
+            handleSaveContent={(content) => handleSaveValues({ content })}
+            saveDelay={saveDelay}
+          />
+        </div>
+      </div>
     </div>
   )
 }

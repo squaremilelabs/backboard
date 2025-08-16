@@ -19,7 +19,7 @@ export function TaskPanel({ task }: { task: Task }) {
   })
   const { base, section } = panel()
 
-  const handleTitleContentSave = (values: TitleContentFieldValues) => {
+  const handleTitleContentSave = (values: Partial<TitleContentFieldValues>) => {
     const { data } = parseTaskUpdateInput(values)
     db.transact(db.tx.tasks[task.id].update(data))
   }

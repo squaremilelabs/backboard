@@ -16,7 +16,7 @@ export function RecurringTaskPanel({ task }: { task: RecurringTask }) {
   const { base, section } = panel()
   const [frequencyPickerOpen, setFrequencyPickerOpen] = useState(false)
 
-  const handleTitleContentSave = (values: TitleContentFieldValues) => {
+  const handleTitleContentSave = (values: Partial<TitleContentFieldValues>) => {
     const { data } = parseRecurringTaskUpdateInput(values)
     db.transact(db.tx.recurring_tasks[task.id].update(data))
   }
