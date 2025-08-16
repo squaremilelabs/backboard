@@ -65,7 +65,7 @@ export function AppHeader() {
         <AppUserTray />
       </div>
       {isScopeView && (
-        <div className="mt-8">
+        <div className="mt-8 overflow-auto">
           <ScopeViewTabs scopeId={scopeId} />
         </div>
       )}

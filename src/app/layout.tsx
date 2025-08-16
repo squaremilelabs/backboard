@@ -41,8 +41,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={cn(fontsClassName, "overflow-auto")} suppressHydrationWarning>
-      <body className="overflow-hidden">
+    <html lang="en" className={fontsClassName} suppressHydrationWarning>
+      <body>
         <Providers>
           <SignedIn>
             <AppLayout>{children}</AppLayout>
