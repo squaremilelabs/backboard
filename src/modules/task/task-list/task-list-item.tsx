@@ -43,7 +43,7 @@ export function TaskListItem({
       className={[
         className,
         "rounded-sm",
-        isUnordered && "border-l-primary-muted-border border-l-2",
+        // isUnordered && "border-l-primary-muted-border border-l-2",
       ]}
       onAction={() => setPanelOpen(true)}
     >
