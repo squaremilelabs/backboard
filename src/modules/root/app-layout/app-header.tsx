@@ -1,5 +1,5 @@
 "use client"
-import { CircleCheckBigIcon, DiamondIcon, MenuIcon } from "lucide-react"
+import { DiamondIcon, MenuIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { AppUserTray } from "./app-user-tray"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
@@ -42,21 +42,21 @@ export function AppHeader() {
         {isNowTaskView && (
           <div
             className={cn(
-              "flex items-center gap-4",
-              tasks?.length === 0 ? "text-neutral-text" : "text-primary-text"
+              "flex items-center gap-8",
+              tasks?.length === 0 ? "text-neutral-muted-text" : "text-primary-text"
             )}
           >
             <Icon
-              icon={
-                tasks?.length === 0 ? (
-                  <CircleCheckBigIcon strokeWidth={3} />
-                ) : (
-                  <DiamondIcon strokeWidth={3} />
-                )
-              }
-              variants={{ size: "md" }}
+              icon={<DiamondIcon strokeWidth={3} />}
+              variants={{ size: "lg" }}
+              className={tasks?.length === 0 ? "text-neutral-muted-text" : "text-primary-text"}
             />
-            <h1 className={"text-lg font-bold"}>
+            <h1
+              className={cn(
+                "text-lg font-bold",
+                tasks?.length === 0 ? "text-neutral-muted-text" : "text-neutral-text"
+              )}
+            >
               {tasks?.length ?? 0} Current Task{tasks?.length === 1 ? "" : "s"}
             </h1>
           </div>

@@ -244,12 +244,13 @@ export function TaskSnoozePicker({
 }
 
 type SnoozePreset = {
+  key: "today-mid" | "today-last" | "tomorrow" | "this-week" | "next-week"
   label: string
   subLabel: string
   value: Date
 }
 
-function useCurrentSnoozePresets(): SnoozePreset[] {
+export function useCurrentSnoozePresets(): SnoozePreset[] {
   const { instantAccount } = useAuth()
 
   const hours = instantAccount?.custom_work_hours ?? DEFAULT_WORKING_HOURS
@@ -271,6 +272,7 @@ function useCurrentSnoozePresets(): SnoozePreset[] {
   return [
     showLaterToday
       ? {
+          key: "today-mid",
           label: "Later today",
           subLabel: format(midShift as Date, "ha"),
           value: midShift,
@@ -278,18 +280,21 @@ function useCurrentSnoozePresets(): SnoozePreset[] {
       : null,
     showLatertTonight
       ? {
+          key: "today-last",
           label: "Later tonight",
           subLabel: format(lastShift as Date, "ha"),
           value: lastShift as Date,
         }
       : null,
     {
+      key: "tomorrow",
       label: "Tomorrow",
       subLabel: format(tomorrow, "eee ha"),
       value: tomorrow,
     },
     showThisWeek
       ? {
+          key: "this-week",
           label: "This week",
           subLabel: format(thisWeek, "eee ha"),
           value: thisWeek,
@@ -297,10 +302,11 @@ function useCurrentSnoozePresets(): SnoozePreset[] {
       : null,
     showNextWeek
       ? {
+          key: "next-week",
           label: "Next week",
           subLabel: format(nextWeek, "eee ha"),
           value: nextWeek,
         }
       : null,
-  ].filter((val) => val !== null)
+  ].filter((val) => val !== null) as SnoozePreset[]
 }

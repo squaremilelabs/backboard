@@ -2,7 +2,6 @@
 import { SignedIn, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
 import {
-  CircleCheckBigIcon,
   ClipboardCheckIcon,
   ClipboardIcon,
   DiamondIcon,
@@ -52,7 +51,7 @@ export function AppUserTray() {
                 : "text-neutral-muted-text hover:text-primary-text"
             )}
           >
-            <Icon icon={nowTaskCount === 0 ? <CircleCheckBigIcon /> : <DiamondIcon />} />
+            <Icon icon={<DiamondIcon />} />
             {nowTaskCount}
           </Link>
         )}

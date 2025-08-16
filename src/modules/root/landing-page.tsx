@@ -25,7 +25,7 @@ export default function LandingPage() {
                 Backboard
               </h1>
             </div>
-            <p className="font-semibold">A personal task app with inbox zero energy.</p>
+            <p className="font-semibold">To-do list with inbox zero energy.</p>
           </div>
         </div>
         <SignedOut>

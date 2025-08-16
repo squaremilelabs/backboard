@@ -72,7 +72,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <main
             className={cn(
               "grid h-full max-h-full grid-cols-1 grid-rows-1 overflow-hidden",
-              "md:px-16 md:pb-16"
+              "px-8 pb-8 md:px-16 md:pb-16"
             )}
           >
             {children}

@@ -3,11 +3,13 @@ import { useState } from "react"
 import ReactConfetti from "react-confetti"
 import { createPortal } from "react-dom"
 import { useWindowSize } from "usehooks-ts"
+import { typography } from "@/common/components/class-names"
 import { Button } from "~/smui/button/components"
 
 export default function ZeroButton() {
   const { width, height } = useWindowSize()
   const [isConfettiOn, setIsConfettiOn] = useState(false)
+
   return (
     <>
       <Button
@@ -15,13 +17,16 @@ export default function ZeroButton() {
         className={[
           "flex items-center gap-8",
           "rounded-sm text-lg font-semibold",
-          "text-neutral-muted-fg",
+          "text-neutral-text",
+          "slashed-zero",
           isConfettiOn && "text-primary-text animate-bounce",
+          // "text-shadow-sm",
+          typography({ type: "backboard-type" }),
         ]}
         onPress={() => setIsConfettiOn(true)}
       >
         {/* <Icon icon={<CircleCheckBigIcon />} variants={{ size: "lg" }} /> */}
-        You&apos;re done for the day 🎉
+        Backboard Zero
       </Button>
       {createPortal(
         <ReactConfetti
