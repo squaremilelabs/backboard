@@ -4,7 +4,6 @@ import { fontsClassName } from "@/styles/fonts"
 import Providers from "@/modules/root/providers"
 import { AppLayout } from "@/modules/root/app-layout"
 import "@/styles/index.css"
-import { cn } from "~/smui/utils"
 
 export const metadata: Metadata = {
   title: {
