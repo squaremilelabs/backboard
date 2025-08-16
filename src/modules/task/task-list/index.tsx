@@ -97,7 +97,7 @@ export function TaskList() {
     <div
       className={cn(
         "bg-neutral-muted-bg flex h-full max-h-full flex-col gap-2 rounded-sm border p-2",
-        "overflow-auto"
+        "overflow-hidden"
       )}
     >
       {isCreateEnabled && (

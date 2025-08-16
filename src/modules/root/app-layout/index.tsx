@@ -55,7 +55,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           "h-full max-h-full w-full max-w-full",
           // single cell grid with centered content
           "grid grid-cols-1 grid-rows-1 justify-items-center-safe",
-          "overflow-hidden"
+          "overflow-auto"
         )}
       >
         <div
@@ -71,8 +71,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </header>
           <main
             className={cn(
-              "grid h-full max-h-full grid-cols-1 grid-rows-1 overflow-hidden",
-              "px-8 pb-8 md:px-16 md:pb-16"
+              "grid h-full max-h-full grid-cols-1 grid-rows-1",
+              "px-8 pb-8 md:px-16 md:pb-16",
+              "overflow-hidden"
             )}
           >
             {children}
