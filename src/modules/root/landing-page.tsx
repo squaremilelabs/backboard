@@ -14,7 +14,6 @@ export default function LandingPage() {
       <div className="flex w-400 max-w-full flex-col gap-[5dvh]">
         <div className="flex flex-col gap-16">
           <div className="flex flex-wrap items-start gap-16">
-            <Image src="/images/backboard-logo.svg" alt="Backboard Logo" height={60} width={60} />
             <div className="flex w-fit flex-col gap-6">
               <h1
                 className={typography({

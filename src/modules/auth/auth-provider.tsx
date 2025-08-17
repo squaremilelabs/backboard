@@ -9,7 +9,7 @@ import { parseAccountCreateInput } from "@/database/models/account"
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useTheme()
   return (
-    <ClerkProvider appearance={{ baseTheme: resolvedTheme === "dark" ? dark : undefined }}>
+    <ClerkProvider appearance={{ baseTheme: resolvedTheme?.includes("dark") ? dark : undefined }}>
       {children}
       <SignedIn>
         <InstantAccountListener />

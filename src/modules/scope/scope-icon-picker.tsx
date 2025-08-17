@@ -65,7 +65,7 @@ export function ScopeIconPicker({ scope }: { scope: Scope }) {
           onEmojiClick={handleSelect}
           className="!border-0 !p-0"
           emojiStyle={EmojiStyle.APPLE}
-          theme={resolvedTheme === "dark" ? EmojiTheme.DARK : undefined}
+          theme={resolvedTheme?.includes("dark") ? EmojiTheme.DARK : undefined}
         />
       </Popover>
     </PopoverTrigger>

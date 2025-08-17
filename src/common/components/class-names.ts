@@ -10,7 +10,7 @@ export const typography = tv({
       ],
       "backboard-type": [
         "font-bold tracking-tighter",
-        "text-neutral-700 underline decoration-primary-text",
+        "text-neutral-text underline decoration-primary-text",
       ],
     },
   },
