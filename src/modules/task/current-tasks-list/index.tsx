@@ -116,55 +116,59 @@ export function CurrentTaskList() {
   if (!instantAccount) return null
 
   return (
-    <div
-      className={cn(
-        "bg-neutral-muted-bg flex h-full max-h-full flex-col gap-2 rounded-sm border p-2"
-      )}
-    >
-      <GridList
-        aria-label="Current Tasks"
-        variants={{ variant: "task-list" }}
-        items={tasks}
-        selectionMode="multiple"
-        selectionBehavior="replace"
-        onSelectionChange={onSelectionChange}
-        classNames={{ base: "gap-2" }}
-        dragAndDropHooks={dragAndDropHooks}
-        renderEmptyState={() => (
-          <div className="flex h-[50%] w-full items-center justify-center">
-            <ZeroButton />
-          </div>
+    <div className="flex h-full max-h-full flex-col gap-0 overflow-auto">
+      <div
+        className={cn(
+          "bg-neutral-muted-bg flex h-full max-h-full flex-col gap-2 rounded-sm border p-2"
         )}
-        dependencies={[tasks, selectedTaskIds]}
       >
-        {(task, classNames) => (
-          <TaskListItem
-            task={task}
-            className={classNames.item}
-            disableActionBar={selectedTaskIds.length > 1}
-            showScopeInfo
-            isUnordered={!instantAccount.list_orders?.["tasks/current"]?.includes(task.id)}
-          />
-        )}
-      </GridList>
+        <GridList
+          aria-label="Current Tasks"
+          variants={{ variant: "task-list" }}
+          items={tasks}
+          selectionMode="multiple"
+          selectionBehavior="replace"
+          onSelectionChange={onSelectionChange}
+          classNames={{ base: "gap-2" }}
+          dragAndDropHooks={dragAndDropHooks}
+          renderEmptyState={() => (
+            <div className="flex h-[50%] w-full items-center justify-center">
+              <ZeroButton />
+            </div>
+          )}
+          dependencies={[tasks, selectedTaskIds]}
+        >
+          {(task, classNames) => (
+            <TaskListItem
+              task={task}
+              className={classNames.item}
+              disableActionBar={selectedTaskIds.length > 1}
+              showScopeInfo
+              isUnordered={!instantAccount.list_orders?.["tasks/current"]?.includes(task.id)}
+            />
+          )}
+        </GridList>
+      </div>
       {isBatchActionsVisible && (
         <div
           className={cn(
             "flex items-center gap-16 px-16 py-8 md:gap-32",
-            "bg-base-bg border-2",
-            "justify-center-safe overflow-x-auto",
+            "rounded-sm",
+            "overflow-x-auto",
             "min-h-fit"
           )}
         >
           <p className={typography({ type: "label", className: "text-neutral-text" })}>
             {selectedTaskIds.length} selected
           </p>
-          <TaskActionBar
-            selectedTaskIds={selectedTaskIds}
-            currentStatus={"current"}
-            onAfterAction={() => setSelectedTaskIds([])}
-            display="buttons"
-          />
+          <div className="grow overflow-x-auto">
+            <TaskActionBar
+              selectedTaskIds={selectedTaskIds}
+              currentStatus={"current"}
+              onAfterAction={() => setSelectedTaskIds([])}
+              display="buttons"
+            />
+          </div>
         </div>
       )}
     </div>
