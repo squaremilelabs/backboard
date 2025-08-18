@@ -94,71 +94,76 @@ export function TaskList() {
   const isBatchActionsVisible = selectedTaskIds.length > 0
 
   return (
-    <div
-      className={cn(
-        "flex h-full max-h-full flex-col gap-2 rounded-sm p-2",
-        "bg-neutral-muted-bg border",
-        "overflow-hidden"
-      )}
-    >
-      {isCreateEnabled && (
-        <CreateField
-          onSubmit={handleCreate}
-          placeholder={scopeView === "current" ? "Add current task" : `Add "someday" task`}
-          classNames={{
-            base: [
-              "p-8 gap-8 self-stretch",
-              "!outline-0 hover:!bg-base-bg focus-within:bg-base-bg rounded-sm",
-              "focus-within:border-l-4 focus-within:border-l-neutral-border",
-              tasks.length === 0 ? "bg-base-bg/70" : "bg-base-bg/50",
-            ],
-          }}
-        />
-      )}
-      {scopeView === "done" && (
-        <div className={cn("flex h-36 min-h-36 items-center px-8", "text-sm")}>
-          <span className={typography({ type: "label" })}>Tasks done in the last 5 days</span>
-        </div>
-      )}
-      <GridList
-        aria-label="Task List"
-        variants={{ variant: "task-list" }}
-        items={tasks}
-        selectionMode="multiple"
-        selectionBehavior="replace"
-        onSelectionChange={onSelectionChange}
-        classNames={{ base: "gap-2" }}
-        dragAndDropHooks={dragAndDropHooks}
-        renderEmptyState={() => <div className="h-36" />}
-        dependencies={[tasks, selectedTaskIds]}
+    <div className="flex h-full max-h-full flex-col gap-0 overflow-auto">
+      <div
+        className={cn(
+          "flex h-full max-h-full flex-col gap-2 rounded-sm p-2",
+          "bg-neutral-muted-bg border",
+          "overflow-hidden"
+        )}
       >
-        {(task, classNames) => (
-          <TaskListItem
-            task={task}
-            className={classNames.item}
-            disableActionBar={selectedTaskIds.length > 1}
-            isUnordered={isReorderable && !order.includes(task.id)}
+        {isCreateEnabled && (
+          <CreateField
+            onSubmit={handleCreate}
+            placeholder={scopeView === "current" ? "Add current task" : `Add "someday" task`}
+            classNames={{
+              base: [
+                "p-8 gap-8 self-stretch",
+                "!outline-0 hover:!bg-base-bg focus-within:bg-base-bg rounded-sm",
+                "focus-within:border-l-4 focus-within:border-l-neutral-border",
+                tasks.length === 0 ? "bg-base-bg/70" : "bg-base-bg/50",
+              ],
+            }}
           />
         )}
-      </GridList>
+        {scopeView === "done" && (
+          <div className={cn("flex h-36 min-h-36 items-center px-8", "text-sm")}>
+            <span className={typography({ type: "label" })}>Tasks done in the last 5 days</span>
+          </div>
+        )}
+        <GridList
+          aria-label="Task List"
+          variants={{ variant: "task-list" }}
+          items={tasks}
+          selectionMode="multiple"
+          selectionBehavior="replace"
+          onSelectionChange={onSelectionChange}
+          classNames={{ base: "gap-2" }}
+          dragAndDropHooks={dragAndDropHooks}
+          renderEmptyState={() => <div className="h-36" />}
+          dependencies={[tasks, selectedTaskIds]}
+        >
+          {(task, classNames) => (
+            <TaskListItem
+              task={task}
+              className={classNames.item}
+              disableActionBar={selectedTaskIds.length > 1}
+              isUnordered={isReorderable && !order.includes(task.id)}
+            />
+          )}
+        </GridList>
+      </div>
       {isBatchActionsVisible && (
         <div
           className={cn(
             "flex items-center gap-16 px-16 py-8 md:gap-32",
-            "bg-base-bg border-2",
-            "justify-center-safe overflow-x-auto",
+            "rounded-sm border-t-4",
+            // "border-base-outline",
+            "overflow-x-auto",
             "min-h-fit"
           )}
         >
           <p className={typography({ type: "label", className: "text-neutral-text" })}>
             {selectedTaskIds.length} selected
           </p>
-          <TaskActionBar
-            selectedTaskIds={selectedTaskIds}
-            currentStatus={scopeView as TaskStatus}
-            onAfterAction={() => setSelectedTaskIds([])}
-            display="buttons"
-          />
+          <div className="grow overflow-x-auto">
+            <TaskActionBar
+              selectedTaskIds={selectedTaskIds}
+              currentStatus={scopeView as TaskStatus}
+              onAfterAction={() => setSelectedTaskIds([])}
+              display="buttons"
+            />
+          </div>
         </div>
       )}
     </div>
