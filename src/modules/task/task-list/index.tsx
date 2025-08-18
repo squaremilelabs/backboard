@@ -147,8 +147,7 @@ export function TaskList() {
         <div
           className={cn(
             "flex items-center gap-16 px-16 py-8 md:gap-32",
-            "rounded-sm border-t-4",
-            // "border-base-outline",
+            "rounded-sm",
             "overflow-x-auto",
             "min-h-fit"
           )}
