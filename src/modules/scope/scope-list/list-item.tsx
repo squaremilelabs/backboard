@@ -27,7 +27,7 @@ export function ScopeListItem({
       className={[
         className,
         "text-neutral-text rounded-sm font-medium opacity-70 hover:opacity-100",
-        isSelected && "text-base-text bg-neutral-muted-bg border font-semibold !opacity-100",
+        isSelected && "text-base-text border-base-outline border-l-4 font-semibold !opacity-100",
         "transition-colors",
       ]}
     >
@@ -36,7 +36,10 @@ export function ScopeListItem({
           {allowsDragging && (
             <Button
               slot="drag"
-              className="text-neutral-muted-text !cursor-move"
+              className={[
+                "text-neutral-muted-text !cursor-move",
+                isSelected && "text-base-outline",
+              ]}
               excludeFromTabOrder
               isDisabled
             >

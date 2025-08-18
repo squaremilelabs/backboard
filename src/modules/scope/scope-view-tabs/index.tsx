@@ -74,7 +74,7 @@ export function ScopeViewTabs({ scopeId }: { scopeId: string }) {
         selectedKeys={[currentView]}
         selectionMode="single"
         classNames={{
-          base: ["max-w-full overflow-x-auto p-2", "flex items-center gap-4 min-w-fit"],
+          base: ["max-w-full overflow-x-auto p-2", "flex items-center gap-8 min-w-fit"],
         }}
       >
         {(view, classNames) => {

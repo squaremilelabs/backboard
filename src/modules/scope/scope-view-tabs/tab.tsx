@@ -2,9 +2,9 @@
 import { useEffect, useRef, useState } from "react"
 import { ScopeViewInfo, useCurrentScopeView } from "../use-scope-views"
 import { ClassValue, cn } from "~/smui/utils"
-import { Icon } from "~/smui/icon/components"
 import { ListBoxItem } from "~/smui/list-box/components"
 import { useSessionStorageUtility } from "@/common/utils/use-storage-utility"
+import { Icon } from "~/smui/icon/components"
 
 export function ScopeViewTab({
   scopeId,
@@ -52,24 +52,30 @@ export function ScopeViewTab({
       className={[
         className,
         [
-          "flex items-stretch",
+          "flex items-stretch justify-between",
+          // "grow",
+          "rounded-sm",
           "text-sm",
           "min-w-fit",
-          "divide-x rounded-sm border",
-          "text-neutral-muted-text data-selected:text-base-text",
-          "data-selected:border",
-          "data-selected:border-neutral-muted-border",
-          "data-selected:divide-neutral-muted-border",
+          "border-b-2",
+          "gap-8 px-8 pt-8 pr-12 pb-6",
+          // "divide-x rounded-sm border",
+          "text-neutral-muted-text",
+          // "data-selected:border",
+          "data-selected:text-base-text",
+          "data-selected:border-base-outline",
+          // "data-selected:border-neutral-muted-border",
+          // "data-selected:divide-neutral-muted-border",
           "data-selected:font-semibold",
+          // "data-selected:bg-neutral-muted-bg",
           "hover:bg-neutral-muted-bg/50",
-          "data-selected:bg-neutral-muted-bg",
+          "data-selected:border-b-4",
         ],
         isAccented && [
-          "text-primary-text border-primary-muted-border divide-primary-muted-border",
-          "data-selected:bg-primary-muted-bg",
-          "data-selected:text-primary-muted-fg",
-          "data-selected:border-primary-muted-border",
-          "data-selected:divide-primary-muted-border",
+          "text-primary-text",
+          // "data-selected:bg-primary-muted-bg",
+          // "border-primary-muted-border",
+          // "data-selected:text-primary-text",
         ],
         isTasksDragging && isDroppable && ["outline-primary-bg outline-1 outline-dashed"],
         ["data-drop-target:outline-2", "data-drop-target:outline-solid"],
@@ -79,19 +85,16 @@ export function ScopeViewTab({
     >
       {({ isSelected }) => (
         <>
-          <div className={cn("flex items-center gap-4 px-8 py-6")}>
+          <div className={cn("flex items-center gap-4")}>
             <Icon icon={<view.Icon />} variants={{ size: "sm" }} />
             <span>{view.title}</span>
           </div>
           {count ? (
             <span
               className={cn(
-                "flex items-center justify-center px-8",
+                "flex items-center justify-center",
                 isSelected && "font-bold",
-                hasRecentAddition && [
-                  "animate-bounce font-bold",
-                  isAccented ? "" : "text-primary-text",
-                ]
+                hasRecentAddition && ["animate-bounce font-bold", "text-primary-text"]
               )}
             >
               {count}

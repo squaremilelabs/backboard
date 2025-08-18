@@ -96,7 +96,8 @@ export function TaskList() {
   return (
     <div
       className={cn(
-        "bg-neutral-muted-bg flex h-full max-h-full flex-col gap-2 rounded-sm border p-2",
+        "flex h-full max-h-full flex-col gap-2 rounded-sm p-2",
+        "bg-neutral-muted-bg border",
         "overflow-hidden"
       )}
     >

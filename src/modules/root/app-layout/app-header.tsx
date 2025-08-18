@@ -22,7 +22,7 @@ export function AppHeader() {
   const { tasks } = useAccountOpenTasks()
   return (
     <div className="flex flex-col">
-      <div className="flex items-center">
+      <div className="flex items-start">
         {/* Sidebar Trigger */}
         <Button
           variants={{ hover: "fill" }}
@@ -42,23 +42,18 @@ export function AppHeader() {
         {isNowTaskView && (
           <div
             className={cn(
-              "flex items-center gap-8",
-              tasks?.length === 0 ? "text-neutral-muted-text" : "text-primary-text"
+              "flex items-center gap-8 px-8 pr-12 pb-4",
+              "border-b-4",
+              tasks?.length === 0
+                ? ["text-neutral-muted-text"]
+                : ["text-base-text border-base-outline"]
             )}
           >
-            <Icon
-              icon={<DiamondIcon strokeWidth={3} />}
-              variants={{ size: "lg" }}
-              className={tasks?.length === 0 ? "text-neutral-muted-text" : "text-primary-text"}
-            />
-            <h1
-              className={cn(
-                "text-lg font-bold",
-                tasks?.length === 0 ? "text-neutral-muted-text" : "text-neutral-text"
-              )}
-            >
-              {tasks?.length ?? 0} Current Task{tasks?.length === 1 ? "" : "s"}
-            </h1>
+            <div className="flex items-center gap-4">
+              <Icon icon={<DiamondIcon />} variants={{ size: "md" }} />
+              <h1 className={cn("text-lg font-bold")}>Current</h1>
+            </div>
+            <p className="text-lg font-bold">{tasks?.length ?? 0}</p>
           </div>
         )}
         <div className="grow" />
