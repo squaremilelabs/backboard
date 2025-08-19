@@ -22,6 +22,7 @@ export default function ZeroButton() {
           isConfettiOn && "text-primary-text animate-bounce",
           // "text-shadow-sm",
           typography({ type: "backboard-type" }),
+          "decoration-2",
         ]}
         onPress={() => setIsConfettiOn(true)}
       >

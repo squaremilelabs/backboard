@@ -43,8 +43,10 @@ export function AppHeader() {
           <div
             className={cn(
               "flex items-center gap-8 px-8 pr-12 pb-4",
-              "rounded-sm border-b-4",
-              !tasks?.length ? ["text-neutral-muted-text"] : ["text-base-text border-base-outline"]
+              "rounded-sm",
+              !tasks?.length
+                ? ["text-neutral-muted-text"]
+                : ["text-base-text border-base-outline border-b-4"]
             )}
           >
             <div className="flex items-center gap-4">

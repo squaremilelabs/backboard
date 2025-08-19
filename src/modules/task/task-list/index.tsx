@@ -118,7 +118,7 @@ export function TaskList() {
         )}
         {scopeView === "done" && (
           <div className={cn("flex h-36 min-h-36 items-center px-8", "text-sm")}>
-            <span className={typography({ type: "label" })}>Tasks done in the last 5 days</span>
+            <span className={typography({ type: "label" })}>Last 5 days</span>
           </div>
         )}
         <GridList
