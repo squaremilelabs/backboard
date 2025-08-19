@@ -50,79 +50,93 @@ export function TaskListItem({
       {({ allowsDragging, isHovered }) => {
         return (
           <>
-            {allowsDragging && (
-              <Button slot="drag" className="hidden md:flex">
-                <Icon
-                  icon={<GripVerticalIcon />}
-                  className={[
-                    "!w-fit !min-w-fit",
-                    isUnordered ? "text-primary-text" : "text-neutral-muted-text",
-                  ]}
-                  variants={{ size: "sm" }}
-                />
-              </Button>
-            )}
-            <Checkbox
-              slot="selection"
-              excludeFromTabOrder
-              classNames={{
-                base: [
-                  "text-neutral-muted-text hover:opacity-70 data-selected:text-primary-text",
-                  isHovered && "text-primary-text",
-                ],
-              }}
-            />
-            <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
-              <Button
-                className="flex items-center gap-4 truncate"
-                variants={{ hover: "underline" }}
-              >
-                <span className="truncate">{task.title || "-"}</span>
-                {task.content ? (
+            <div className="flex grow items-start gap-8">
+              {allowsDragging && (
+                <Button slot="drag" className="text-neutral-muted-text flex h-20 items-center">
                   <Icon
-                    icon={<TextIcon />}
+                    icon={<GripVerticalIcon />}
+                    className={[
+                      "!w-fit !min-w-fit",
+                      isUnordered ? "text-primary-text/70" : "text-neutral-muted-text",
+                    ]}
                     variants={{ size: "sm" }}
-                    className="text-neutral-muted-text"
                   />
-                ) : null}
-              </Button>
-              <Modal isDismissable>
-                <TaskPanel task={task} />
-              </Modal>
-            </ModalTrigger>
-            <div className="grow" />
-            <div className={cn(isHovered && !disableActionBar ? "visible" : "hidden")}>
-              <TaskActionBar
-                currentStatus={task.status}
-                selectedTaskIds={[task.id]}
-                display="icons"
+                </Button>
+              )}
+              <Checkbox
+                slot="selection"
+                excludeFromTabOrder
+                classNames={{
+                  base: [
+                    "hidden md:flex",
+                    "text-neutral-muted-text hover:opacity-70 data-selected:text-primary-text",
+                    isHovered && "text-primary-text",
+                  ],
+                }}
               />
+              <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
+                <Button
+                  className="flex items-center justify-start gap-4 text-left"
+                  variants={{ hover: "underline" }}
+                >
+                  <span className="text-left">{task.title || "-"}</span>
+                  {task.content ? (
+                    <Icon
+                      icon={<TextIcon />}
+                      variants={{ size: "sm" }}
+                      className="text-neutral-muted-text"
+                    />
+                  ) : null}
+                </Button>
+                <Modal isDismissable>
+                  <TaskPanel task={task} />
+                </Modal>
+              </ModalTrigger>
             </div>
-            {showScopeInfo ? (
+            <div className="flex min-h-20 grow items-center justify-end gap-8">
+              <div className={cn(isHovered && !disableActionBar ? "visible" : "hidden")}>
+                <TaskActionBar
+                  currentStatus={task.status}
+                  selectedTaskIds={[task.id]}
+                  display="icons"
+                />
+              </div>
               <span
                 className={typography({
                   type: "label",
-                  className: "flex items-center gap-2",
+                  className: ["flex items-center gap-2"],
                 })}
               >
-                {task.scope?.icon?.type === "emoji" && (
-                  <Icon
-                    icon={<Emoji unified={task.scope.icon.unified} emojiStyle={EmojiStyle.APPLE} />}
-                    variants={{ size: "sm" }}
-                    className={["opacity-70"]}
-                  />
-                )}
-                {task.scope?.title}
-              </span>
-            ) : (
-              <span className={typography({ type: "label", className: "flex items-center gap-2" })}>
                 {statusInfo.text}
                 <Icon
                   icon={<statusInfo.Icon strokeWidth={2.5} absoluteStrokeWidth />}
                   variants={{ size: "sm" }}
+                  className={[]}
                 />
               </span>
-            )}
+              {showScopeInfo && (
+                <>
+                  <div className="bg-base-border h-16 min-w-2" />
+                  <span
+                    className={typography({
+                      type: "label",
+                      className: "flex items-center gap-2",
+                    })}
+                  >
+                    {task.scope?.icon?.type === "emoji" && (
+                      <Icon
+                        icon={
+                          <Emoji unified={task.scope.icon.unified} emojiStyle={EmojiStyle.APPLE} />
+                        }
+                        variants={{ size: "sm" }}
+                        className={["opacity-70"]}
+                      />
+                    )}
+                    {task.scope?.title}
+                  </span>
+                </>
+              )}
+            </div>
           </>
         )
       }}

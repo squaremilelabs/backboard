@@ -97,8 +97,9 @@ export function TaskList() {
     <div className="flex h-full max-h-full flex-col gap-0 overflow-auto">
       <div
         className={cn(
-          "flex h-full max-h-full flex-col gap-2 rounded-sm p-2",
-          "bg-neutral-muted-bg border",
+          "flex h-full max-h-full grow flex-col",
+          "gap-2 p-2",
+          "bg-neutral-muted-bg rounded-sm border",
           "overflow-hidden"
         )}
       >
@@ -121,27 +122,28 @@ export function TaskList() {
             <span className={typography({ type: "label" })}>Last 5 days</span>
           </div>
         )}
-        <GridList
-          aria-label="Task List"
-          variants={{ variant: "task-list" }}
-          items={tasks}
-          selectionMode="multiple"
-          selectionBehavior="replace"
-          onSelectionChange={onSelectionChange}
-          classNames={{ base: "gap-2" }}
-          dragAndDropHooks={dragAndDropHooks}
-          renderEmptyState={() => <div className="h-36" />}
-          dependencies={[tasks, selectedTaskIds]}
-        >
-          {(task, classNames) => (
-            <TaskListItem
-              task={task}
-              className={classNames.item}
-              disableActionBar={selectedTaskIds.length > 1}
-              isUnordered={isReorderable && !order.includes(task.id)}
-            />
-          )}
-        </GridList>
+        <div className="grow overflow-auto">
+          <GridList
+            aria-label="Task List"
+            variants={{ variant: "task-list" }}
+            items={tasks}
+            selectionMode="multiple"
+            selectionBehavior="replace"
+            onSelectionChange={onSelectionChange}
+            dragAndDropHooks={dragAndDropHooks}
+            renderEmptyState={() => <div className="h-36" />}
+            dependencies={[tasks, selectedTaskIds]}
+          >
+            {(task, classNames) => (
+              <TaskListItem
+                task={task}
+                className={classNames.item}
+                disableActionBar={selectedTaskIds.length > 1}
+                isUnordered={isReorderable && !order.includes(task.id)}
+              />
+            )}
+          </GridList>
+        </div>
       </div>
       {isBatchActionsVisible && (
         <div
@@ -152,7 +154,7 @@ export function TaskList() {
             "min-h-fit"
           )}
         >
-          <p className={typography({ type: "label", className: "text-neutral-text" })}>
+          <p className={typography({ type: "label", className: "text-primary-text" })}>
             {selectedTaskIds.length} selected
           </p>
           <div className="grow overflow-x-auto">

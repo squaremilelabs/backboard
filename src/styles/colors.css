@@ -122,7 +122,7 @@
 
   --neutral-muted-bg: var(--neutral-900);
   --neutral-muted-fg: var(--neutral-600);
-  --neutral-muted-text: var(--neutral-600);
+  --neutral-muted-text: var(--neutral-500);
   --neutral-muted-border: var(--neutral-700);
 
   --danger-bg: var(--danger-900);

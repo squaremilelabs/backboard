@@ -43,8 +43,16 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const accentColor = await getAccountAccentColor()
   return (
-    <html lang="en" className={cn(fontsClassName, accentColor)} suppressHydrationWarning>
-      <body>
+    <html
+      lang="en"
+      className={cn(
+        fontsClassName,
+        accentColor,
+        "flex h-dvh max-h-dvh w-dvw max-w-dvw flex-col overflow-hidden"
+      )}
+      suppressHydrationWarning
+    >
+      <body className="flex h-full w-full flex-col">
         <Providers>
           <SignedIn>
             <AppLayout>{children}</AppLayout>

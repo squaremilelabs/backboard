@@ -119,7 +119,10 @@ export function CurrentTaskList() {
     <div className="flex h-full max-h-full flex-col gap-0 overflow-auto">
       <div
         className={cn(
-          "bg-neutral-muted-bg flex h-full max-h-full flex-col gap-2 rounded-sm border p-2"
+          "flex h-full max-h-full grow flex-col",
+          "gap-2 p-2",
+          "bg-neutral-muted-bg rounded-sm border",
+          "overflow-hidden"
         )}
       >
         <GridList
@@ -129,7 +132,6 @@ export function CurrentTaskList() {
           selectionMode="multiple"
           selectionBehavior="replace"
           onSelectionChange={onSelectionChange}
-          classNames={{ base: "gap-2" }}
           dragAndDropHooks={dragAndDropHooks}
           renderEmptyState={() => (
             <div className="flex h-[50%] w-full items-center justify-center">
@@ -158,7 +160,7 @@ export function CurrentTaskList() {
             "min-h-fit"
           )}
         >
-          <p className={typography({ type: "label", className: "text-neutral-text" })}>
+          <p className={typography({ type: "label", className: "text-primary-text" })}>
             {selectedTaskIds.length} selected
           </p>
           <div className="grow overflow-x-auto">

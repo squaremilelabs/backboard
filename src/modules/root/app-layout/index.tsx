@@ -22,7 +22,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       className={cn(
         "h-dvh max-h-dvh w-dvw max-w-dvw",
         "grid grid-cols-[auto_1fr]",
-        "overflow-hidden"
+        "overflow-auto"
       )}
     >
       <nav
@@ -55,13 +55,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           "h-full max-h-full w-full max-w-full",
           // single cell grid with centered content
           "grid grid-cols-1 grid-rows-1 justify-items-center-safe",
-          "overflow-auto"
+          "overflow-hidden"
         )}
       >
         <div
           className={cn(
             // take up full viewport height, and container width (maxed out at full)
-            "h-full max-h-full w-lg max-w-full",
+            "h-dvh max-h-dvh w-lg max-w-full",
             // two row grid for header & main
             "grid grid-cols-1 grid-rows-[auto_1fr]"
           )}

@@ -186,7 +186,7 @@ function TaskDoneActionButton({
       Icon={CircleCheckBigIcon}
       display={display}
       onPress={onPress}
-      palette={currentStatus === "current" ? "primary-flat" : "neutral-flat"}
+      palette={"neutral-flat"}
     />
   )
 }
