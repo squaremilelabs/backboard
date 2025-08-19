@@ -50,7 +50,7 @@ export function TaskListItem({
       {({ allowsDragging, isHovered }) => {
         return (
           <>
-            <div className="flex grow items-start gap-8">
+            <div className="flex grow items-start gap-8 truncate">
               {allowsDragging && (
                 <Button slot="drag" className="text-neutral-muted-text flex h-20 items-center">
                   <Icon
@@ -76,10 +76,10 @@ export function TaskListItem({
               />
               <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
                 <Button
-                  className="flex items-center justify-start gap-4 text-left"
+                  className="flex items-center justify-start gap-4 truncate text-left"
                   variants={{ hover: "underline" }}
                 >
-                  <span className="text-left">{task.title || "-"}</span>
+                  <span className="truncate">{task.title || "-"}</span>
                   {task.content ? (
                     <Icon
                       icon={<TextIcon />}
