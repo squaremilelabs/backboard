@@ -59,6 +59,18 @@
   --jeong-lavendar-800: oklch(45.50% 0.12 309.09);
   --jeong-lavendar-900: oklch(39.47% 0.10 309.28);
   --jeong-lavendar-950: oklch(29.46% 0.09 308.24);
+
+  --furey-orange-50: oklch(97.58% 0.02 61.35);
+  --furey-orange-100: oklch(94.43% 0.04 63.40);
+  --furey-orange-200: oklch(88.31% 0.07 58.08);
+  --furey-orange-300: oklch(80.76% 0.13 53.58);
+  --furey-orange-400: oklch(72.39% 0.18 44.09);
+  --furey-orange-500: oklch(67.40% 0.22 37.62);
+  --furey-orange-600: oklch(62.53% 0.22 33.86);
+  --furey-orange-700: oklch(53.83% 0.20 32.37);
+  --furey-orange-800: oklch(45.69% 0.16 31.54);
+  --furey-orange-900: oklch(39.63% 0.13 32.05);
+  --furey-orange-950: oklch(25.78% 0.09 30.66);
 }
 
 /* Default (light) (sml-gold) */

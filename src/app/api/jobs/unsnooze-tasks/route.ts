@@ -20,7 +20,11 @@ export async function GET() {
     const taskIds = tasksToUnsnooze.tasks.map((task: { id: string }) => task.id)
     await db.transact(
       taskIds.map((id) => {
-        const { data } = parseTaskUpdateInput({ status: "current", prev_status: "snoozed" })
+        const { data } = parseTaskUpdateInput({
+          status: "current",
+          status_time: Date.now(),
+          prev_status: "snoozed",
+        })
         return db.tx.tasks[id].update(data)
       })
     )

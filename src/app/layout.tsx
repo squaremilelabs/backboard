@@ -4,6 +4,7 @@ import { fontsClassName } from "@/styles/fonts"
 import Providers from "@/modules/root/providers"
 import { AppLayout } from "@/modules/root/app-layout"
 import "@/styles/index.css"
+import { cn } from "~/smui/utils"
 
 export const metadata: Metadata = {
   title: {
@@ -40,7 +41,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={fontsClassName} suppressHydrationWarning>
+    <html lang="en" className={cn(fontsClassName)} suppressHydrationWarning>
       <body>
         <Providers>
           <SignedIn>
