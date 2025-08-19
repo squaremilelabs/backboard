@@ -9,6 +9,7 @@ export type Account = {
   list_orders: AccountListOrders | null
   api_key: string | null
   custom_work_hours: AccountCustomWorkHours | null
+  app_config: AccountAppConfig | null
 }
 
 export type AccountLinks = {
@@ -44,6 +45,12 @@ export const AccountCustomWorkHoursSchema = z
 
 export type AccountCustomWorkHours = z.infer<typeof AccountCustomWorkHoursSchema>
 
+export const AccountAppConfigSchema = z.object({
+  accent_color: z.enum(["sml-gold", "sml-blue", "jeong-lav", "furey-orange"]).nullish(),
+})
+
+export type AccountAppConfig = z.infer<typeof AccountAppConfigSchema>
+
 export const AccountCreateSchema = z
   .object({
     id: z.uuidv4().optional(),
@@ -74,6 +81,7 @@ export const AccountUpdateSchema = z
   .object({
     list_orders: AccountListOrdersSchema.nullish(),
     custom_work_hours: AccountCustomWorkHoursSchema.nullish(),
+    app_config: AccountAppConfigSchema.nullish(),
   })
   .transform(({ ...data }) => {
     return {

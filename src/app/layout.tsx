@@ -5,6 +5,7 @@ import Providers from "@/modules/root/providers"
 import { AppLayout } from "@/modules/root/app-layout"
 import "@/styles/index.css"
 import { cn } from "~/smui/utils"
+import { getAccountAccentColor } from "@/modules/root/get-accent-color"
 
 export const metadata: Metadata = {
   title: {
@@ -39,9 +40,10 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const accentColor = await getAccountAccentColor()
   return (
-    <html lang="en" className={cn(fontsClassName)} suppressHydrationWarning>
+    <html lang="en" className={cn(fontsClassName, accentColor)} suppressHydrationWarning>
       <body>
         <Providers>
           <SignedIn>
