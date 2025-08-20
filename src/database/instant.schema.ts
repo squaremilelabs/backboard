@@ -25,6 +25,7 @@ const _schema = i.schema({
       status: i.string(), // TaskStatus
       status_time: i.date().indexed().optional(),
       prev_status: i.string().optional(),
+      is_starred: i.boolean().optional(),
     }),
     recurring_tasks: i.entity({
       created_at: i.date().indexed(),

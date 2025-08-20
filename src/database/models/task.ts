@@ -20,6 +20,7 @@ type BaseTask = {
   status: TaskStatus
   status_time: number | null
   prev_status: TaskStatus | null
+  is_starred: boolean | null
 }
 
 export type CurrentTask = BaseTask & {
@@ -91,6 +92,7 @@ export const TaskUpdateSchema = z
       scope_id: z.uuidv4().optional(),
       title: z.string().trim().min(1).optional(),
       content: z.string().trim().min(1).nullish(),
+      is_starred: z.boolean().optional(),
     }),
     z.discriminatedUnion("status", [
       z.object({

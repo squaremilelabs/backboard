@@ -1,7 +1,7 @@
 "use client"
 
 import { ClassValue } from "tailwind-variants"
-import { GripVerticalIcon, TextIcon } from "lucide-react"
+import { GripVerticalIcon, StarIcon, StarOffIcon, TextIcon } from "lucide-react"
 import { useState } from "react"
 import { Emoji, EmojiStyle } from "emoji-picker-react"
 import { TaskPanel } from "../task-panel"
@@ -14,8 +14,9 @@ import { Modal, ModalTrigger } from "~/smui/modal/components"
 import { cn } from "~/smui/utils"
 import { typography } from "@/common/components/class-names"
 import { Checkbox } from "~/smui/checkbox/components"
-import { Task, TaskLinks } from "@/database/models/task"
+import { parseTaskUpdateInput, Task, TaskLinks } from "@/database/models/task"
 import { useAuth } from "@/modules/auth/use-auth"
+import { db } from "@/database/db-client"
 
 export function TaskListItem({
   task,
@@ -36,6 +37,12 @@ export function TaskListItem({
   const statusInfo = getTaskStatusInfo(task, instantAccount?.custom_work_hours, {
     verbose: false,
   })
+
+  const handleStarToggle = () => {
+    const { data } = parseTaskUpdateInput({ is_starred: !task.is_starred })
+    db.transact(db.tx.tasks[task.id].update(data))
+  }
+
   return (
     <GridListItem
       id={task.id}
@@ -74,6 +81,16 @@ export function TaskListItem({
                   ],
                 }}
               />
+              {task.is_starred && (
+                <Button onPress={handleStarToggle}>
+                  {({ isHovered }) => (
+                    <Icon
+                      icon={isHovered ? <StarOffIcon /> : <StarIcon strokeWidth={0} />}
+                      className={isHovered ? "text-primary-text" : "[&_svg]:fill-primary-text"}
+                    />
+                  )}
+                </Button>
+              )}
               <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
                 <Button
                   className="flex items-center justify-start gap-4 truncate text-left"
@@ -94,7 +111,21 @@ export function TaskListItem({
               </ModalTrigger>
             </div>
             <div className="flex min-h-20 grow items-center justify-end gap-8">
-              <div className={cn(isHovered && !disableActionBar ? "visible" : "hidden")}>
+              <div
+                className={cn(
+                  "flex items-center gap-8",
+                  isHovered && !disableActionBar ? "visible" : "hidden"
+                )}
+              >
+                {!task.is_starred && (
+                  <Button
+                    variants={{ variant: "action-button-icon" }}
+                    className="text-primary-text"
+                    onPress={handleStarToggle}
+                  >
+                    <Icon icon={<StarIcon />} />
+                  </Button>
+                )}
                 <TaskActionBar
                   currentStatus={task.status}
                   selectedTaskIds={[task.id]}
