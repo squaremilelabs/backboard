@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { ClipboardCheckIcon, ClipboardIcon, ExternalLinkIcon, InfoIcon } from "lucide-react"
 import { useCopyToClipboard } from "usehooks-ts"
-import { INTEGRATE_WITH_ZAPIER_URL } from "../links"
+import { INTEGRATION_INFO_URL } from "../links"
 import { cn } from "~/smui/utils"
 import { Icon } from "~/smui/icon/components"
 import { Button } from "~/smui/button/components"
@@ -18,14 +18,14 @@ export function AppUserTrayIntegrationInfo() {
   }
   return (
     <div className="flex flex-col">
-      <p className={typography({ type: "label", className: "p-4" })}>Integrate with Zapier</p>
+      <p className={typography({ type: "label", className: "p-4" })}>Build Integrations</p>
       <Link
         className={cn(
           "flex items-center gap-2 p-4 text-sm",
           "text-neutral-text hover:text-base-text cursor-pointer",
           "hover:underline"
         )}
-        href={INTEGRATE_WITH_ZAPIER_URL}
+        href={INTEGRATION_INFO_URL}
         target="_blank"
       >
         <Icon icon={<InfoIcon />} />
