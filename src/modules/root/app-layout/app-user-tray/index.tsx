@@ -10,12 +10,12 @@ import { AppUserTrayThemeSelect } from "./theme-select"
 import { cn } from "~/smui/utils"
 import { Icon } from "~/smui/icon/components"
 import { Button } from "~/smui/button/components"
-import { useAccountOpenTasks } from "@/modules/task/task-total-count"
+import { useAccountCurrentTasks } from "@/modules/task/account-tasks"
 import { Modal, ModalTrigger } from "~/smui/modal/components"
 
 export function AppUserTray() {
   const pathname = usePathname()
-  const { tasks: nowTasks } = useAccountOpenTasks()
+  const { tasks: nowTasks } = useAccountCurrentTasks()
   const nowTaskCount = nowTasks?.length || 0
   return (
     <SignedIn>

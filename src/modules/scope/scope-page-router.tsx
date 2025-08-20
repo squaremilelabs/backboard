@@ -1,7 +1,7 @@
 "use client"
 
 import { RecurringTaskList } from "../recurring-task/recurring-task-list"
-import { TaskList } from "../task/task-list"
+import { ScopedTaskList } from "../task/task-list/scoped-task-list"
 import { ScopeViewKey, useCurrentScopeView } from "./use-scope-views"
 
 export function ScopePageRouter() {
@@ -11,7 +11,7 @@ export function ScopePageRouter() {
   const isRecurringTaskListView = view === "recurring"
 
   if (isTaskListView) {
-    return <TaskList />
+    return <ScopedTaskList />
   }
 
   if (isRecurringTaskListView) {

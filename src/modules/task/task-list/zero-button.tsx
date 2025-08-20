@@ -3,10 +3,11 @@ import { useState } from "react"
 import ReactConfetti from "react-confetti"
 import { createPortal } from "react-dom"
 import { useWindowSize } from "usehooks-ts"
-import { typography } from "@/common/components/class-names"
+import { PartyPopperIcon } from "lucide-react"
 import { Button } from "~/smui/button/components"
+import { Icon } from "~/smui/icon/components"
 
-export default function ZeroButton() {
+export function ZeroButton() {
   const { width, height } = useWindowSize()
   const [isConfettiOn, setIsConfettiOn] = useState(false)
 
@@ -17,17 +18,17 @@ export default function ZeroButton() {
         className={[
           "flex items-center gap-8",
           "rounded-sm text-lg font-semibold",
-          "text-neutral-text",
+          "text-primary-text",
+          "text-lg",
           "slashed-zero",
-          isConfettiOn && "text-primary-text animate-bounce",
-          // "text-shadow-sm",
-          typography({ type: "backboard-type" }),
+          isConfettiOn && "animate-bounce",
+          "text-lg",
           "decoration-2",
         ]}
         onPress={() => setIsConfettiOn(true)}
       >
-        {/* <Icon icon={<CircleCheckBigIcon />} variants={{ size: "lg" }} /> */}
         Backboard Zero
+        <Icon icon={<PartyPopperIcon />} variants={{ size: "lg" }} />
       </Button>
       {createPortal(
         <ReactConfetti

@@ -19,9 +19,9 @@ import { parseScopeUpdateInput } from "@/database/models/scope"
 import { RecurringTask } from "@/database/models/recurring-task"
 import { useAuth } from "@/modules/auth/use-auth"
 
-export function TaskList() {
+export function ScopedTaskList() {
   const { id: scopeId, view: scopeView } = useCurrentScopeView()
-  const { tasks, order } = useTaskListTaskQuery()
+  const { tasks, order } = useScopedTaskListQuery()
 
   const [_, setIsTasksDragging] = useSessionStorageUtility("is-tasks-dragging", false)
 
@@ -119,7 +119,7 @@ export function TaskList() {
           />
         )}
         {scopeView === "done" && (
-          <div className={cn("flex h-36 min-h-36 items-center px-8", "text-sm")}>
+          <div className={cn("flex h-36 min-h-36 items-center px-16", "text-sm")}>
             <span className={typography({ type: "label" })}>Last 5 days</span>
           </div>
         )}
@@ -172,7 +172,7 @@ export function TaskList() {
   )
 }
 
-function useTaskListTaskQuery() {
+function useScopedTaskListQuery() {
   const { instantAccount } = useAuth()
   const { id: scopeId, view: scopeView } = useCurrentScopeView()
 
