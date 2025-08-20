@@ -11,6 +11,8 @@ export async function GET(req: NextRequest) {
     }
     return NextResponse.json(result, { status: 200 })
   } catch (error: unknown) {
+    // eslint-disable-next-line no-console
+    console.error(error)
     const errorMessage = error instanceof Error ? error.message : "Unknown error"
     return NextResponse.json({ message: errorMessage }, { status: 400 })
   }
