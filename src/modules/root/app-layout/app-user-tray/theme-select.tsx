@@ -16,15 +16,36 @@ type AccentColorKey = NonNullable<NonNullable<Account["app_config"]>["accent_col
 
 type AccentColorOption = {
   key: AccentColorKey
-  dotClassName: string
+  bgClassName: string
+  textClassName: string
   label: string
 }
 
 const accentColorOptions: AccentColorOption[] = [
-  { key: "sml-gold", dotClassName: "bg-(--sml-gold-500)", label: "SML Gold (default)" },
-  { key: "sml-blue", dotClassName: "bg-(--sml-blue-500)", label: "SML Blue" },
-  { key: "jeong-lav", dotClassName: "bg-(--jeong-lav-500)", label: "Jeongy Lav" },
-  { key: "furey-orange", dotClassName: "bg-(--furey-orange-500)", label: "Furey Orange" },
+  {
+    key: "sml-gold",
+    bgClassName: "bg-(--sml-gold-500)",
+    textClassName: "text-(--sml-gold-500)",
+    label: "Square Mile Labs",
+  },
+  {
+    key: "sml-blue",
+    bgClassName: "bg-(--sml-blue-500)",
+    textClassName: "text-(--sml-blue-500)",
+    label: "Hoboken",
+  },
+  {
+    key: "jeong-lav",
+    bgClassName: "bg-(--jeong-lav-500)",
+    textClassName: "text-(--jeong-lav-500)",
+    label: "Jeongy",
+  },
+  {
+    key: "furey-orange",
+    bgClassName: "bg-(--furey-orange-500)",
+    textClassName: "text-(--furey-orange-500)",
+    label: "Furey",
+  },
 ]
 
 type ThemeOption = {
@@ -59,6 +80,7 @@ export function AppUserTrayThemeSelect() {
   }, [instantAccount, activeAccentColor, setActiveAccentColor])
 
   const selectedAccentColor: AccentColorKey = instantAccount?.app_config?.accent_color ?? "sml-gold"
+  const selectedAccentColorOption = accentColorOptions.find((o) => o.key === selectedAccentColor)
   const handleAccentColorSelect = (key: AccentColorKey) => {
     if (!instantAccount) return
     const { data } = parseAccountUpdateInput({ app_config: { accent_color: key } })
@@ -108,7 +130,7 @@ export function AppUserTrayThemeSelect() {
                       textValue={option.label}
                       className={classNames.item}
                     >
-                      <div className={cn("size-12 rounded-full", option.dotClassName)} />
+                      <div className={cn("size-12 rounded-full", option.bgClassName)} />
                       <span>{option.label}</span>
                     </ListBoxItem>
                   )
@@ -177,7 +199,9 @@ export function AppUserTrayThemeSelect() {
         )}
       </Select>
       {activeAccentColor !== selectedAccentColor && (
-        <span className="p-8 text-sm font-medium">Refresh page to apply new color!</span>
+        <span className={cn("p-8 text-sm font-medium", selectedAccentColorOption?.textClassName)}>
+          Refresh page to apply new color!
+        </span>
       )}
     </div>
   )
