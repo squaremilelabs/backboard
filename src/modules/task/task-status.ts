@@ -96,7 +96,7 @@ export function getTaskStatusInfo(
     if (task.prev_status === "done") {
       return {
         text: options?.verbose
-          ? `Reccurred ${dayText} at ${timeText}`
+          ? `Recurred ${dayText} at ${timeText}`
           : `${dayText} ${timeText}`.trim(),
         Icon: Undo2Icon,
       }
@@ -104,7 +104,7 @@ export function getTaskStatusInfo(
     if (task.recurring_task) {
       return {
         text: options?.verbose
-          ? `Reccurred ${dayText} at ${timeText}`
+          ? `Recurred ${dayText} at ${timeText}`
           : `${dayText} ${timeText}`.trim(),
         Icon: RefreshCwIcon,
       }
