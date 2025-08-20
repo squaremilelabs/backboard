@@ -38,6 +38,7 @@ export function ScopeViewTabs({ scopeId }: { scopeId: string }) {
               const { data } = parseTaskUpdateInput({
                 status: "current",
                 prev_status: task.status,
+                status_time: Date.now(),
               })
               return db.tx.tasks[task.id].update(data)
             })
@@ -51,6 +52,7 @@ export function ScopeViewTabs({ scopeId }: { scopeId: string }) {
               const { data } = parseTaskUpdateInput({
                 status: "done",
                 prev_status: task.status,
+                status_time: Date.now(),
               })
               return db.tx.tasks[task.id].update(data)
             })

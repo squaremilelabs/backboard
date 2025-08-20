@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
       content,
       scope_id,
       status: "current",
+      status_time: Date.now(),
     })
     const scopedDb = db.asUser({ email: account.user.email })
 

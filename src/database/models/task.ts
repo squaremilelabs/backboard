@@ -60,7 +60,7 @@ export const TaskCreateSchema = z
     z.discriminatedUnion("status", [
       z.object({
         status: TaskStatusEnum.extract(["current"]),
-        status_time: z.number().optional().default(Date.now()),
+        status_time: z.number(),
       }),
       z.object({
         status: TaskStatusEnum.extract(["snoozed"]),
@@ -95,12 +95,12 @@ export const TaskUpdateSchema = z
     z.discriminatedUnion("status", [
       z.object({
         status: TaskStatusEnum.extract(["current"]),
-        status_time: z.number().optional().default(Date.now()),
+        status_time: z.number(),
         prev_status: TaskStatusEnum.extract(["snoozed", "done"]),
       }),
       z.object({
         status: TaskStatusEnum.extract(["done"]),
-        status_time: z.number().optional().default(Date.now()),
+        status_time: z.number(),
         prev_status: TaskStatusEnum.extract(["current", "snoozed"]),
       }),
       z.object({

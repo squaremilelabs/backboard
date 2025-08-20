@@ -69,6 +69,7 @@ export function TaskList() {
       title,
       scope_id: scopeId,
       status: scopeView === "snoozed" ? "snoozed" : "current",
+      status_time: Date.now(),
     })
     await db.transact([db.tx.tasks[id].link(link).create(data)])
   }

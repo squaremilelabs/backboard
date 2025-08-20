@@ -45,6 +45,7 @@ export async function GET() {
           title: task.title,
           content: task.content || null,
           status: "current",
+          status_time: Date.now(),
         })
 
         return db.tx.tasks[id].link(link).create(data)
