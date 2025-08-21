@@ -80,9 +80,15 @@ export function AppUserTrayThemeSelect() {
   }, [instantAccount, activeAccentColor, setActiveAccentColor])
 
   const selectedAccentColor: AccentColorKey = instantAccount?.app_config?.accent_color ?? "sml-gold"
-  const selectedAccentColorOption = accentColorOptions.find((o) => o.key === selectedAccentColor)
+
   const handleAccentColorSelect = (key: AccentColorKey) => {
     if (!instantAccount) return
+    try {
+      const root = document.documentElement
+      const prev = selectedAccentColor
+      if (prev && prev !== key) root.classList.remove(prev)
+      root.classList.add(key)
+    } catch {}
     const { data } = parseAccountUpdateInput({ app_config: { accent_color: key } })
     db.transact(db.tx.accounts[instantAccount?.id].merge(data))
   }
@@ -198,11 +204,6 @@ export function AppUserTrayThemeSelect() {
           </>
         )}
       </Select>
-      {activeAccentColor !== selectedAccentColor && (
-        <span className={cn("p-8 text-sm font-medium", selectedAccentColorOption?.textClassName)}>
-          Refresh page to apply new color!
-        </span>
-      )}
     </div>
   )
 }
