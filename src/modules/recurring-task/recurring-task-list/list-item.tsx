@@ -37,35 +37,39 @@ export function RecurringTaskListItem({
       {() => {
         return (
           <>
-            <Icon
-              icon={<RefreshCwIcon />}
-              variants={{ size: "sm" }}
-              className="text-neutral-muted-text"
-            />
-            <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
+            <div className="flex grow items-start gap-8 truncate">
+              <Icon
+                icon={<RefreshCwIcon />}
+                variants={{ size: "sm" }}
+                className="text-neutral-muted-text"
+              />
+              <ModalTrigger isOpen={panelOpen} onOpenChange={setPanelOpen}>
+                <Button
+                  variants={{ hover: "underline" }}
+                  className="flex grow items-center gap-4 truncate"
+                >
+                  <span className="truncate">{task.title || "-"}</span>
+                  {task.content ? (
+                    <Icon
+                      icon={<TextIcon />}
+                      variants={{ size: "sm" }}
+                      className="text-neutral-muted-text"
+                    />
+                  ) : null}
+                </Button>
+                <Modal isDismissable>
+                  <RecurringTaskPanel task={task} />
+                </Modal>
+              </ModalTrigger>
+            </div>
+            <div className="flex min-h-20 min-w-fit grow items-center justify-end gap-8">
               <Button
-                variants={{ hover: "underline" }}
-                className="flex grow items-center gap-4 truncate"
+                className={typography({ type: "label" })}
+                onPress={() => setFrequencyPickerOpen(true)}
               >
-                {task.title || "-"}
-                {task.content ? (
-                  <Icon
-                    icon={<TextIcon />}
-                    variants={{ size: "sm" }}
-                    className="text-neutral-muted-text"
-                  />
-                ) : null}
+                {label}
               </Button>
-              <Modal isDismissable>
-                <RecurringTaskPanel task={task} />
-              </Modal>
-            </ModalTrigger>
-            <Button
-              className={typography({ type: "label" })}
-              onPress={() => setFrequencyPickerOpen(true)}
-            >
-              {label}
-            </Button>
+            </div>
             <RecurringTaskFrequencyPicker
               isOpen={frequencyPickerOpen}
               onOpenChange={setFrequencyPickerOpen}

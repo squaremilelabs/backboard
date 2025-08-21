@@ -72,7 +72,7 @@ export function getTaskStatusInfo(
     isBefore(taskStatusTime, endOfTomorrow)
 
   if (isToday) {
-    dayText = options?.verbose ? "Today" : ""
+    dayText = options?.verbose ? "Today" : "Today"
   }
   if (isYesterday) {
     dayText = options?.verbose ? "Yesterday" : "Yest"
@@ -96,7 +96,7 @@ export function getTaskStatusInfo(
     if (task.prev_status === "done") {
       return {
         text: options?.verbose
-          ? `Recurred ${dayText} at ${timeText}`
+          ? `Reopened ${dayText} at ${timeText}`
           : `${dayText} ${timeText}`.trim(),
         Icon: Undo2Icon,
       }

@@ -4,39 +4,121 @@
 import { Selection, useDragAndDrop } from "react-aria-components"
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { Emoji } from "emoji-picker-react"
+import ReactConfetti from "react-confetti"
+import { createPortal } from "react-dom"
+import { useWindowSize } from "usehooks-ts"
+import { ArrowRightIcon, PartyPopperIcon } from "lucide-react"
 import { TaskListItem } from "../task-list/task-list-item"
 import { TaskActionBar } from "../task-actions"
-import { ZeroButton } from "./zero-button"
 import { db, useDBQuery } from "@/database/db-client"
 import { Task, TaskLinks } from "@/database/models/task"
 import { useAuth } from "@/modules/auth/use-auth"
 import { GridList } from "~/smui/grid-list/components"
 import { cn } from "~/smui/utils"
 import { processItemKeys, reorderIds, sortItemsByIdOrder } from "@/common/utils/list-utils"
-import { parseAccountUpdateInput } from "@/database/models/account"
 import { typography } from "@/common/components/class-names"
+import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
+import { Button } from "~/smui/button/components"
+import { Icon } from "~/smui/icon/components"
 
 export function UnscopedTaskList({ status }: { status: "current" | "snoozed" }) {
   const { instantAccount } = useAuth()
+  const { scopes } = useDBQuery<Scope & { tasks: (Task & Partial<TaskLinks>)[] }, "scopes">(
+    "scopes",
+    instantAccount
+      ? {
+          $: {
+            where: {
+              "owner.id": instantAccount.id,
+              "is_inactive": false,
+            },
+          },
+          tasks: {
+            $: {
+              where: { status },
+              order: {
+                status_time: "asc",
+              },
+            },
+            recurring_task: {},
+          },
+        }
+      : null
+  )
 
-  const { tasks } = useUnscopedTaskListQuery(status)
+  const displayedScopes = sortItemsByIdOrder({
+    items: scopes ?? [],
+    idOrder: instantAccount?.list_orders?.scopes ?? [],
+    missingIdsPosition: "end",
+    sortMissingIds: (left, right) => {
+      return left.created_at - right.created_at
+    },
+  })
+    .filter((scope) => scope.tasks.length > 0)
+    .map((scope) => {
+      let sortedTasks = scope.tasks
+      if (status === "current") {
+        sortedTasks = sortItemsByIdOrder({
+          items: scope.tasks,
+          idOrder: scope?.list_orders?.["tasks/current"] ?? [],
+          missingIdsPosition: "end",
+          sortMissingIds(left, right) {
+            return (left.status_time ?? 0) - (right.status_time ?? 0)
+          },
+        })
+      }
+      if (status === "snoozed") {
+        sortedTasks = [...sortedTasks].sort((left, right) => {
+          if (left.status_time === right.status_time) {
+            return left.created_at - right.created_at
+          }
+          if (left.status_time == null) return 1
+          if (right.status_time == null) return -1
+          return left.status_time - right.status_time
+        })
+      }
+      return { ...scope, tasks: sortedTasks }
+    })
+
+  if (!instantAccount) return null
+
+  if (displayedScopes.length === 0) {
+    return <EmptyUI status={status} />
+  }
+
+  return (
+    <div className="flex h-full max-h-full min-h-0 flex-col gap-16 overflow-auto overscroll-contain">
+      {displayedScopes.map((scope) => {
+        return <ScopeTaskListSection key={scope.id} scope={scope} status={status} />
+      })}
+    </div>
+  )
+}
+
+function ScopeTaskListSection({
+  scope,
+  status,
+}: {
+  scope: Scope & { tasks: (Task & Partial<TaskLinks>)[] }
+  status: "current" | "snoozed"
+}) {
+  const tasks = scope.tasks
 
   const { dragAndDropHooks } = useDragAndDrop({
-    getItems: (keys) => processItemKeys(keys, tasks, `db/task/${status}`),
-    onReorder: instantAccount
-      ? (e) => {
-          const newOrder = reorderIds({
-            prevOrder: tasks.map((task) => task.id),
-            droppedIds: [...e.keys] as string[],
-            targetId: e.target.key as string,
-            dropPosition: e.target.dropPosition,
-          })
-          const { data } = parseAccountUpdateInput({ list_orders: { "tasks/current": newOrder } })
-          db.transact(db.tx.accounts[instantAccount.id].merge(data))
-        }
-      : undefined,
+    getItems: (keys) => processItemKeys(keys, tasks, `db/scope/${scope.id}/task`),
+    onReorder: (e) => {
+      const newOrder = reorderIds({
+        prevOrder: tasks.map((task) => task.id),
+        droppedIds: [...e.keys] as string[],
+        targetId: e.target.key as string,
+        dropPosition: e.target.dropPosition,
+      })
+      const { data } = parseScopeUpdateInput({ list_orders: { "tasks/current": newOrder } })
+      db.transact(db.tx.scopes[scope.id].merge(data))
+    },
     renderDragPreview: (items) => {
-      const firstTask = JSON.parse(items[0][`db/task/${status}`]) as Task
+      const firstTask = JSON.parse(items[0][`db/scope/${scope.id}/task`]) as Task
       const firstTaskTitle = firstTask.title
       const remainingCount = items.length - 1
       return (
@@ -76,13 +158,49 @@ export function UnscopedTaskList({ status }: { status: "current" | "snoozed" }) 
   }
   const isBatchActionsVisible = selectedTaskIds.length > 0
 
-  if (!instantAccount) return null
-
   return (
-    <div className="flex h-full max-h-full min-h-0 flex-col gap-0 overflow-hidden">
+    <div className="relative flex flex-col gap-8">
       <div
         className={cn(
-          "flex h-full max-h-full min-h-0 grow flex-col",
+          "bg-base-bg sticky top-0 space-x-8 border-b p-8",
+          "flex flex-wrap items-center"
+        )}
+      >
+        <Link
+          href={`/scope/${scope.id}/status`}
+          className={cn(
+            "grow text-lg leading-[28px]",
+            "text-neutral-text font-semibold",
+            "flex items-center gap-4",
+            "hover:underline"
+          )}
+        >
+          {scope.icon?.type === "emoji" && scope.icon?.unified ? (
+            <Icon icon={<Emoji unified={scope.icon.unified} />} />
+          ) : null}
+          {scope.title}
+        </Link>
+        {isBatchActionsVisible && (
+          <div
+            className={cn("flex items-center gap-8", "rounded-sm", "overflow-x-auto", "min-h-fit")}
+          >
+            <p className={typography({ type: "label", className: "text-primary-text" })}>
+              {selectedTaskIds.length} selected
+            </p>
+            <div className="grow overflow-x-auto">
+              <TaskActionBar
+                selectedTaskIds={selectedTaskIds}
+                currentStatus={status}
+                onAfterAction={() => setSelectedTaskIds([])}
+                display="buttons"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+      <div
+        className={cn(
+          "flex min-h-0 flex-col",
           "gap-2 p-2",
           "bg-neutral-muted-bg rounded-sm border",
           "overflow-hidden"
@@ -91,122 +209,73 @@ export function UnscopedTaskList({ status }: { status: "current" | "snoozed" }) 
         <GridList
           aria-label="Current Tasks"
           variants={{ variant: "task-list" }}
-          items={tasks}
           selectionMode="multiple"
           selectionBehavior="replace"
           onSelectionChange={onSelectionChange}
+          items={tasks}
           dragAndDropHooks={status === "current" ? dragAndDropHooks : undefined}
-          renderEmptyState={() => (
-            <div className="flex h-[50%] w-full flex-col items-center justify-center gap-8">
-              <ZeroButton />
-              {status !== "snoozed" && (
-                <Link href="/snoozed" className="text-neutral-muted-text text-sm hover:opacity-70">
-                  Review snoozed tasks
-                </Link>
-              )}
-            </div>
-          )}
-          dependencies={[tasks, selectedTaskIds]}
+          dependencies={[tasks]}
         >
           {(task, classNames) => (
             <TaskListItem
               task={task}
               className={classNames.item}
               disableActionBar={selectedTaskIds.length > 1}
-              showScopeInfo
-              isUnordered={!instantAccount.list_orders?.["tasks/current"]?.includes(task.id)}
+              isUnordered={!scope.list_orders?.["tasks/current"]?.includes(task.id)}
             />
           )}
         </GridList>
       </div>
-      {isBatchActionsVisible && (
-        <div
-          className={cn(
-            "flex items-center gap-16 px-16 py-8 md:gap-32",
-            "rounded-sm",
-            "overflow-x-auto",
-            "min-h-fit"
-          )}
-        >
-          <p className={typography({ type: "label", className: "text-primary-text" })}>
-            {selectedTaskIds.length} selected
-          </p>
-          <div className="grow overflow-x-auto">
-            <TaskActionBar
-              selectedTaskIds={selectedTaskIds}
-              currentStatus={status}
-              onAfterAction={() => setSelectedTaskIds([])}
-              display="buttons"
-            />
-          </div>
-        </div>
-      )}
     </div>
   )
 }
 
-function useUnscopedTaskListQuery(status: "current" | "snoozed") {
-  const { instantAccount } = useAuth()
+export function EmptyUI({ status }: { status: "current" | "snoozed" }) {
+  const { width, height } = useWindowSize()
+  const [isConfettiOn, setIsConfettiOn] = useState(false)
 
-  const { tasks: queriedTasks } = useDBQuery<Task & TaskLinks, "tasks">(
-    "tasks",
-    instantAccount
-      ? {
-          $: {
-            where: {
-              "scope.owner.id": instantAccount.id,
-              "status": status,
-              "scope.is_inactive": false,
-            },
-            order: {
-              status_time: "asc",
-            },
-          },
-          recurring_task: {},
-          scope: {},
-        }
-      : null
+  return (
+    <div className="flex h-[40dvh] w-full flex-col items-center justify-center gap-8">
+      <Button
+        isDisabled={isConfettiOn}
+        className={[
+          "flex items-center gap-8",
+          "text-lg",
+          "rounded-sm font-semibold",
+          "text-primary-text",
+          isConfettiOn && "animate-bounce",
+          "decoration-2",
+        ]}
+        onPress={() => setIsConfettiOn(true)}
+      >
+        Backboard Zero
+        <Icon icon={<PartyPopperIcon />} variants={{ size: "lg" }} />
+      </Button>
+      {createPortal(
+        <ReactConfetti
+          width={width}
+          height={height}
+          className="fixed top-0 left-0 !z-50"
+          numberOfPieces={500}
+          gravity={0.4}
+          run={isConfettiOn}
+          recycle={false}
+          onConfettiComplete={(confetti) => {
+            confetti?.reset()
+            setIsConfettiOn(false)
+          }}
+        />,
+        document.body
+      )}
+      {status !== "snoozed" && (
+        <Link
+          href="/snoozed"
+          className="text-neutral-muted-text flex items-center gap-4 text-sm hover:opacity-70"
+        >
+          Review snoozed tasks
+          <Icon icon={<ArrowRightIcon />} variants={{ size: "sm" }} />
+        </Link>
+      )}
+    </div>
   )
-
-  let tasks = queriedTasks ?? []
-
-  if (status === "current") {
-    tasks = sortItemsByIdOrder({
-      items: queriedTasks ?? [],
-      idOrder: instantAccount?.list_orders?.["tasks/current"] ?? [],
-      missingIdsPosition: "end",
-      sortMissingIds(left, right) {
-        const leftScopeTitle = left.scope?.title ?? ""
-        const rightScopeTitle = right.scope?.title ?? ""
-        if (leftScopeTitle !== rightScopeTitle) {
-          return leftScopeTitle.localeCompare(rightScopeTitle)
-        }
-        const leftScopePosition = left.scope?.list_orders?.["tasks/current"]?.indexOf(left.id) ?? -1
-        const rightScopePosition =
-          right.scope?.list_orders?.["tasks/current"]?.indexOf(right.id) ?? -1
-        if (leftScopePosition !== rightScopePosition) {
-          return leftScopePosition - rightScopePosition
-        }
-        return left.created_at - right.created_at
-      },
-    })
-  }
-
-  if (status === "snoozed") {
-    tasks = [...tasks].sort((left, right) => {
-      if (left.status_time === right.status_time) {
-        const leftScopeTitle = left.scope?.title ?? ""
-        const rightScopeTitle = right.scope?.title ?? ""
-        if (leftScopeTitle !== rightScopeTitle) {
-          return leftScopeTitle.localeCompare(rightScopeTitle)
-        }
-        return left.created_at - right.created_at
-      }
-      if (left.status_time == null) return 1
-      if (right.status_time == null) return -1
-      return left.status_time - right.status_time
-    })
-  }
-
-  return { tasks }
 }

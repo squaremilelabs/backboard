@@ -54,7 +54,7 @@ export function TaskListItem({
       ]}
       onAction={() => setPanelOpen(true)}
     >
-      {({ allowsDragging, isHovered }) => {
+      {({ allowsDragging, selectionMode, isHovered }) => {
         return (
           <>
             <div className="flex grow items-start gap-8 truncate">
@@ -70,17 +70,19 @@ export function TaskListItem({
                   />
                 </Button>
               )}
-              <Checkbox
-                slot="selection"
-                excludeFromTabOrder
-                classNames={{
-                  base: [
-                    "hidden md:flex",
-                    "text-neutral-muted-text hover:opacity-70 data-selected:text-primary-text",
-                    isHovered && "text-primary-text",
-                  ],
-                }}
-              />
+              {selectionMode !== "none" && (
+                <Checkbox
+                  slot="selection"
+                  excludeFromTabOrder
+                  classNames={{
+                    base: [
+                      "hidden md:flex",
+                      "text-neutral-muted-text hover:opacity-70 data-selected:text-primary-text",
+                      isHovered && "text-primary-text",
+                    ],
+                  }}
+                />
+              )}
               {task.is_starred && (
                 <Button onPress={handleStarToggle}>
                   {({ isHovered }) => (
@@ -110,7 +112,7 @@ export function TaskListItem({
                 </Modal>
               </ModalTrigger>
             </div>
-            <div className="flex min-h-20 grow items-center justify-end gap-8">
+            <div className="flex min-h-20 min-w-fit items-center justify-end gap-8">
               <div
                 className={cn(
                   "flex items-center gap-8",

@@ -81,15 +81,15 @@ function TaskStatusViewTitle({
     <div
       className={cn(
         "flex items-center gap-8 px-8 pr-12 pb-4",
-        "rounded-sm",
+        "rounded-sm font-semibold",
         !count ? ["text-neutral-muted-text"] : ["text-base-text border-base-outline border-b-4"]
       )}
     >
       <div className="flex items-center gap-4">
         <Icon icon={<StatusIcon />} variants={{ size: "md" }} />
-        <h1 className={cn("text-lg font-bold")}>{label}</h1>
+        <h1 className={cn("text-lg")}>{label}</h1>
       </div>
-      <p className="text-lg font-bold">{count}</p>
+      <p className="text-lg">{count}</p>
     </div>
   )
 }
