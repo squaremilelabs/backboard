@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "author": "e@squaremilelabs.com",
   "scripts": {
-    "dev": "next dev",
+    "dev": "dotenv -e .env.dev -- next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint --fix",
-    "db:push-schema": "npx instant-cli@latest push schema",
-    "db:push-perms": "npx instant-cli@latest push perms"
+    "db:dev:push-schema": "dotenv -e .env.dev -- npx instant-cli@latest push schema",
+    "db:dev:push-perms": "dotenv -e .env.dev -- npx instant-cli@latest push perms",
+    "db:prod:push-schema": "dotenv -e .env.prod -- npx instant-cli@latest push schema",
+    "db:prod:push-perms": "dotenv -e .env.prod -- npx instant-cli@latest push perms"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.30.1",
@@ -54,6 +56,7 @@
     "@types/node": "^24.2.1",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9.33.0",
     "eslint-config-next": "15.3.5",
     "eslint-config-prettier": "^10.1.8",
