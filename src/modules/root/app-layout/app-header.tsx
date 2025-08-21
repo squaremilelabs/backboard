@@ -26,7 +26,7 @@ export function AppHeader() {
   const { tasks: snoozedTasks } = useAccountSnoozedTasks()
 
   return (
-    <div className="flex flex-col">
+    <div className="sticky top-0 flex flex-col">
       <div className="flex items-start">
         {/* Sidebar Trigger */}
         <Button

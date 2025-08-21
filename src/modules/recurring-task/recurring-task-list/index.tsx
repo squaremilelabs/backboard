@@ -23,7 +23,7 @@ export function RecurringTaskList() {
   return (
     <div
       className={cn(
-        "bg-neutral-muted-bg flex h-full max-h-full flex-col gap-2 rounded-sm border p-2",
+        "bg-neutral-muted-bg flex h-full max-h-full min-h-0 flex-col gap-2 rounded-sm border p-2",
         "overflow-auto"
       )}
     >

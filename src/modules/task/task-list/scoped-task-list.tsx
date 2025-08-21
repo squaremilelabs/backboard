@@ -95,10 +95,10 @@ export function ScopedTaskList() {
   const isBatchActionsVisible = selectedTaskIds.length > 0
 
   return (
-    <div className="flex h-full max-h-full flex-col gap-0 overflow-auto">
+    <div className="flex h-full max-h-full min-h-0 flex-col gap-0 overflow-hidden">
       <div
         className={cn(
-          "flex h-full max-h-full grow flex-col",
+          "flex h-full max-h-full min-h-0 grow flex-col",
           "gap-2 p-2",
           "bg-neutral-muted-bg rounded-sm border",
           "overflow-hidden"
@@ -123,7 +123,7 @@ export function ScopedTaskList() {
             <span className={typography({ type: "label" })}>Last 5 days</span>
           </div>
         )}
-        <div className="grow overflow-auto">
+        <div className="min-h-0 grow overflow-auto">
           <GridList
             aria-label="Task List"
             variants={{ variant: "task-list" }}

@@ -208,7 +208,7 @@
 .jeong-lav {
   --base-bg: var(--jeong-lav-50);
   --base-text: var(--jeong-lav-950);
-  --base-border: var(--neutral-200);
+  --base-border: var(--jeong-lav-200);
 
   --neutral-bg: var(--neutral-500);
   --neutral-fg: var(--neutral-50);
@@ -217,14 +217,14 @@
 
   --neutral-muted-bg: var(--jeong-lav-100);
   --neutral-muted-fg: var(--neutral-500);
-  --neutral-muted-text: var(--neutral-400);
+  --neutral-muted-text: var(--jeong-lav-400);
   --neutral-muted-border: var(--neutral-300);
   
   --base-outline: var(--jeong-lav-500);
 
   --primary-bg: var(--jeong-lav-500);
   --primary-fg: var(--jeong-lav-50);
-  --primary-text: var(--jeong-lav-500);
+  --primary-text: var(--jeong-lav-700);
   --primary-border: var(--jeong-lav-600);
 
   --primary-muted-bg: var(--jeong-lav-50);
@@ -245,14 +245,14 @@
 
   --neutral-muted-bg: var(--jeong-lav-900);
   --neutral-muted-fg: var(--neutral-600);
-  --neutral-muted-text: var(--neutral-500);
+  --neutral-muted-text: var(--jeong-lav-600);
   --neutral-muted-border: var(--neutral-700);
 
   --base-outline: var(--jeong-lav-500);
 
-  --primary-bg: var(--jeong-lav-700);
+  --primary-bg: var(--jeong-lav-400);
   --primary-fg: var(--jeong-lav-100);
-  --primary-text: var(--jeong-lav-500);
+  --primary-text: var(--jeong-lav-400);
   --primary-border: var(--jeong-lav-800);
 
   --primary-muted-bg: var(--jeong-lav-950);

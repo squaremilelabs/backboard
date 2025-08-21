@@ -21,8 +21,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     <div
       className={cn(
         "h-dvh max-h-dvh w-dvw max-w-dvw",
+        "min-h-0 min-w-0",
         "grid grid-cols-[auto_1fr]",
-        "overflow-auto"
+        "overflow-hidden"
       )}
     >
       <nav
@@ -30,7 +31,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           "hidden md:flex",
           "starting:w-0",
           "transition-all transition-discrete",
-          "h-dvh max-h-dvh",
+          "h-dvh max-h-dvh min-h-0",
           sidebarOpen ? "w-xs max-w-xs" : "w-0 overflow-hidden"
         )}
       >
@@ -52,7 +53,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <div
         className={cn(
           // take up full viewport
-          "h-full max-h-full w-full max-w-full",
+          "h-full max-h-full min-h-0 w-full max-w-full min-w-0",
           // single cell grid with centered content
           "grid grid-cols-1 grid-rows-1 justify-items-center-safe",
           "overflow-hidden"
@@ -61,9 +62,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <div
           className={cn(
             // take up full viewport height, and container width (maxed out at full)
-            "h-dvh max-h-dvh w-lg max-w-full",
+            "h-dvh max-h-dvh min-h-0 w-lg max-w-full",
             // two row grid for header & main
-            "grid grid-cols-1 grid-rows-[auto_1fr]"
+            "grid min-h-0 grid-cols-1 grid-rows-[auto_1fr]"
           )}
         >
           <header className="w-full max-w-full p-8 md:p-16">
@@ -71,9 +72,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </header>
           <main
             className={cn(
-              "grid h-full max-h-full grid-cols-1 grid-rows-1",
+              "grid h-full max-h-full min-h-0 grid-cols-1 grid-rows-1",
               "px-8 pb-8 md:px-16 md:pb-16",
-              "overflow-auto"
+              "overflow-auto",
+              "overscroll-contain"
             )}
           >
             {children}

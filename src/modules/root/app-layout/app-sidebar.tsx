@@ -10,7 +10,7 @@ import { cn } from "~/smui/utils"
 export function AppSidebar() {
   const [_, setSidebarOpen] = useSessionStorageUtility("app-sidebar-open", true)
   return (
-    <div className="relative flex w-full flex-col overflow-auto p-4">
+    <div className="relative flex w-full flex-col overflow-auto overscroll-contain p-4">
       <Button
         onPress={() => setSidebarOpen(false)}
         className={cn(

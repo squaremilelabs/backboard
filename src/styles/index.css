@@ -43,6 +43,7 @@ html {
   @apply font-sans;
   @apply text-md;
   @apply transition-all;
+  @apply relative;
 }
 
 @layer base {
