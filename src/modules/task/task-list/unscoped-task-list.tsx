@@ -88,41 +88,36 @@ export function UnscopedTaskList({ status }: { status: "current" | "snoozed" }) 
           "overflow-hidden"
         )}
       >
-        <div className="min-h-0 grow overflow-auto">
-          <GridList
-            aria-label="Current Tasks"
-            variants={{ variant: "task-list" }}
-            items={tasks}
-            selectionMode="multiple"
-            selectionBehavior="replace"
-            onSelectionChange={onSelectionChange}
-            dragAndDropHooks={status === "current" ? dragAndDropHooks : undefined}
-            renderEmptyState={() => (
-              <div className="flex h-[50%] w-full flex-col items-center justify-center gap-8">
-                <ZeroButton />
-                {status !== "snoozed" && (
-                  <Link
-                    href="/snoozed"
-                    className="text-neutral-muted-text text-sm hover:opacity-70"
-                  >
-                    Review snoozed tasks
-                  </Link>
-                )}
-              </div>
-            )}
-            dependencies={[tasks, selectedTaskIds]}
-          >
-            {(task, classNames) => (
-              <TaskListItem
-                task={task}
-                className={classNames.item}
-                disableActionBar={selectedTaskIds.length > 1}
-                showScopeInfo
-                isUnordered={!instantAccount.list_orders?.["tasks/current"]?.includes(task.id)}
-              />
-            )}
-          </GridList>
-        </div>
+        <GridList
+          aria-label="Current Tasks"
+          variants={{ variant: "task-list" }}
+          items={tasks}
+          selectionMode="multiple"
+          selectionBehavior="replace"
+          onSelectionChange={onSelectionChange}
+          dragAndDropHooks={status === "current" ? dragAndDropHooks : undefined}
+          renderEmptyState={() => (
+            <div className="flex h-[50%] w-full flex-col items-center justify-center gap-8">
+              <ZeroButton />
+              {status !== "snoozed" && (
+                <Link href="/snoozed" className="text-neutral-muted-text text-sm hover:opacity-70">
+                  Review snoozed tasks
+                </Link>
+              )}
+            </div>
+          )}
+          dependencies={[tasks, selectedTaskIds]}
+        >
+          {(task, classNames) => (
+            <TaskListItem
+              task={task}
+              className={classNames.item}
+              disableActionBar={selectedTaskIds.length > 1}
+              showScopeInfo
+              isUnordered={!instantAccount.list_orders?.["tasks/current"]?.includes(task.id)}
+            />
+          )}
+        </GridList>
       </div>
       {isBatchActionsVisible && (
         <div

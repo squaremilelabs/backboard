@@ -123,28 +123,26 @@ export function ScopedTaskList() {
             <span className={typography({ type: "label" })}>Last 5 days</span>
           </div>
         )}
-        <div className="min-h-0 grow overflow-auto">
-          <GridList
-            aria-label="Task List"
-            variants={{ variant: "task-list" }}
-            items={tasks}
-            selectionMode="multiple"
-            selectionBehavior="replace"
-            onSelectionChange={onSelectionChange}
-            dragAndDropHooks={dragAndDropHooks}
-            renderEmptyState={() => <div className="h-36" />}
-            dependencies={[tasks, selectedTaskIds]}
-          >
-            {(task, classNames) => (
-              <TaskListItem
-                task={task}
-                className={classNames.item}
-                disableActionBar={selectedTaskIds.length > 1}
-                isUnordered={isReorderable && !order.includes(task.id)}
-              />
-            )}
-          </GridList>
-        </div>
+        <GridList
+          aria-label="Task List"
+          variants={{ variant: "task-list" }}
+          items={tasks}
+          selectionMode="multiple"
+          selectionBehavior="replace"
+          onSelectionChange={onSelectionChange}
+          dragAndDropHooks={dragAndDropHooks}
+          renderEmptyState={() => <div className="h-36" />}
+          dependencies={[tasks, selectedTaskIds]}
+        >
+          {(task, classNames) => (
+            <TaskListItem
+              task={task}
+              className={classNames.item}
+              disableActionBar={selectedTaskIds.length > 1}
+              isUnordered={isReorderable && !order.includes(task.id)}
+            />
+          )}
+        </GridList>
       </div>
       {isBatchActionsVisible && (
         <div
