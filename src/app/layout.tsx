@@ -48,7 +48,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       className={cn(
         fontsClassName,
         accentColor,
-        "relative flex h-dvh max-h-dvh min-h-0 w-dvw max-w-dvw flex-col"
+        "relative flex h-dvh max-h-dvh min-h-0 w-dvw max-w-dvw flex-col",
+        "overflow-auto md:overflow-hidden"
       )}
       suppressHydrationWarning
     >
