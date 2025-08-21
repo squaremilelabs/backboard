@@ -41,6 +41,7 @@ export function useAccountSnoozedTasks() {
                 "scope.owner.id": account.id,
                 "scope.is_inactive": false,
                 "status": "snoozed",
+                "status_time": { $isNull: false },
               },
             },
           },

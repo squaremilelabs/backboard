@@ -36,7 +36,7 @@ export function UnscopedTaskList({ status }: { status: "current" | "snoozed" }) 
           },
           tasks: {
             $: {
-              where: { status },
+              where: { status, status_time: { $isNull: false } },
               order: {
                 status_time: "asc",
               },
