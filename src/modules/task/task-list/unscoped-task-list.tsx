@@ -4,7 +4,7 @@
 import { Selection, useDragAndDrop } from "react-aria-components"
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Emoji } from "emoji-picker-react"
+import { Emoji, EmojiStyle } from "emoji-picker-react"
 import ReactConfetti from "react-confetti"
 import { createPortal } from "react-dom"
 import { useWindowSize } from "usehooks-ts"
@@ -162,21 +162,21 @@ function ScopeTaskListSection({
     <div className="relative flex flex-col gap-8">
       <div
         className={cn(
-          "bg-base-bg sticky top-0 space-x-8 border-b p-8",
-          "flex flex-wrap items-center"
+          "bg-base-bg sticky top-0 space-x-8 p-8",
+          "border-base-border/60 flex flex-wrap items-center border-b"
         )}
       >
         <Link
           href={`/scope/${scope.id}/status`}
           className={cn(
-            "grow text-lg leading-[28px]",
-            "text-neutral-text font-semibold",
+            "grow leading-[28px]",
+            "text-neutral-text font-medium",
             "flex items-center gap-4",
             "hover:underline"
           )}
         >
-          {scope.icon?.type === "emoji" && scope.icon?.unified ? (
-            <Icon icon={<Emoji unified={scope.icon.unified} />} />
+          {scope.icon?.type === "emoji" && scope.icon.unified ? (
+            <Icon icon={<Emoji unified={scope.icon.unified} emojiStyle={EmojiStyle.APPLE} />} />
           ) : null}
           {scope.title}
         </Link>
