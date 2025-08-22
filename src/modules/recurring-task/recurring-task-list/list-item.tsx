@@ -37,7 +37,7 @@ export function RecurringTaskListItem({
       {() => {
         return (
           <>
-            <div className="flex grow items-start gap-8 truncate">
+            <div className="flex grow items-center gap-8 truncate">
               <Icon
                 icon={<RefreshCwIcon />}
                 variants={{ size: "sm" }}
