@@ -49,11 +49,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         fontsClassName,
         accentColor,
         "relative flex h-dvh max-h-dvh min-h-0 w-dvw max-w-dvw flex-col",
-        "overflow-auto md:overflow-hidden"
+        "overflow-auto"
       )}
       suppressHydrationWarning
     >
-      <body className="relative flex h-full min-h-0 w-full flex-col overflow-auto">
+      <body className="relative flex h-full min-h-0 w-full flex-col overflow-hidden">
         <Providers>
           <SignedIn>
             <AppLayout>{children}</AppLayout>
