@@ -1,13 +1,12 @@
 "use client"
-// TODO: Refactor alongside current-task-list
 
 import { Selection, useDragAndDrop } from "react-aria-components"
 import { useEffect, useState } from "react"
 import { startOfDay, subDays } from "date-fns"
 import { TaskActionBar } from "../task-actions"
 import { TaskListItem } from "./task-list-item"
+import { TasklistDragPreview } from "./internal/drag-preview"
 import { processItemKeys, reorderIds, sortItemsByIdOrder } from "@/common/utils/list-utils"
-import { useCurrentScopeView } from "@/modules/scope/use-scope-views"
 import { GridList } from "~/smui/grid-list/components"
 import { CreateField } from "@/common/components/create-field"
 import { cn } from "~/smui/utils"
@@ -19,13 +18,18 @@ import { parseScopeUpdateInput } from "@/database/models/scope"
 import { RecurringTask } from "@/database/models/recurring-task"
 import { useAuth } from "@/modules/auth/use-auth"
 
-export function ScopedTaskList() {
-  const { id: scopeId, view: scopeView } = useCurrentScopeView()
-  const { tasks, order } = useScopedTaskListQuery()
+export function ScopeTaskList({
+  scopeId,
+  statusView,
+}: {
+  scopeId: string
+  statusView: TaskStatus
+}) {
+  const { tasks, order } = useTaskListQuery({ scopeId, statusView })
 
   const [_, setIsTasksDragging] = useSessionStorageUtility("is-tasks-dragging", false)
 
-  const isReorderable = scopeView === "current"
+  const isReorderable = statusView === "current"
   const { dragAndDropHooks } = useDragAndDrop({
     getItems: (keys) => processItemKeys(keys, tasks, "db/task"),
     onDragStart: () => setIsTasksDragging(true),
@@ -43,33 +47,25 @@ export function ScopedTaskList() {
         }
       : undefined,
     renderDragPreview: (items) => {
-      const firstTask = JSON.parse(items[0]["db/task"]) as Task
-      const firstTaskTitle = firstTask.title
-      const remainingCount = items.length - 1
-      return (
-        <div
-          className={cn(
-            "bg-base-bg rounded-sm px-16 py-8",
-            "border-l-primary-border border-l-4",
-            "flex items-center gap-16"
-          )}
-        >
-          <span>{firstTaskTitle}</span>{" "}
-          {remainingCount ? (
-            <span className="text-primary-text text-sm font-semibold">+{remainingCount}</span>
-          ) : null}
-        </div>
-      )
+      const tasks = items.map((item) => JSON.parse(item["db/task"]) as Task)
+      return <TasklistDragPreview tasks={tasks} />
     },
   })
 
-  const isCreateEnabled = scopeView === "current" || scopeView === "snoozed"
+  const isCreateEnabled = statusView === "current" || statusView === "snoozed"
   const handleCreate = async (title: string) => {
     const { id, data, link } = parseTaskCreateInput({
       title,
       scope_id: scopeId,
-      status: scopeView === "snoozed" ? "snoozed" : "current",
-      status_time: Date.now(),
+      ...(statusView === "snoozed"
+        ? {
+            status: "snoozed",
+            status_time: null,
+          }
+        : {
+            status: "current",
+            status_time: Date.now(),
+          }),
     })
     await db.transact([db.tx.tasks[id].link(link).create(data)])
   }
@@ -107,7 +103,7 @@ export function ScopedTaskList() {
         {isCreateEnabled && (
           <CreateField
             onSubmit={handleCreate}
-            placeholder={scopeView === "current" ? "Add current task" : `Add "someday" task`}
+            placeholder={statusView === "current" ? "Add current task" : `Add "someday" task`}
             classNames={{
               base: [
                 "p-8 gap-8 self-stretch",
@@ -118,7 +114,7 @@ export function ScopedTaskList() {
             }}
           />
         )}
-        {scopeView === "done" && (
+        {statusView === "done" && (
           <div className={cn("flex h-36 min-h-36 items-center px-16", "text-sm")}>
             <span className={typography({ type: "label" })}>Last 5 days</span>
           </div>
@@ -159,7 +155,7 @@ export function ScopedTaskList() {
           <div className="grow overflow-x-auto">
             <TaskActionBar
               selectedTaskIds={selectedTaskIds}
-              currentStatus={scopeView as TaskStatus}
+              currentStatus={statusView}
               onAfterAction={() => setSelectedTaskIds([])}
               display="buttons"
             />
@@ -170,9 +166,8 @@ export function ScopedTaskList() {
   )
 }
 
-function useScopedTaskListQuery() {
+function useTaskListQuery({ scopeId, statusView }: { scopeId: string; statusView: TaskStatus }) {
   const { instantAccount } = useAuth()
-  const { id: scopeId, view: scopeView } = useCurrentScopeView()
 
   const { scopes } = useDBQuery("scopes", {
     $: { where: { id: scopeId }, first: 1 },
@@ -187,15 +182,15 @@ function useScopedTaskListQuery() {
           $: {
             where: {
               "scope.id": scopeId,
-              "status": scopeView,
+              "status": statusView,
               "scope.owner.id": instantAccount?.id, // random placeholder
               "or": [
                 {
                   status_time: {
-                    $gte: scopeView === "done" ? startOfDay(subDays(new Date(), 5)) : new Date(0),
+                    $gte: statusView === "done" ? startOfDay(subDays(new Date(), 5)) : new Date(0),
                   },
                 },
-                scopeView === "snoozed"
+                statusView === "snoozed"
                   ? {
                       status_time: { $isNull: true },
                     }
@@ -203,7 +198,7 @@ function useScopedTaskListQuery() {
               ].filter((d) => d !== null),
             },
             order: {
-              status_time: scopeView === "done" ? "desc" : "asc",
+              status_time: statusView === "done" ? "desc" : "asc",
             },
           },
           recurring_task: {},
@@ -213,7 +208,7 @@ function useScopedTaskListQuery() {
 
   let tasks = queriedTasks ?? []
 
-  if (scopeView === "current") {
+  if (statusView === "current") {
     tasks = sortItemsByIdOrder({
       items: tasks,
       idOrder: scope?.list_orders?.["tasks/current"] ?? [],
@@ -224,7 +219,7 @@ function useScopedTaskListQuery() {
     })
   }
 
-  if (scopeView === "snoozed") {
+  if (statusView === "snoozed") {
     tasks = [...tasks].sort((left, right) => {
       if (left.status_time === right.status_time) {
         return left.created_at - right.created_at

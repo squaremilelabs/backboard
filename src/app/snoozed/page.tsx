@@ -1,10 +1,10 @@
 import { Metadata } from "next"
-import { UnscopedTaskList } from "@/modules/task/task-list/unscoped-task-list"
+import { GroupedTaskLists } from "@/modules/task/task-list/grouped-task-lists"
 
 export const metadata: Metadata = {
   title: "Snoozed Tasks",
 }
 
 export default function Page() {
-  return <UnscopedTaskList status="snoozed" />
+  return <GroupedTaskLists statusView="snoozed" />
 }

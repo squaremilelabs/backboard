@@ -17,7 +17,7 @@ import { Modal } from "~/smui/modal/components"
 import { parseTaskUpdateInput, TaskStatus } from "@/database/models/task"
 import { db } from "@/database/db-client"
 
-export type TaskActionButonProps = {
+export type TaskActionButtonProps = {
   currentStatus: TaskStatus
   selectedTaskIds: string[]
   onAfterAction?: () => void
@@ -32,7 +32,7 @@ const TASK_STATUS_TO_ACTION_MAP: Record<TaskStatus, TaskActionKey[]> = {
   done: ["current", "delete"],
 }
 
-export function TaskActionBar(props: TaskActionButonProps) {
+export function TaskActionBar(props: TaskActionButtonProps) {
   const displayedActions = TASK_STATUS_TO_ACTION_MAP[props.currentStatus]
   return (
     <ButtonGroup
@@ -65,7 +65,7 @@ function TaskActionButton({
   label: string
   Icon: LucideIcon
   palette?: PaletteVariant
-  display: TaskActionButonProps["display"]
+  display: TaskActionButtonProps["display"]
 } & ButtonProps) {
   if (display === "icons") {
     return (
@@ -105,7 +105,7 @@ function TaskCurrentActionButton({
   display,
   selectedTaskIds,
   onAfterAction,
-}: TaskActionButonProps) {
+}: TaskActionButtonProps) {
   const onPress = () => {
     db.transact(
       selectedTaskIds.map((id) => {
@@ -137,7 +137,7 @@ function TaskSnoozeActionButton({
   display,
   selectedTaskIds,
   onAfterAction: __,
-}: TaskActionButonProps) {
+}: TaskActionButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
   return (
@@ -165,7 +165,7 @@ function TaskDoneActionButton({
   display,
   selectedTaskIds,
   onAfterAction,
-}: TaskActionButonProps) {
+}: TaskActionButtonProps) {
   const onPress = () => {
     db.transact(
       selectedTaskIds.map((id) => {
@@ -191,7 +191,11 @@ function TaskDoneActionButton({
   )
 }
 
-function TaskDeleteActionButton({ display, selectedTaskIds, onAfterAction }: TaskActionButonProps) {
+function TaskDeleteActionButton({
+  display,
+  selectedTaskIds,
+  onAfterAction,
+}: TaskActionButtonProps) {
   const [open, setOpen] = useState(false)
   const onProceed = () => {
     db.transact(selectedTaskIds.map((id) => db.tx.tasks[id].delete())).then(() => {

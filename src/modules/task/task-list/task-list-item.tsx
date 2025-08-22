@@ -3,7 +3,6 @@
 import { ClassValue } from "tailwind-variants"
 import { GripVerticalIcon, StarIcon, StarOffIcon, TextIcon } from "lucide-react"
 import { useState } from "react"
-import { Emoji, EmojiStyle } from "emoji-picker-react"
 import { TaskPanel } from "../task-panel"
 import { getTaskStatusInfo } from "../task-status"
 import { TaskActionBar } from "../task-actions"
@@ -22,13 +21,11 @@ export function TaskListItem({
   task,
   className,
   disableActionBar,
-  showScopeInfo,
   isUnordered,
 }: {
   task: Task & Partial<TaskLinks>
   className: ClassValue
   disableActionBar?: boolean
-  showScopeInfo?: boolean
   isUnordered?: boolean
 }) {
   const [panelOpen, setPanelOpen] = useState(false)
@@ -47,11 +44,7 @@ export function TaskListItem({
     <GridListItem
       id={task.id}
       textValue={task.title}
-      className={[
-        className,
-        "rounded-sm",
-        // isUnordered && "border-l-primary-muted-border border-l-2",
-      ]}
+      className={className}
       onAction={() => setPanelOpen(true)}
     >
       {({ allowsDragging, selectionMode, isHovered }) => {
@@ -147,28 +140,6 @@ export function TaskListItem({
                   className={[]}
                 />
               </span>
-              {showScopeInfo && (
-                <>
-                  <div className="bg-base-border h-16 min-w-2" />
-                  <span
-                    className={typography({
-                      type: "label",
-                      className: "flex items-center gap-2",
-                    })}
-                  >
-                    {task.scope?.icon?.type === "emoji" && (
-                      <Icon
-                        icon={
-                          <Emoji unified={task.scope.icon.unified} emojiStyle={EmojiStyle.APPLE} />
-                        }
-                        variants={{ size: "sm" }}
-                        className={["opacity-70"]}
-                      />
-                    )}
-                    {task.scope?.title}
-                  </span>
-                </>
-              )}
             </div>
           </>
         )

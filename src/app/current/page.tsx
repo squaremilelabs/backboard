@@ -1,10 +1,10 @@
 import { Metadata } from "next"
-import { UnscopedTaskList } from "@/modules/task/task-list/unscoped-task-list"
+import { GroupedTaskLists } from "@/modules/task/task-list/grouped-task-lists"
 
 export const metadata: Metadata = {
   title: "Current Tasks",
 }
 
 export default function Page() {
-  return <UnscopedTaskList status="current" />
+  return <GroupedTaskLists statusView="current" />
 }
