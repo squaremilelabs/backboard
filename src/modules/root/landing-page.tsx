@@ -3,7 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { EllipsisVerticalIcon } from "lucide-react"
 import LoomPlayer from "react-loom-player"
-import { FEEDBACK_URL, ROADMAP_URL } from "./app-layout/links"
+import { FEEDBACK_URL, PRINCIPLES_URL, ROADMAP_URL } from "./app-layout/links"
 import { typography } from "@/common/components/class-names"
 import { cn } from "~/smui/utils"
 
@@ -12,19 +12,29 @@ export default function LandingPage() {
     <div className="flex flex-col items-center px-8 pt-[10dvh]">
       <div className="flex w-400 max-w-full flex-col gap-[5dvh]">
         <div className="flex flex-col gap-16">
-          <div className="flex flex-wrap items-start gap-16">
-            <div className="flex w-fit flex-col gap-6">
-              <h1
-                className={typography({
-                  type: "backboard-type",
-                  className: "text-[60px] leading-[60px]",
-                })}
-              >
-                Backboard
-              </h1>
-            </div>
-            <p className="font-semibold">A to-do list with inbox zero energy.</p>
-          </div>
+          <h1
+            className={typography({
+              type: "backboard-type",
+              className: "text-[60px] leading-[60px]",
+            })}
+          >
+            Backboard
+          </h1>
+          <p className="font-semibold">
+            A{" "}
+            <Link
+              href={PRINCIPLES_URL}
+              target="_blank"
+              className={cn(
+                "underline",
+                "decoration-2 underline-offset-2",
+                "decoration-primary-text"
+              )}
+            >
+              principled
+            </Link>{" "}
+            to do list.
+          </p>
         </div>
         <SignedOut>
           <div className="flex flex-col gap-16">

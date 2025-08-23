@@ -3,7 +3,7 @@ import { SignedIn, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
 import { DiamondIcon, EllipsisVerticalIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
-import { AppUserTrayContributeLinks } from "./contribute-links"
+import { AppTrayResourceLinks } from "./resource-links"
 import { AppUserTrayIntegrationInfo } from "./integration-info"
 import { AppUserTrayWorkHours } from "./work-hours"
 import { AppUserTrayThemeSelect } from "./theme-select"
@@ -60,7 +60,7 @@ export function AppUserTray() {
           >
             <AppUserTrayWorkHours />
             <AppUserTrayThemeSelect />
-            <AppUserTrayContributeLinks />
+            <AppTrayResourceLinks />
             <AppUserTrayIntegrationInfo />
           </Modal>
         </ModalTrigger>
