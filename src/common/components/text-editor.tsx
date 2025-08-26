@@ -29,10 +29,11 @@ export const TextEditor = ({
       TaskItem.configure({
         HTMLAttributes: {
           class: cn(
-            "inline-flex items-center gap-4",
+            "inline-flex items-start gap-4",
             "accent-base-text data-[checked=true]:text-neutral-text data-[checked=true]:line-through",
             "[&_*]:text-md",
-            "[&_label]:inline-flex [&_label]:items-center [&_input]:!cursor-pointer"
+            "[&_label]:inline-flex [&_label]:items-center [&_input]:!cursor-pointer",
+            "[&_label]:h-20"
           ),
         },
       }),
