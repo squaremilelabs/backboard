@@ -1,7 +1,14 @@
 "use client"
 
 import { ClassValue } from "tailwind-variants"
-import { GripVerticalIcon, StarIcon, StarOffIcon, TextIcon } from "lucide-react"
+import {
+  GripVerticalIcon,
+  ListChecksIcon,
+  ListTodoIcon,
+  StarIcon,
+  StarOffIcon,
+  TextIcon,
+} from "lucide-react"
 import { useState } from "react"
 import { TaskPanel } from "../task-panel"
 import { getTaskStatusInfo } from "../task-status"
@@ -92,13 +99,7 @@ export function TaskListItem({
                   variants={{ hover: "underline" }}
                 >
                   <span className="truncate">{task.title || "-"}</span>
-                  {task.content ? (
-                    <Icon
-                      icon={<TextIcon />}
-                      variants={{ size: "sm" }}
-                      className="text-neutral-muted-text"
-                    />
-                  ) : null}
+                  <ContentIndicator task={task} />
                 </Button>
                 <Modal isDismissable>
                   <TaskPanel task={task} />
@@ -145,5 +146,41 @@ export function TaskListItem({
         )
       }}
     </GridListItem>
+  )
+}
+
+function ContentIndicator({ task }: { task: Task & Partial<TaskLinks> }) {
+  if (!task.content) return null
+
+  const taskItemRegex = new RegExp(`"type":"taskItem"`, "g")
+  const checkedTaskItemRegex = new RegExp(`"type":"taskItem","attrs":{"checked":true}`, "g")
+  const taskItemCount = task.content.match(taskItemRegex)?.length || 0
+  const checkedTaskItemCount = task.content.match(checkedTaskItemRegex)?.length || 0
+
+  if (taskItemCount) {
+    const isAllChecked = taskItemCount === checkedTaskItemCount
+    return (
+      <span
+        className={cn(
+          "flex items-center",
+          "text-neutral-muted-text shrink-0 text-sm",
+          "!no-underline"
+        )}
+      >
+        <Icon
+          icon={isAllChecked ? <ListChecksIcon /> : <ListTodoIcon />}
+          variants={{ size: "md" }}
+        />
+        {checkedTaskItemCount}/{taskItemCount}
+      </span>
+    )
+  }
+
+  return (
+    <Icon
+      icon={<TextIcon />}
+      variants={{ size: "sm" }}
+      className="text-neutral-muted-text shrink-0"
+    />
   )
 }
