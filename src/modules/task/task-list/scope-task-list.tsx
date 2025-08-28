@@ -1,11 +1,10 @@
 "use client"
-
-import { Selection, useDragAndDrop } from "react-aria-components"
-import { useEffect, useState } from "react"
+import { useDragAndDrop } from "react-aria-components"
 import { startOfDay, subDays } from "date-fns"
 import { TaskActionBar } from "../task-actions"
 import { TaskListItem } from "./task-list-item"
 import { TasklistDragPreview } from "./internal/drag-preview"
+import { useTasklistSelection } from "./internal/use-selection"
 import { processItemKeys, reorderIds, sortItemsByIdOrder } from "@/common/utils/list-utils"
 import { GridList } from "~/smui/grid-list/components"
 import { CreateField } from "@/common/components/create-field"
@@ -70,25 +69,8 @@ export function ScopeTaskList({
     await db.transact([db.tx.tasks[id].link(link).create(data)])
   }
 
-  const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([])
-  useEffect(() => {
-    const visibleTaskIds = tasks.map((task) => task.id)
-    if (selectedTaskIds.length > 0) {
-      const invisibleSelectedTaskIds = selectedTaskIds.filter((id) => !visibleTaskIds.includes(id))
-      if (invisibleSelectedTaskIds.length > 0) {
-        const visibleSelectedTaskIds = selectedTaskIds.filter((id) => visibleTaskIds.includes(id))
-        setSelectedTaskIds(visibleSelectedTaskIds)
-      }
-    }
-  }, [tasks, selectedTaskIds])
-  const onSelectionChange = (selection: Selection) => {
-    if (selection === "all") {
-      setSelectedTaskIds(tasks.map((task) => task.id))
-    } else {
-      setSelectedTaskIds([...selection] as string[])
-    }
-  }
-  const isBatchActionsVisible = selectedTaskIds.length > 0
+  const { selectedTaskIds, setSelectedTaskIds, onSelectionChange } = useTasklistSelection(tasks)
+  const isBatchActionsVisible = selectedTaskIds.length > 1
 
   return (
     <div className="flex h-full max-h-full min-h-0 flex-col gap-0 overflow-hidden">
