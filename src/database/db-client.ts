@@ -20,13 +20,8 @@ export function useDBQuery<T extends ModelMap[K], K extends ModelKey>(
   isLoading: boolean
   error: { message: string } | undefined
 } {
-  const { data, isLoading, error } = db.useQuery(
-    params
-      ? {
-          [model]: params,
-        }
-      : null
-  )
+  const queryParams = params ? { [model]: params } : null
+  const { data, isLoading, error } = db.useQuery(queryParams)
   return {
     ...({ [model]: data?.[model] as unknown as T[] | undefined } as { [P in K]: T[] | undefined }),
     isLoading,

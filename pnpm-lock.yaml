@@ -18,11 +18,11 @@ importers:
         specifier: ^1.4.1
         version: 1.4.1
       '@instantdb/admin':
-        specifier: ^0.21.7
-        version: 0.21.7
+        specifier: ^0.20.23
+        version: 0.20.23
       '@instantdb/react':
-        specifier: ^0.21.7
-        version: 0.21.7(react@19.1.1)
+        specifier: ^0.20.23
+        version: 0.20.23(react@19.1.1)
       '@internationalized/date':
         specifier: ^3.9.0
         version: 3.9.0
@@ -515,19 +515,19 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@instantdb/admin@0.21.7':
-    resolution: {integrity: sha512-g3cZdA9MGRFxs8Ik2h+UnBGG/xBPOsUwGrU4L+bjtq5vU7MET9SP1MJ0AGkZPNAyflygAk9qKE4iIZCb2TSyvQ==}
+  '@instantdb/admin@0.20.23':
+    resolution: {integrity: sha512-IFBRpoW0tAN0RyqDW+q3fSJbe4BLoeMtnaA6VlaEx1ctiW0PcNQAvfgAqEsoh92idvVTO4v7fKsU08W3MVjOyw==}
 
-  '@instantdb/core@0.21.7':
-    resolution: {integrity: sha512-46FBpmPkJWdxAuI55TkdVGbfS/uFVCyryQS7Kfht8x/+4KrPPEcrKWsvwMwkZTL3qyih0+9h+/2BtqYfkKXC8w==}
+  '@instantdb/core@0.20.23':
+    resolution: {integrity: sha512-BLqBuFi4VkOt3uzRt0nNBxnsD5EIndjSGPGE6/IYoCb15D48TPbZsBt8l/PsYITouljBxbY4UanE7WkRcGw/OA==}
 
-  '@instantdb/react@0.21.7':
-    resolution: {integrity: sha512-cjd+W7K4eVuJf3ceL/HLDxRPJSM/CT5lyGpVROBNnlcUWuEoF1qakioAACplMes9bisvT4l+fDzl2lOpxYNYuw==}
+  '@instantdb/react@0.20.23':
+    resolution: {integrity: sha512-58ybbQBh2cPFqlAV924ZejO7laVCuL7lHCs5k+f9zAvh+za+R012QCnfdpPJ0VDfI80Eszs7XDOprCTHy/+7dQ==}
     peerDependencies:
       react: '>=16'
 
-  '@instantdb/version@0.21.7':
-    resolution: {integrity: sha512-fZr8yOYhS4UiqllCvVfN8Rixn2QJ6HlHrtspM6XXzGCS7qjfYEcQ2CA+RxEMGlkaDO3naP9kAcO3JHrdBwQdtQ==}
+  '@instantdb/version@0.20.23':
+    resolution: {integrity: sha512-AJI8N6V9cL7/IKC5mK7KDt8yitNKjge8w7NZDP/WTAmQv1S+MA61BrXmLFzwlRpqHkounklOFKzaD5vy5w9pQw==}
 
   '@internationalized/date@3.9.0':
     resolution: {integrity: sha512-yaN3brAnHRD+4KyyOsJyk49XUvj2wtbNACSqg0bz3u8t2VuzhC8Q5dfRnrSxjnnbDb+ienBnkn1TzQfE154vyg==}
@@ -2798,14 +2798,6 @@ packages:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
 
-  eventsource-parser@3.0.5:
-    resolution: {integrity: sha512-bSRG85ZrMdmWtm7qkF9He9TNRzc/Bm99gEJMaQoHJ9E6Kv9QBbsldh2oMj7iXmYNEAVvNgvv5vPorG6W+XtBhQ==}
-    engines: {node: '>=20.0.0'}
-
-  eventsource@4.0.0:
-    resolution: {integrity: sha512-fvIkb9qZzdMxgZrEQDyll+9oJsyaVvY92I2Re+qK0qEJ+w5s0X3dtz+M0VAPOjP1gtU3iqWyjQ0G3nvd5CLZ2g==}
-    engines: {node: '>=20.0.0'}
-
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
@@ -4684,25 +4676,24 @@ snapshots:
   '@img/sharp-win32-x64@0.34.3':
     optional: true
 
-  '@instantdb/admin@0.21.7':
+  '@instantdb/admin@0.20.23':
     dependencies:
-      '@instantdb/core': 0.21.7
-      '@instantdb/version': 0.21.7
-      eventsource: 4.0.0
+      '@instantdb/core': 0.20.23
+      '@instantdb/version': 0.20.23
 
-  '@instantdb/core@0.21.7':
+  '@instantdb/core@0.20.23':
     dependencies:
-      '@instantdb/version': 0.21.7
+      '@instantdb/version': 0.20.23
       mutative: 1.2.0
       uuid: 11.1.0
 
-  '@instantdb/react@0.21.7(react@19.1.1)':
+  '@instantdb/react@0.20.23(react@19.1.1)':
     dependencies:
-      '@instantdb/core': 0.21.7
-      '@instantdb/version': 0.21.7
+      '@instantdb/core': 0.20.23
+      '@instantdb/version': 0.20.23
       react: 19.1.1
 
-  '@instantdb/version@0.21.7': {}
+  '@instantdb/version@0.20.23': {}
 
   '@internationalized/date@3.9.0':
     dependencies:
@@ -7671,12 +7662,6 @@ snapshots:
   esutils@2.0.3: {}
 
   events@3.3.0: {}
-
-  eventsource-parser@3.0.5: {}
-
-  eventsource@4.0.0:
-    dependencies:
-      eventsource-parser: 3.0.5
 
   fast-deep-equal@3.1.3: {}
 
