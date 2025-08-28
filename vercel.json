@@ -6,7 +6,7 @@
     },
     { 
       "path": "/api/jobs/recur-tasks",
-      "schedule": "0 10 * * *"
+      "schedule": "0 * * * *"
     }
   ]
 }

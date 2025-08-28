@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server"
+import { tz } from "@date-fns/tz"
+import { getDate, getDay, getHours } from "date-fns"
 import { db } from "@/database/db-admin"
 import { RecurringTask } from "@/database/models/recurring-task"
 import { parseTaskCreateInput } from "@/database/models/task"
+import { AccountCustomWorkHours } from "@/database/models/account"
+import { DEFAULT_WORKING_HOURS } from "@/modules/auth/account-hours"
 
 export async function GET() {
   try {
@@ -13,26 +17,49 @@ export async function GET() {
             "scope.is_inactive": false,
           },
         },
+        tasks: {
+          $: {
+            where: {
+              status: { $not: "done" },
+            },
+            fields: ["id"],
+          },
+        },
         scope: {
           $: {
             fields: ["id"],
+          },
+          owner: {
+            $: {
+              fields: ["custom_work_hours"],
+            },
           },
         },
       },
     })
 
-    const recurringTasks = query.recurring_tasks as Array<RecurringTask & { scope: { id: string } }>
+    // Filters out tasks that still have current instances
+    const recurringTasks = query.recurring_tasks.filter((task) => task.tasks.length === 0) as Array<
+      RecurringTask & {
+        tasks: Array<{ id: string }>
+        scope: { id: string; owner: { custom_work_hours: AccountCustomWorkHours } }
+      }
+    >
 
-    const currentWeekday = new Date().getUTCDay()
     const weekdayTasks = recurringTasks.filter((task) => {
       if (task.recur_day_type !== "weekday") return false
-      return task.recur_days.includes(currentWeekday)
+      const accountWorkHours = task.scope.owner.custom_work_hours ?? DEFAULT_WORKING_HOURS
+      const tzWeekday = getDay(new Date(), { in: tz(accountWorkHours.tz) })
+      const tzHour = getHours(new Date(), { in: tz(accountWorkHours.tz) })
+      return accountWorkHours.start === tzHour && task.recur_days.includes(tzWeekday)
     })
 
-    const currentMonthDay = new Date().getUTCDate()
     const monthdayTasks = recurringTasks.filter((task) => {
       if (task.recur_day_type !== "monthday") return false
-      return task.recur_days.includes(currentMonthDay)
+      const accountWorkHours = task.scope.owner.custom_work_hours ?? DEFAULT_WORKING_HOURS
+      const tzMonthday = getDate(new Date(), { in: tz(accountWorkHours.tz) })
+      const tzHour = getHours(new Date(), { in: tz(accountWorkHours.tz) })
+      return accountWorkHours.start === tzHour && task.recur_days.includes(tzMonthday)
     })
 
     const tasksToRecur = [...weekdayTasks, ...monthdayTasks]
