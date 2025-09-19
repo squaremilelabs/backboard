@@ -37,3 +37,6 @@ yarn-error.log*
 
 # Only used for IDE theme for now, may check into git if implementing other settings
 .vscode
+
+# any .devscript. files
+*devscript*
