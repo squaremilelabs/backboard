@@ -17,6 +17,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isMobile) setSidebarOpen(false)
   }, [isMobile, setSidebarOpen, pathname])
+
+  if (pathname === "/main") return children
+
   return (
     <div
       className={cn(
