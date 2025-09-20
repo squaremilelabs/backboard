@@ -14,7 +14,7 @@ const _schema = i.schema({
     accounts: i.entity({
       api_key: i.string().unique().optional(),
       created_at: i.date().indexed(),
-      list_orders: i.json().optional(), // AccountListOrdersType
+      list_orders: i.json().optional(), // AccountListOrders
       custom_work_hours: i.json().optional(),
       app_config: i.json().optional(),
     }),

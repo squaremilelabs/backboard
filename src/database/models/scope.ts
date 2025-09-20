@@ -3,9 +3,7 @@ import { v4 } from "uuid"
 import { Account } from "./account"
 import { Task } from "./task"
 import { RecurringTask } from "./recurring-task"
-
-export type ScopeListOrderKey = keyof ScopeListOrders
-export type ScopeListOrders = z.infer<typeof ScopeListOrdersSchema>
+import { ListOrders, ListOrdersSchema } from "./_shared"
 
 export type Scope = {
   id: string
@@ -14,7 +12,7 @@ export type Scope = {
   title: string
   content: string | null
   is_inactive: boolean
-  list_orders: ScopeListOrders | null
+  list_orders: ListOrders | null
 }
 
 export type ScopeIcon = z.infer<typeof ScopeIconSchema>
@@ -37,10 +35,6 @@ const ScopeIconSchema = z.discriminatedUnion("type", [
   }),
 ])
 
-const ScopeListOrdersSchema = z.object({
-  "tasks/current": z.array(z.uuidv4()).nullish(),
-})
-
 export const ScopeCreateSchema = z
   .object({
     id: z.uuidv4().optional(),
@@ -58,9 +52,7 @@ export const ScopeCreateSchema = z
         created_at: Date.now(),
       },
       link: { owner: owner_id },
-      list_orders: {
-        "tasks/current": [],
-      } satisfies ScopeListOrders,
+      list_orders: {} satisfies ListOrders,
     }
   })
 
@@ -75,7 +67,7 @@ export const ScopeUpdateSchema = z
     content: z.string().trim().min(1).nullish(),
     icon: ScopeIconSchema.nullish(),
     is_inactive: z.boolean().optional(),
-    list_orders: ScopeListOrdersSchema.nullish(),
+    list_orders: ListOrdersSchema.nullish(),
     link_task_ids: z.array(z.uuidv4()).optional(),
     link_recurring_task_ids: z.array(z.uuidv4()).optional(),
   })

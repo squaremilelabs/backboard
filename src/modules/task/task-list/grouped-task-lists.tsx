@@ -55,7 +55,7 @@ export function GroupedTaskLists({ statusView }: { statusView: TaskStatus }) {
       if (statusView === "current") {
         sortedTasks = sortItemsByIdOrder({
           items: scope.tasks,
-          idOrder: scope?.list_orders?.["tasks/current"] ?? [],
+          idOrder: scope?.list_orders?.["tasks"] ?? [],
           missingIdsPosition: "end",
           sortMissingIds(left, right) {
             return (left.status_time ?? 0) - (right.status_time ?? 0)
@@ -108,7 +108,7 @@ function TaskListGroup({
         targetId: e.target.key as string,
         dropPosition: e.target.dropPosition,
       })
-      const { data } = parseScopeUpdateInput({ list_orders: { "tasks/current": newOrder } })
+      const { data } = parseScopeUpdateInput({ list_orders: { tasks: newOrder } })
       db.transact(db.tx.scopes[scope.id].merge(data))
     },
     renderDragPreview: (items) => {
@@ -189,7 +189,7 @@ function TaskListGroup({
               task={task}
               className={classNames.item}
               disableActionBar={selectedTaskIds.length > 1}
-              isUnordered={!scope.list_orders?.["tasks/current"]?.includes(task.id)}
+              isUnordered={!scope.list_orders?.["tasks"]?.includes(task.id)}
             />
           )}
         </GridList>

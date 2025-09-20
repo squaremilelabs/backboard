@@ -1,12 +1,13 @@
 import z from "zod"
 import { v4 } from "uuid"
 import { Scope } from "./scope"
+import { ListOrders, ListOrdersSchema } from "./_shared"
 import { isWorkHoursValid } from "@/modules/auth/account-hours"
 
 export type Account = {
   id: string
   created_at: number
-  list_orders: AccountListOrders | null
+  list_orders: ListOrders | null
   api_key: string | null
   custom_work_hours: AccountCustomWorkHours | null
   app_config: AccountAppConfig | null
@@ -19,14 +20,6 @@ export type AccountLinks = {
   }
   scopes: Scope[]
 }
-
-const AccountListOrdersSchema = z.object({
-  "scopes": z.array(z.uuidv4()).nullish(),
-  "tasks/current": z.array(z.uuidv4()).nullish(),
-})
-
-export type AccountListOrderKey = keyof AccountListOrders
-export type AccountListOrders = z.infer<typeof AccountListOrdersSchema>
 
 const timezones = Intl.supportedValuesOf("timeZone")
 export const AccountCustomWorkHoursSchema = z
@@ -62,10 +55,7 @@ export const AccountCreateSchema = z
       data: {
         created_at: Date.now(),
         api_key: v4(),
-        list_orders: {
-          "scopes": [],
-          "tasks/current": [],
-        },
+        list_orders: {} satisfies ListOrders,
       },
       link: { user: user_id },
     }
@@ -79,7 +69,7 @@ export const parseAccountCreateInput = (input: AccountCreateInput) =>
 
 export const AccountUpdateSchema = z
   .object({
-    list_orders: AccountListOrdersSchema.nullish(),
+    list_orders: ListOrdersSchema.nullish(),
     custom_work_hours: AccountCustomWorkHoursSchema.nullish(),
     app_config: AccountAppConfigSchema.nullish(),
   })

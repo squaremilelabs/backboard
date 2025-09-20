@@ -41,7 +41,7 @@ export function ScopeTaskList({
             targetId: e.target.key as string,
             dropPosition: e.target.dropPosition,
           })
-          const { data } = parseScopeUpdateInput({ list_orders: { "tasks/current": newOrder } })
+          const { data } = parseScopeUpdateInput({ list_orders: { tasks: newOrder } })
           db.transact(db.tx.scopes[scopeId].merge(data))
         }
       : undefined,
@@ -193,7 +193,7 @@ function useTaskListQuery({ scopeId, statusView }: { scopeId: string; statusView
   if (statusView === "current") {
     tasks = sortItemsByIdOrder({
       items: tasks,
-      idOrder: scope?.list_orders?.["tasks/current"] ?? [],
+      idOrder: scope?.list_orders?.["tasks"] ?? [],
       missingIdsPosition: "end",
       sortMissingIds(left, right) {
         return (left.status_time ?? 0) - (right.status_time ?? 0)
@@ -212,5 +212,5 @@ function useTaskListQuery({ scopeId, statusView }: { scopeId: string; statusView
     })
   }
 
-  return { tasks, order: scope?.list_orders?.["tasks/current"] ?? [] }
+  return { tasks, order: scope?.list_orders?.["tasks"] ?? [] }
 }
