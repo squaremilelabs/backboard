@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getAccountFromApiRequest } from "@/modules/auth/api-auth"
+import { getAccountFromApiRequest } from "@/_legacy-structure/modules/auth/api-auth"
 import { db } from "@/database/db-admin"
 
 export async function GET(req: NextRequest) {

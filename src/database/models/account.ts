@@ -2,7 +2,6 @@ import z from "zod"
 import { v4 } from "uuid"
 import { Scope } from "./scope"
 import { ListOrders, ListOrdersSchema } from "./_shared"
-import { isWorkHoursValid } from "@/modules/auth/account-hours"
 
 export type Account = {
   id: string
@@ -31,12 +30,42 @@ export const AccountCustomWorkHoursSchema = z
   })
   .refine(
     (val) => {
-      return isWorkHoursValid(val)
+      const isHourProvided = (v: number | null | undefined) => typeof v === "number"
+      // if both shifts not provided, valid
+      if (!isHourProvided(val.mid) && !isHourProvided(val.last)) return true
+
+      // if last provided
+      if (isHourProvided(val.last)) {
+        // mid must also be provided if so
+        if (!isHourProvided(val.mid)) return false
+
+        // check that the range is no greater than 23
+        if (val.last - val.start > 23) return false
+
+        // check that all are in order
+        return val.start < val.mid && val.mid < val.last
+      }
+
+      // only shift_1 provided
+      if (isHourProvided(val.mid)) {
+        // check that the range is no greater than 23
+        if (val.mid - val.start > 23) return false
+
+        // check that it's after start
+        return val.start < val.mid
+      }
+
+      return true
     },
     { message: "Invalid work hours" }
   )
 
 export type AccountCustomWorkHours = z.infer<typeof AccountCustomWorkHoursSchema>
+
+export const DEFAULT_ACCOUNT_WORK_HOURS: AccountCustomWorkHours = {
+  tz: "America/New_York",
+  start: 6,
+}
 
 export const AccountAppConfigSchema = z.object({
   accent_color: z.enum(["sml-gold", "sml-blue", "jeong-lav", "furey-orange"]).nullish(),

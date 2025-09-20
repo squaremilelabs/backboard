@@ -1,0 +1,236 @@
+import {
+  AlarmClockIcon,
+  AlarmClockOffIcon,
+  CircleCheckBigIcon,
+  ClipboardClockIcon,
+  LucideIcon,
+  Trash2Icon,
+  Undo2Icon,
+} from "lucide-react"
+import { useRef, useState } from "react"
+import { TaskSnoozePicker } from "./task-snooze"
+import { Button, ButtonGroup, ButtonProps } from "~/smui/button/components"
+import { Tooltip, TooltipTrigger } from "~/smui/tooltip/components"
+import { Icon } from "~/smui/icon/components"
+import { palette, PaletteVariant } from "@/_legacy-structure/common/components/class-names"
+import { Modal } from "~/smui/modal/components"
+import { parseTaskUpdateInput, TaskStatus } from "@/database/models/task"
+import { db } from "@/database/db-client"
+
+export type TaskActionButtonProps = {
+  currentStatus: TaskStatus
+  selectedTaskIds: string[]
+  onAfterAction?: () => void
+  display: "buttons" | "icons"
+}
+
+type TaskActionKey = "current" | "snooze" | "done" | "delete"
+
+const TASK_STATUS_TO_ACTION_MAP: Record<TaskStatus, TaskActionKey[]> = {
+  current: ["done", "snooze", "delete"],
+  snoozed: ["current", "snooze", "done", "delete"],
+  done: ["current", "delete"],
+}
+
+export function TaskActionBar(props: TaskActionButtonProps) {
+  const displayedActions = TASK_STATUS_TO_ACTION_MAP[props.currentStatus]
+  return (
+    <ButtonGroup
+      classNames={{
+        base: ["flex items-center", props.display === "icons" ? "gap-8" : "gap-4"],
+      }}
+    >
+      {(_) => (
+        <>
+          {displayedActions.map((action) => {
+            if (action === "current") return <TaskCurrentActionButton key={action} {...props} />
+            if (action === "snooze") return <TaskSnoozeActionButton key={action} {...props} />
+            if (action === "done") return <TaskDoneActionButton key={action} {...props} />
+            if (action === "delete") return <TaskDeleteActionButton key={action} {...props} />
+            return null
+          })}
+        </>
+      )}
+    </ButtonGroup>
+  )
+}
+
+function TaskActionButton({
+  label,
+  Icon: ActionIcon,
+  palette: p,
+  display,
+  ...props
+}: {
+  label: string
+  Icon: LucideIcon
+  palette?: PaletteVariant
+  display: TaskActionButtonProps["display"]
+} & ButtonProps) {
+  if (display === "icons") {
+    return (
+      <TooltipTrigger delay={1000} closeDelay={0}>
+        <Button
+          {...props}
+          variants={{ variant: "action-button-icon" }}
+          className={[palette({ p }), "border-none bg-transparent"]}
+        >
+          <Icon icon={<ActionIcon />} />
+        </Button>
+        <Tooltip
+          offset={8}
+          placement="bottom"
+          className={["bg-base-bg rounded-sm border px-16 py-4 text-sm", palette({ p })]}
+        >
+          {label}
+        </Tooltip>
+      </TooltipTrigger>
+    )
+  }
+
+  return (
+    <Button
+      {...props}
+      variants={{ variant: "action-button" }}
+      className={palette({ p, className: "min-w-fit" })}
+    >
+      <Icon icon={<ActionIcon />} />
+      <span className="text-sm">{label}</span>
+    </Button>
+  )
+}
+
+function TaskCurrentActionButton({
+  currentStatus,
+  display,
+  selectedTaskIds,
+  onAfterAction,
+}: TaskActionButtonProps) {
+  const onPress = () => {
+    db.transact(
+      selectedTaskIds.map((id) => {
+        const { data } = parseTaskUpdateInput({
+          status: "current",
+          status_time: Date.now(),
+          prev_status: currentStatus as "snoozed" | "done",
+        })
+        return db.tx.tasks[id].update(data)
+      })
+    ).then(() => {
+      if (onAfterAction) onAfterAction()
+    })
+  }
+
+  return (
+    <TaskActionButton
+      label={currentStatus === "snoozed" ? "Unsnooze" : "Undo"}
+      Icon={currentStatus === "snoozed" ? AlarmClockOffIcon : Undo2Icon}
+      palette="neutral-flat"
+      display={display}
+      onPress={onPress}
+    />
+  )
+}
+
+function TaskSnoozeActionButton({
+  currentStatus,
+  display,
+  selectedTaskIds,
+  onAfterAction: __,
+}: TaskActionButtonProps) {
+  const ref = useRef<HTMLButtonElement>(null)
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <TaskActionButton
+        forwardRef={ref}
+        label={currentStatus === "current" ? `Snooze` : `Reschedule`}
+        Icon={currentStatus === "current" ? AlarmClockIcon : ClipboardClockIcon}
+        display={display}
+        palette="neutral-flat"
+        onPress={() => setOpen(true)}
+      />
+      <TaskSnoozePicker
+        isOpen={open}
+        onOpenChange={setOpen}
+        selectedTaskIds={selectedTaskIds}
+        currentStatus={currentStatus}
+      />
+    </>
+  )
+}
+
+function TaskDoneActionButton({
+  currentStatus,
+  display,
+  selectedTaskIds,
+  onAfterAction,
+}: TaskActionButtonProps) {
+  const onPress = () => {
+    db.transact(
+      selectedTaskIds.map((id) => {
+        const { data } = parseTaskUpdateInput({
+          status: "done",
+          status_time: Date.now(),
+          prev_status: currentStatus as "current" | "snoozed",
+        })
+        return db.tx.tasks[id].update(data)
+      })
+    ).then(() => {
+      if (onAfterAction) onAfterAction()
+    })
+  }
+  return (
+    <TaskActionButton
+      label={"Mark done"}
+      Icon={CircleCheckBigIcon}
+      display={display}
+      onPress={onPress}
+      palette={"neutral-flat"}
+    />
+  )
+}
+
+function TaskDeleteActionButton({
+  display,
+  selectedTaskIds,
+  onAfterAction,
+}: TaskActionButtonProps) {
+  const [open, setOpen] = useState(false)
+  const onProceed = () => {
+    db.transact(selectedTaskIds.map((id) => db.tx.tasks[id].delete())).then(() => {
+      if (onAfterAction) onAfterAction()
+    })
+  }
+  return (
+    <>
+      <TaskActionButton
+        label={`Delete`}
+        Icon={Trash2Icon}
+        palette="neutral-muted-flat"
+        display={display}
+        onPress={() => setOpen(true)}
+      />
+      <Modal
+        isOpen={open}
+        onOpenChange={setOpen}
+        variants={{ size: "xs" }}
+        isDismissable
+        classNames={{ content: ["bg-base-bg p-16 gap-8 border rounded-sm"] }}
+      >
+        <p className="text-lg font-semibold">
+          Are you sure you want to delete{" "}
+          {selectedTaskIds.length > 1 ? `these ${selectedTaskIds.length} tasks` : "this task"}?
+        </p>
+        <span className="text-danger-text font-medium">This action is irreversible</span>
+        <div className="bg-base-border h-2 w-full" />
+        <Button
+          className={["rounded-md p-8 font-semibold", palette({ p: "danger-solid" })]}
+          onPress={onProceed}
+        >
+          Delete {selectedTaskIds.length} Task{selectedTaskIds.length > 1 ? "s" : ""}
+        </Button>
+      </Modal>
+    </>
+  )
+}

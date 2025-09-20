@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import z from "zod"
-import { getAccountFromApiRequest } from "@/modules/auth/api-auth"
+import { getAccountFromApiRequest } from "@/_legacy-structure/modules/auth/api-auth"
 import { db } from "@/database/db-admin"
 import { parseTaskCreateInput } from "@/database/models/task"
 
