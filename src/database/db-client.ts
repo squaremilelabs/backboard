@@ -21,7 +21,8 @@ export function useDBQuery<T extends ModelMap[K], K extends ModelKey = ModelKey>
   error: { message: string } | undefined
 } {
   const queryParams = params ? { [model]: params } : null
-  const { data, isLoading, error } = db.useQuery(queryParams)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- reccommended by instant team
+  const { data, isLoading, error } = db.useQuery(queryParams as any)
   return {
     ...({ [model]: data?.[model] as unknown as T[] | undefined } as { [P in K]: T[] | undefined }),
     isLoading,
