@@ -37,12 +37,23 @@ export function useRootListData({ fetchInactiveData }: { fetchInactiveData?: boo
       ? {
           $: {
             where: {
-              "owner.id": account.id,
-              "or": [
-                { status: { $in: ["current", "snoozed"] } },
-                { status: "done", status_time: { $gte: startOfDay(subDays(new Date(), 5)) } },
+              and: [
+                { "owner.id": account.id },
+                {
+                  or: [
+                    { status: { $in: ["current", "snoozed"] } },
+                    { status: "done", status_time: { $gte: startOfDay(subDays(new Date(), 5)) } },
+                  ],
+                },
+                // TODO: Report bug to instant because we can't filter for non-existent relations
+                // https://www.instantdb.com/docs/patterns#find-entities-with-no-links
+                // {
+                //   or: [
+                //     { "scope.id": { $isNull: true } },
+                //     { ...(!fetchInactiveData && { "scope.is_inactive": false }) },
+                //   ],
+                // },
               ],
-              ...(!fetchInactiveData && { "scope.is_inactive": false }),
             },
           },
           scope: { $: { fields: ["id"] } },
@@ -63,7 +74,11 @@ export function useRootListData({ fetchInactiveData }: { fetchInactiveData?: boo
             where: {
               "owner.id": account.id,
               "is_inactive": fetchInactiveData ? undefined : false,
-              ...(!fetchInactiveData && { "scope.is_inactive": false }),
+              // TODO: See above
+              // or: [
+              //   { "scope.id": { $isNull: true } },
+              //   { ...(!fetchInactiveData && { "scope.is_inactive": false }), }
+              // ]
             },
           },
           scope: { $: { fields: ["id"] } },

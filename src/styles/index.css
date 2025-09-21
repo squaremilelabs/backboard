@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "./colors.css";
-@import "../smui/css/layout.css";
+@import "../../smui/css/layout.css";
 @plugin "@tailwindcss/typography";
 
 @theme {

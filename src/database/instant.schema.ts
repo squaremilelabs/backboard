@@ -66,7 +66,7 @@ const _schema = i.schema({
       reverse: { on: "scopes", has: "many", label: "child_scopes" },
     },
     scope_tasks: {
-      forward: { on: "tasks", has: "one", label: "scope", required: true, onDelete: "cascade" },
+      forward: { on: "tasks", has: "one", label: "scope", onDelete: "cascade" },
       reverse: { on: "scopes", has: "many", label: "tasks" },
     },
     scope_recurring_tasks: {
@@ -74,7 +74,6 @@ const _schema = i.schema({
         on: "recurring_tasks",
         has: "one",
         label: "scope",
-        required: true,
         onDelete: "cascade",
       },
       reverse: { on: "scopes", has: "many", label: "recurring_tasks" },
