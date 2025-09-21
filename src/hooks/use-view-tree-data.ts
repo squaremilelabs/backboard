@@ -7,6 +7,7 @@ import { useAuth } from "./use-auth"
 import { SMUIDataTreeListItem } from "~/smui/components/data-tree-list"
 import { RecurringTaskListItemData, ScopeListItemData, TaskListItemData } from "@/types/data"
 import { sortTasks, sortScopes, sortRtasks } from "@/functions/data-sorters"
+import { buildFallbackTokens, decodeToken, dedupeTokens } from "@/utilities/list-order-tokens"
 import { TaskStatus } from "@/database/models/task"
 
 export type ViewTreeItemKind = "scope" | "task" | "rtask"
@@ -95,22 +96,20 @@ export function useViewTreeData(): UseViewTreeDataResult {
     const rootScopeId = viewParams.rootScopeId
     const listView = viewParams.list
 
-    // Build grouping maps (multi-maps) for children lookups.
+    // Grouping maps (multi-maps) for structural relationships.
     const scopesByParent = new Map<string | null, ScopeListItemData[]>()
+    const tasksByScope = new Map<string | null, TaskListItemData[]>()
+    const rtasksByScope = new Map<string | null, RecurringTaskListItemData[]>()
     for (const s of scopes) {
       const key = s.parent_scope?.id ?? null
       if (!scopesByParent.has(key)) scopesByParent.set(key, [])
       scopesByParent.get(key)!.push(s)
     }
-
-    const tasksByScope = new Map<string | null, TaskListItemData[]>()
     for (const t of tasks) {
       const key = t.scope?.id ?? null
       if (!tasksByScope.has(key)) tasksByScope.set(key, [])
       tasksByScope.get(key)!.push(t)
     }
-
-    const rtasksByScope = new Map<string | null, RecurringTaskListItemData[]>()
     for (const rt of rtasks) {
       const key = rt.scope?.id ?? null
       if (!rtasksByScope.has(key)) rtasksByScope.set(key, [])
@@ -119,52 +118,92 @@ export function useViewTreeData(): UseViewTreeDataResult {
 
     // Decide which task statuses to include based on list view.
     const includeTask = (t: TaskListItemData) => {
-      if (listView === "current") return t.status === "current"
-      if (listView === "snoozed") return t.status === "snoozed"
-      if (listView === "done") return t.status === "done"
-      return false // recurring view => no tasks
+      if (listView === "recurring") return false
+      return t.status === listView
     }
-
     const statusViewForSort: TaskStatus | null =
-      listView === "recurring" ? null : listView === "current" ? "current" : listView
+      listView === "recurring" ? null : (listView as TaskStatus)
 
-    const makeScopeNode = (scope: ScopeListItemData): ViewTreeItem<"scope"> => {
-      // NOTE: Scope recursion builds its children eagerly so downstream renderers & DnD logic have a stable snapshot.
-      // Be mindful: large/deep hierarchies could motivate on-demand expansion in the future.
-      // Child scopes
-      const rawChildScopes = scopesByParent.get(scope.id) ?? []
-      const childScopes = sortScopes({
-        scopes: rawChildScopes,
-        listOrder: scope.list_orders?.scopes ?? [],
+    /**
+     * Retrieve ordered children for a container (scopeId or null for root) based on per-view token array.
+     * Fallback: scopes-first rule then view-specific items.
+     */
+    const buildChildrenForContainer = (containerScopeId: string | null): AnyViewTreeItem[] => {
+      const containerScope = containerScopeId
+        ? scopes.find((s) => s.id === containerScopeId) || null
+        : null
+      const listOrders = containerScope ? containerScope.list_orders : account.list_orders
+      const viewTokensRaw =
+        (listOrders?.[listView as keyof typeof listOrders] as string[] | undefined) ?? undefined
+
+      const childScopes = scopesByParent.get(containerScopeId) ?? []
+      const childTasks = (tasksByScope.get(containerScopeId) ?? []).filter(includeTask)
+      const childRtasks =
+        listView === "recurring" ? (rtasksByScope.get(containerScopeId) ?? []) : []
+
+      const fallbackTokens = buildFallbackTokens({
+        view: listView as "current" | "snoozed" | "done" | "recurring",
+        scopeIds: childScopes.map((s) => s.id),
+        taskIds: childTasks.map((t) => t.id),
+        rtaskIds: childRtasks.map((rt) => rt.id),
       })
+      const tokens = dedupeTokens(
+        viewTokensRaw && viewTokensRaw.length ? viewTokensRaw : fallbackTokens
+      )
 
-      // Tasks (filtered & sorted) unless recurring-only view.
-      const rawTasks = (tasksByScope.get(scope.id) ?? []).filter(includeTask)
-      const sortedTasks = statusViewForSort
-        ? sortTasks({
-            tasks: rawTasks,
-            statusView: statusViewForSort,
-            listOrder:
-              statusViewForSort === "current" ? (scope.list_orders?.tasks ?? []) : undefined,
-          })
-        : []
-
-      // Recurring tasks only for recurring view.
-      const rawRtasks = listView === "recurring" ? (rtasksByScope.get(scope.id) ?? []) : []
-      const sortedRtasks = listView === "recurring" ? sortRtasks({ rtasks: rawRtasks }) : []
+      const usedScopeIds = new Set<string>()
+      const usedTaskIds = new Set<string>()
+      const usedRtaskIds = new Set<string>()
 
       const children: AnyViewTreeItem[] = []
-      // Order: scopes, tasks, recurring tasks (could adjust later if different UX needed)
-      for (const cs of childScopes as ScopeListItemData[]) children.push(makeScopeNode(cs))
-      for (const task of sortedTasks) {
-        children.push({
-          id: task.id,
-          kind: "task",
-          label: task.title,
-          data: task as TaskListItemData,
-        })
+      for (const token of tokens) {
+        const decoded = decodeToken(token)
+        if (!decoded) continue
+        const { kind, id } = decoded
+        if (kind === "scope") {
+          const scope = childScopes.find((s) => s.id === id)
+          if (!scope) continue
+          children.push(makeScopeNode(scope))
+          usedScopeIds.add(id)
+          continue
+        }
+        if (kind === "task" && listView !== "recurring") {
+          const task = childTasks.find((t) => t.id === id)
+          if (!task) continue
+          children.push({ id: task.id, kind: "task", label: task.title, data: task })
+          usedTaskIds.add(id)
+          continue
+        }
+        if (kind === "rtask" && listView === "recurring") {
+          const rtask = childRtasks.find((rt) => rt.id === id)
+          if (!rtask) continue
+          children.push({ id: rtask.id, kind: "rtask", label: rtask.title, data: rtask })
+          usedRtaskIds.add(id)
+        }
       }
-      for (const rt of sortedRtasks) {
+
+      // Append leftover entities not referenced in tokens (stable + predictable ordering)
+      const leftoverScopes = childScopes.filter((s) => !usedScopeIds.has(s.id))
+      const leftoverTasks = childTasks.filter((t) => !usedTaskIds.has(t.id))
+      const leftoverRtasks = childRtasks.filter((rt) => !usedRtaskIds.has(rt.id))
+
+      // Leftover ordering: we only use legacy per-kind ordering as a stable fallback
+      const orderedLeftoverScopes = sortScopes({
+        scopes: leftoverScopes as ScopeListItemData[],
+        listOrder: containerScope?.list_orders?.scopes ?? account.list_orders?.scopes ?? [],
+      })
+      const orderedLeftoverTasks = statusViewForSort
+        ? sortTasks({ tasks: leftoverTasks as TaskListItemData[], statusView: statusViewForSort })
+        : []
+      const orderedLeftoverRtasks =
+        listView === "recurring"
+          ? sortRtasks({ rtasks: leftoverRtasks as RecurringTaskListItemData[] })
+          : []
+
+      for (const s of orderedLeftoverScopes as ScopeListItemData[]) children.push(makeScopeNode(s))
+      for (const t of orderedLeftoverTasks as TaskListItemData[])
+        children.push({ id: t.id, kind: "task", label: t.title, data: t as TaskListItemData })
+      for (const rt of orderedLeftoverRtasks as RecurringTaskListItemData[]) {
         children.push({
           id: rt.id,
           kind: "rtask",
@@ -173,12 +212,16 @@ export function useViewTreeData(): UseViewTreeDataResult {
         })
       }
 
+      return children
+    }
+
+    const makeScopeNode = (scope: ScopeListItemData): ViewTreeItem<"scope"> => {
+      const children = buildChildrenForContainer(scope.id)
       return {
         id: scope.id,
         kind: "scope",
         label: scope.title,
         data: scope,
-        // Cast because a scope node's children can be heterogeneous (scopes, tasks, rtasks)
         items: children as unknown as SMUIDataTreeListItem<ScopeListItemData, "scope">[],
       }
     }
@@ -197,39 +240,7 @@ export function useViewTreeData(): UseViewTreeDataResult {
       return { items: only, itemById: map }
     }
 
-    // Root scopes
-    const rootScopes = sortScopes({
-      scopes: scopesByParent.get(null) ?? [],
-      listOrder: account.list_orders?.scopes ?? [],
-    })
-
-    // Root-level tasks/rtasks (rare, but handle if they exist)
-    const rootTasksRaw = (tasksByScope.get(null) ?? []).filter(includeTask)
-    const rootTasksSorted = statusViewForSort
-      ? sortTasks({
-          tasks: rootTasksRaw,
-          statusView: statusViewForSort,
-          listOrder:
-            statusViewForSort === "current" ? (account.list_orders?.tasks ?? []) : undefined,
-        })
-      : []
-
-    const rootRtasksRaw = listView === "recurring" ? (rtasksByScope.get(null) ?? []) : []
-    const rootRtasksSorted = listView === "recurring" ? sortRtasks({ rtasks: rootRtasksRaw }) : []
-
-    const rootItems: AnyViewTreeItem[] = []
-    for (const rs of rootScopes as ScopeListItemData[]) rootItems.push(makeScopeNode(rs))
-    for (const t of rootTasksSorted) {
-      rootItems.push({ id: t.id, kind: "task", label: t.title, data: t as TaskListItemData })
-    }
-    for (const rt of rootRtasksSorted) {
-      rootItems.push({
-        id: rt.id,
-        kind: "rtask",
-        label: rt.title,
-        data: rt as RecurringTaskListItemData,
-      })
-    }
+    const rootItems: AnyViewTreeItem[] = buildChildrenForContainer(null)
 
     // Build the itemById map with parent links
     const itemById = new Map<string, ViewTreeItemWithParent>()

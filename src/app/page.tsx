@@ -22,8 +22,10 @@ export default function Page() {
       <SMUIDataTreeList
         ariaLabel="List"
         items={items}
+        selectionMode="multiple"
         classNames={{
-          item: "data-drop-target:outline-2",
+          list: "flex flex-col p-space-md gap-space-md",
+          item: "data-drop-target:outline data-selected:bg-neutral-muted-bg",
         }}
         renderItemContent={(item) => (
           <div
