@@ -11,7 +11,7 @@ import {
   sortItemsByIdOrder,
 } from "@/_deprecating/common/utils/list-utils"
 import { CreateField } from "@/_deprecating/common/components/create-field"
-import { useSessionStorageUtility } from "@/_deprecating/common/utils/use-storage-utility"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
 import { ToggleButton } from "@/_deprecating/common/primitives/toggle-button/components"
 import { Popover, PopoverTrigger } from "@/_deprecating/common/primitives/popover/components"
 import { Button } from "@/_deprecating/common/primitives/button/components"

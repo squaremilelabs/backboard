@@ -2,7 +2,7 @@
 import { AlarmClockIcon, DiamondIcon, LucideIcon, MenuIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { AppUserTray } from "./app-user-tray"
-import { useSessionStorageUtility } from "@/_deprecating/common/utils/use-storage-utility"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
 import { useCurrentScopeView } from "@/_deprecating/modules/scope/use-scope-views"
 import { ScopeTitle } from "@/_deprecating/modules/scope/scope-title"
 import { Button } from "@/_deprecating/common/primitives/button/components"

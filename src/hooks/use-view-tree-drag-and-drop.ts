@@ -1,6 +1,6 @@
 import { useDragAndDrop, Key, isTextDropItem } from "react-aria-components"
 import { AnyViewTreeItem, useViewTreeData, ViewTreeItemWithParent } from "./use-view-tree-data"
-import { useViewParams } from "./use-view-params"
+import { ViewParams } from "./use-view-params"
 import { useAuth } from "./use-auth"
 import { ScopeListItemData } from "./use-root-list-data"
 import { db } from "@/database/db-client"
@@ -92,10 +92,9 @@ function extractDragIds(
  *  - Consider optimistic local reorder before transact to further minimize perceptual latency.
  *  - Add analytics hooks around reorder/move events for UX insights.
  */
-export function useViewTreeDragAndDrop() {
+export function useViewTreeDragAndDrop({ viewParams }: { viewParams: ViewParams }) {
   const { account } = useAuth()
-  const { viewParams } = useViewParams()
-  const { itemById } = useViewTreeData()
+  const { itemById } = useViewTreeData({ viewParams })
 
   // # Original prompt for this hook
   // This hook should provide drag-and-drop functionality for the view tree.

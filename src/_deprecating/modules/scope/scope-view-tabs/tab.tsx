@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { ScopeViewInfo, useCurrentScopeView } from "../use-scope-views"
 import { ClassValue, cn } from "@/_deprecating/common/utils/ui-utils"
 import { ListBoxItem } from "@/_deprecating/common/primitives/list-box/components"
-import { useSessionStorageUtility } from "@/_deprecating/common/utils/use-storage-utility"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
 
 export function ScopeViewTab({

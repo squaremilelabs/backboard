@@ -2,7 +2,7 @@
 import { ChevronsLeftIcon } from "lucide-react"
 import { AppLogo } from "./app-logo"
 import { ScopeList } from "@/_deprecating/modules/scope/scope-list"
-import { useSessionStorageUtility } from "@/_deprecating/common/utils/use-storage-utility"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
 import { Button } from "@/_deprecating/common/primitives/button/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { cn } from "@/_deprecating/common/utils/ui-utils"

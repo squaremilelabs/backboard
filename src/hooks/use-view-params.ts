@@ -15,7 +15,7 @@
  *  - Add new view fields to `ViewParams`, update defaults, then safely consume here—no additional hook changes required unless introducing cross-field constraints.
  *  - For derived / computed view state, build a separate selector hook rather than embedding logic here to keep concerns clear.
  */
-import { useSessionStorageUtility } from "@/_deprecating/common/utils/use-storage-utility"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
 
 export type ViewList = "current" | "snoozed" | "recurring" | "done"
 

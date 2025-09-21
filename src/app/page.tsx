@@ -34,9 +34,9 @@ export default function Page() {
     },
   })
 
-  const { items } = useViewTreeData()
   const { viewParams, setViewParam } = useViewParams()
-  const { dragAndDropHooks } = useViewTreeDragAndDrop()
+  const { items } = useViewTreeData({ viewParams })
+  const { dragAndDropHooks } = useViewTreeDragAndDrop({ viewParams })
   return (
     <div>
       <Button

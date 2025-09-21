@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 import { useRootListData } from "./use-root-list-data"
-import { useViewParams } from "./use-view-params"
+import { ViewParams } from "./use-view-params"
 import { useAuth } from "./use-auth"
 import {
   RecurringTaskListItemData,
@@ -63,9 +63,8 @@ export type UseViewTreeDataResult = {
  *  - Because ordering for non-current task views is not persisted, a task moved while viewing another list may not reflect stable ordering on return.
  *  - Ensure `account` presence is validated early; returning deterministic empties avoids null checking cascades upstream.
  */
-export function useViewTreeData(): UseViewTreeDataResult {
+export function useViewTreeData({ viewParams }: { viewParams: ViewParams }): UseViewTreeDataResult {
   const { account } = useAuth()
-  const { viewParams } = useViewParams()
   const { data } = useRootListData({ fetchInactiveData: viewParams.showInactive })
 
   // # Original prompt for this hook
