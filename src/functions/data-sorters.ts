@@ -25,24 +25,34 @@ export function sortTasks({
   }
 
   if (statusView === "snoozed") {
-    result = [...result].sort((left, right) => {
-      if (left.status_time === right.status_time) {
-        return left.created_at - right.created_at
-      }
-      if (left.status_time == null) return 1
-      if (right.status_time == null) return -1
-      return left.status_time - right.status_time
+    result = sortByListOrder({
+      items: result,
+      listOrder: listOrder ?? [],
+      missingIdsPosition: "end",
+      sortMissingIds: (left, right) => {
+        if (left.status_time === right.status_time) {
+          return left.created_at - right.created_at
+        }
+        if (left.status_time == null) return 1
+        if (right.status_time == null) return -1
+        return left.status_time - right.status_time
+      },
     })
   }
 
   if (statusView === "done") {
-    result = [...result].sort((left, right) => {
-      if (left.status_time === right.status_time) {
-        return left.created_at - right.created_at
-      }
-      if (left.status_time == null) return 1
-      if (right.status_time == null) return -1
-      return right.status_time - left.status_time
+    result = sortByListOrder({
+      items: result,
+      listOrder: listOrder ?? [],
+      missingIdsPosition: "end",
+      sortMissingIds: (left, right) => {
+        if (left.status_time === right.status_time) {
+          return left.created_at - right.created_at
+        }
+        if (left.status_time == null) return 1
+        if (right.status_time == null) return -1
+        return right.status_time - left.status_time
+      },
     })
   }
 
