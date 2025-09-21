@@ -5,7 +5,7 @@ import { db } from "@/database/db-admin"
 import { RecurringTask } from "@/database/models/recurring-task"
 import { parseTaskCreateInput } from "@/database/models/task"
 import { AccountCustomWorkHours } from "@/database/models/account"
-import { DEFAULT_WORKING_HOURS } from "@/_legacy-structure/modules/auth/account-hours"
+import { DEFAULT_WORKING_HOURS } from "@/_deprecating/modules/auth/account-hours"
 
 export async function GET() {
   try {

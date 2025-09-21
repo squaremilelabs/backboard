@@ -1,11 +1,11 @@
 import { Metadata, Viewport } from "next"
 import { SignedIn, SignedOut } from "@clerk/nextjs"
 import { fontsClassName } from "@/styles/fonts"
-import Providers from "@/_legacy-structure/modules/root/providers"
-import { AppLayout } from "@/_legacy-structure/modules/root/app-layout"
+import Providers from "@/_deprecating/modules/root/providers"
+import { AppLayout } from "@/_deprecating/modules/root/app-layout"
 import "@/styles/index.css"
 import { cn } from "~/smui/utils"
-import { getAccountAccentColor } from "@/_legacy-structure/modules/root/get-accent-color"
+import { getAccountAccentColor } from "@/_deprecating/modules/root/get-accent-color"
 
 export const metadata: Metadata = {
   title: {
