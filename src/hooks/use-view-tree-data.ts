@@ -27,6 +27,37 @@ export type UseViewTreeDataResult = {
   itemById: Map<string, ViewTreeItemWithParent>
 }
 
+/**
+ * Hook: useViewTreeData
+ * High-Level Responsibility:
+ *  - Transform the flat entity arrays (scopes, tasks, recurring tasks) from `useRootListData` into a fully nested, typed tree structure
+ *    consumable by `SMUIDataTreeList`, while applying view-level filters and ordering semantics.
+ * Key Outputs:
+ *  - `items`: top-level heterogeneous list of root nodes (scopes / tasks / recurring tasks depending on view).
+ *  - `itemById`: Map of every node (including descendants) -> node payload + `parentId` for O(1) lookup & drag-and-drop operations.
+ * Filtering Strategy:
+ *  - Delegates coarse dataset filtering (inactive entities, recency window for done tasks) to `useRootListData`.
+ *  - Applies fine-grained list-mode filtering (`current | snoozed | done | recurring`) here, ensuring consistent visibility rules.
+ * Ordering Rules (Important Invariants):
+ *  - Scopes: ordered at each level using the parent scope's `list_orders.scopes` (or account-level for root).
+ *  - Tasks: only the "current" status set is order-persisted (`list_orders.tasks`). Other status sets fall back to sorter logic without persisted order.
+ *  - Recurring tasks: sorted via `sortRtasks` (no persisted order yet).
+ * Root Scope vs Global Root:
+ *  - When `viewParams.rootScopeId` is set, the hook returns a single synthetic tree consisting solely of that scope subtree.
+ *  - Otherwise, builds a forest from all root-level scopes plus any orphan tasks / recurring tasks.
+ * Complexity Notes:
+ *  - Tree construction cost is O(N) with additional O(K log K) per sibling group for sort operations (acceptable for typical list sizes).
+ *  - Avoids recursion for non-scope children (tasks, recurring tasks) to keep stack shallow; only scopes recurse.
+ * Drag-and-Drop Support Rationale:
+ *  - `itemById` provides `parentId` enabling upstream DnD logic to compute reorders & cross-parent moves without tree re-walks.
+ *  - Children arrays inside each scope node are intentionally heterogeneous; casting maintains flexibility while collocating display data.
+ * Extension Guidance:
+ *  - Adding a new item type: extend `ViewTreeItemKind`, update discriminated unions, integrate into scope + root assembly order.
+ *  - Introducing ordering for non-current tasks or recurring tasks would require passing appropriate `listOrder` arrays into their sorters.
+ * Caution:
+ *  - Because ordering for non-current task views is not persisted, a task moved while viewing another list may not reflect stable ordering on return.
+ *  - Ensure `account` presence is validated early; returning deterministic empties avoids null checking cascades upstream.
+ */
 export function useViewTreeData(): UseViewTreeDataResult {
   const { account } = useAuth()
   const { viewParams } = useViewParams()
@@ -98,6 +129,8 @@ export function useViewTreeData(): UseViewTreeDataResult {
       listView === "recurring" ? null : listView === "current" ? "current" : listView
 
     const makeScopeNode = (scope: ScopeListItemData): ViewTreeItem<"scope"> => {
+      // NOTE: Scope recursion builds its children eagerly so downstream renderers & DnD logic have a stable snapshot.
+      // Be mindful: large/deep hierarchies could motivate on-demand expansion in the future.
       // Child scopes
       const rawChildScopes = scopesByParent.get(scope.id) ?? []
       const childScopes = sortScopes({

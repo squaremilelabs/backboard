@@ -17,8 +17,6 @@ function scopeListUpdateTxn(scopeId: string, list: "scopes" | "tasks", newOrder:
   return db.tx.scopes[scopeId].merge(data)
 }
 
-// Example usage: db.transact(scopeListUpdateTxn("scopeId", "tasks", ["id1", "id2", "id3"]))
-
 type DragScopePayload = { "db/scope": string }
 type DragTaskPayload = { "db/task": string }
 type DragPayload = DragScopePayload | DragTaskPayload
@@ -43,6 +41,44 @@ function extractDragIds(
   return ids
 }
 
+/**
+ * Hook: useViewTreeDragAndDrop
+ * Core Responsibility:
+ *  - Supply `react-aria-components` Tree with cohesive drag & drop semantics (reordering + cross-level moves) consistent with our
+ *    persisted ordering model (`list_orders`) and relational links (scope parenthood / task containment).
+ * Design Highlights:
+ *  - Single `onMove` handler unifies intra-parent reorders and inter-parent migrations; reduces branching vs legacy `onReorder` + `onItemDrop` split.
+ *  - `onRootDrop` handles drops onto the empty collection surface (background) to move items directly to root.
+ *  - Transactions are batched (order + link/unlink) for atomicity so UI doesn't transiently desync.
+ * Ordering Persistence Policy:
+ *  - Scope moves always adjust `list_orders.scopes` for old/new parents (or account root).
+ *  - Task ordering is persisted ONLY when viewing the "current" list (constraint keeps other views ephemeral and simpler).
+ *  - Root-level order updates mirror scope-level logic using account list orders.
+ * Link Management:
+ *  - Moving to root => `unlink` parent; moving under a scope => `link` that scope.
+ *  - Scope moves similarly unlink/link via `parent_scope` relation.
+ * Safety Checks:
+ *  - Reject mixed-kind drags (scope + task simultaneously) to avoid ambiguous ordering semantics.
+ *  - Enforce same-original-parent for multi-select drags (simplifies ordering math); can be relaxed in future by building per-parent delta sets.
+ *  - Bail early if account is absent or target node cannot be resolved.
+ * Data Dependencies:
+ *  - Relies on `itemById` (from `useViewTreeData`) to infer current rendered order for computing new order arrays.
+ *  - Uses a depth-first snapshot; any visual grouping changes require updating `getOrderedChildIds` strategy accordingly.
+ * Extensibility Notes:
+ *  - To support recurring task dragging: extend accepted types + serialization + ordering rules (currently excluded intentionally).
+ *  - To allow ordering in other task views: remove list guard & decide persistence semantics for those statuses.
+ *  - Multi-parent multi-select moves: group moved IDs by original parent and apply independent old-parent order trims.
+ * Edge Cases Addressed:
+ *  - Move into empty scope (append logic falls back to end insertion).
+ *  - Drop before/after a target that itself is being moved (filtered from insertion list first).
+ *  - Root drop after previously root-based items (ensures uniqueness via filter when appending).
+ * Failure Modes:
+ *  - If a transaction partially fails (unlikely with Instant local-first), state may temporarily diverge; no explicit rollback currently.
+ *  - Dragging a node not present in `itemById` (stale selection) is ignored safely.
+ * Future Hardening:
+ *  - Consider optimistic local reorder before transact to further minimize perceptual latency.
+ *  - Add analytics hooks around reorder/move events for UX insights.
+ */
 export function useViewTreeDragAndDrop() {
   const { account } = useAuth()
   const { viewParams } = useViewParams()

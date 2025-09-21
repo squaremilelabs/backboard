@@ -4,7 +4,7 @@ import { Button } from "react-aria-components"
 import { useViewParams } from "@/hooks/use-view-params"
 import { useViewTreeData } from "@/hooks/use-view-tree-data"
 import { SMUIDataTreeList } from "~/smui/components/data-tree-list"
-import { useViewTreeDragAndDrop } from "@/hooks/use-view-tree-drag-n-drop"
+import { useViewTreeDragAndDrop } from "@/hooks/use-view-tree-drag-and-drop"
 
 export default function Page() {
   const { items } = useViewTreeData()

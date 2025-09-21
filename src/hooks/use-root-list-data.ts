@@ -1,4 +1,36 @@
 "use client"
+/**
+ * Hook: useRootListData
+ * Purpose:
+ *  - Fetch the canonical, flat (non-hierarchical) lists of scopes, tasks, and recurring tasks for the current Account.
+ *  - Provide precomputed lookup Maps to accelerate higher-level tree construction & drag-and-drop logic.
+ * Responsibilities:
+ *  - Execute three parallel InstantDB queries (scopes, tasks, recurring_tasks) with minimal field selections for related links.
+ *  - Apply coarse filtering (account ownership, inactive flag gating, recent done window, limited status set) early to reduce downstream work.
+ *  - Expose multi-map style indices keyed by parent scope (or null for root) for O(1) grouping in tree builders.
+ * Not In Scope:
+ *  - Fine-grained status/list view filtering (handled in `useViewTreeData`).
+ *  - Ordering resolution (also handled later). We intentionally return arrays in raw snapshot order.
+ *  - Mutations or derived structural transformations (pure data fetch + indexing only).
+ * Handling Root / Orphan Entities:
+ *  - Tasks and recurring tasks with no `scope` link (null) are treated as root-level (Map key `null`).
+ *  - We currently cannot express a filter for "missing relation OR (relation predicate)" due to InstantDB limitation (see TODO comments).
+ * Query Nuances & Limitations:
+ *  - The commented TODO blocks show intended future server-side filtering for orphan detection once supported.
+ *  - Done tasks are time-window constrained (last 5 days) to cap payload size.
+ * Reactive Behavior:
+ *  - All returned arrays/Maps are regenerated on data change; callers should treat them as immutable snapshots.
+ *  - useMemo boundaries ensure Map identity only changes when underlying source arrays change.
+ * Extension Guidance:
+ *  - Adding new entity types? Mirror the pattern: query + flat array + id map + parent grouping map.
+ *  - If adding expensive computed fields, prefer a separate processing hook layered above this one, to keep fetch concerns isolated.
+ *  - Maintain symmetry in naming: `<plural>ById` for id map, `<plural>ByScopeId` for parent grouping.
+ * Error Handling Strategy:
+ *  - Collects individual query errors into a consolidated array `{ data, error }` for flexible UI reporting.
+ *  - Returns `errors: null` when all succeeded to simplify consumer checks.
+ * Performance Considerations:
+ *  - For very large datasets, consider server-side pagination or status partition queries; current approach assumes modest list sizes.
+ */
 import { startOfDay, subDays } from "date-fns"
 import { useMemo } from "react"
 import { useAuth } from "./use-auth"
