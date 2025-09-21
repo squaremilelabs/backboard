@@ -1,17 +1,39 @@
 "use client"
 
 import { Button } from "react-aria-components"
+import { useState } from "react"
 import { useViewParams } from "@/hooks/use-view-params"
 import { useViewTreeData } from "@/hooks/use-view-tree-data"
 import { SMUIDataTreeList } from "~/smui/components/data-tree-list"
 import { useViewTreeDragAndDrop } from "@/hooks/use-view-tree-drag-and-drop"
+import { db } from "@/database/db-client"
 
 export default function Page() {
+  const [_showInactive, _setShowInactive] = useState(false)
+  db.useQuery({
+    tasks: {
+      $: {
+        where: {
+          /**
+           * ! Runtime error
+           * Error: `At path 'tasks.$.where.scope.id': Invalid value for id field in entity 'scopes'. Expected a UUID, but received: [object Object]`
+           * https://www.instantdb.com/docs/patterns#find-entities-with-no-links
+           */
+          // "scope.id": { $isNull: true },
+          /**
+           * ! Typescript / build error
+           * Does not accept `undefined` for relational fields.
+           * Intended for conditionally ommitting the filter (works for non-relational fields).
+           */
+          // "scope.is_inactive": _showInactive ? undefined : false,
+        },
+      },
+    },
+  })
+
   const { items } = useViewTreeData()
   const { viewParams, setViewParam } = useViewParams()
-
   const { dragAndDropHooks } = useViewTreeDragAndDrop()
-
   return (
     <div>
       <Button
