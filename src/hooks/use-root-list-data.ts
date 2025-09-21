@@ -35,7 +35,16 @@ import { startOfDay, subDays } from "date-fns"
 import { useMemo } from "react"
 import { useAuth } from "./use-auth"
 import { useDBQuery } from "@/database/db-client"
-import { RecurringTaskListItemData, ScopeListItemData, TaskListItemData } from "@/types/data"
+import { Scope } from "@/database/models/scope"
+import { Task } from "@/database/models/task"
+import { RecurringTask } from "@/database/models/recurring-task"
+
+export type ScopeListItemData = Scope & { parent_scope: { id: string } | null }
+export type TaskListItemData = Task & {
+  scope: { id: string } | null
+  recurring_task: { id: string } | null
+}
+export type RecurringTaskListItemData = RecurringTask & { scope: { id: string } | null }
 
 export function useRootListData({ fetchInactiveData }: { fetchInactiveData?: boolean }) {
   const { account } = useAuth()
@@ -77,14 +86,13 @@ export function useRootListData({ fetchInactiveData }: { fetchInactiveData?: boo
                     { status: "done", status_time: { $gte: startOfDay(subDays(new Date(), 5)) } },
                   ],
                 },
-                // TODO: Report bug to instant because we can't filter for non-existent relations
-                // https://www.instantdb.com/docs/patterns#find-entities-with-no-links
-                // {
-                //   or: [
-                //     { "scope.id": { $isNull: true } },
-                //     { ...(!fetchInactiveData && { "scope.is_inactive": false }) },
-                //   ],
-                // },
+                // Either no scope or match fetch inactive filter if scoped
+                {
+                  or: [
+                    { "scope.id": { $isNull: true } },
+                    { ...(!fetchInactiveData && { "scope.is_inactive": false }) },
+                  ],
+                },
               ],
             },
           },
@@ -106,11 +114,11 @@ export function useRootListData({ fetchInactiveData }: { fetchInactiveData?: boo
             where: {
               "owner.id": account.id,
               "is_inactive": fetchInactiveData ? undefined : false,
-              // TODO: See above
-              // or: [
-              //   { "scope.id": { $isNull: true } },
-              //   { ...(!fetchInactiveData && { "scope.is_inactive": false }), }
-              // ]
+              // Either no scope or match fetch inactive filter if scoped
+              "or": [
+                { "scope.id": { $isNull: true } },
+                { ...(!fetchInactiveData && { "scope.is_inactive": false }) },
+              ],
             },
           },
           scope: { $: { fields: ["id"] } },

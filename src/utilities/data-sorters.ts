@@ -1,4 +1,4 @@
-import { sortByListOrder } from "../utilities/sort-by-list-order"
+import { sortByListOrder } from "./sort-by-list-order"
 import { RecurringTask } from "@/database/models/recurring-task"
 import { Scope } from "@/database/models/scope"
 import { Task, TaskStatus } from "@/database/models/task"

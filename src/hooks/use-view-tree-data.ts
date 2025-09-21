@@ -4,9 +4,13 @@ import { useMemo } from "react"
 import { useRootListData } from "./use-root-list-data"
 import { useViewParams } from "./use-view-params"
 import { useAuth } from "./use-auth"
+import {
+  RecurringTaskListItemData,
+  ScopeListItemData,
+  TaskListItemData,
+} from "./use-root-list-data"
 import { SMUIDataTreeListItem } from "~/smui/components/data-tree-list"
-import { RecurringTaskListItemData, ScopeListItemData, TaskListItemData } from "@/types/data"
-import { sortTasks, sortScopes, sortRtasks } from "@/functions/data-sorters"
+import { sortTasks, sortScopes, sortRtasks } from "@/utilities/data-sorters"
 import { buildFallbackTokens, decodeToken, dedupeTokens } from "@/utilities/list-order-tokens"
 import { TaskStatus } from "@/database/models/task"
 
