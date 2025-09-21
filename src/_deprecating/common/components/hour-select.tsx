@@ -1,6 +1,11 @@
-import { FieldDescription, FieldLabel } from "~/smui/field/components"
-import { ListBox, ListBoxItem } from "~/smui/list-box/components"
-import { Select, SelectButton, SelectPopover, SelectProps } from "~/smui/select/components"
+import { FieldDescription, FieldLabel } from "@/_deprecating/common/primitives/field/components"
+import { ListBox, ListBoxItem } from "@/_deprecating/common/primitives/list-box/components"
+import {
+  Select,
+  SelectButton,
+  SelectPopover,
+  SelectProps,
+} from "@/_deprecating/common/primitives/select/components"
 
 export function HourSelect({
   label,

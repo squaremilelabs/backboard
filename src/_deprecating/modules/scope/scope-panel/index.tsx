@@ -7,8 +7,8 @@ import {
   TitleContentFieldValues,
 } from "@/_deprecating/common/components/title-content-fields"
 import { palette, panel } from "@/_deprecating/common/components/class-names"
-import { Button } from "~/smui/button/components"
-import { Icon } from "~/smui/icon/components"
+import { Button } from "@/_deprecating/common/primitives/button/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
 import { db } from "@/database/db-client"
 

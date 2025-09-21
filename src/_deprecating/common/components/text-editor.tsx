@@ -7,7 +7,7 @@ import { TaskItem, TaskList } from "@tiptap/extension-list"
 import { useEffect } from "react"
 import { deepEqual } from "fast-equals"
 import { Placeholder } from "@tiptap/extensions"
-import { cn } from "~/smui/utils"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { useDebouncedTypings } from "@/_deprecating/common/utils/use-debounced"
 
 export const TextEditor = ({

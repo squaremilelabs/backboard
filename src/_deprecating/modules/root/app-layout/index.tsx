@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation"
 import { AppHeader } from "./app-header"
 import { AppSidebar } from "./app-sidebar"
 import { useSessionStorageUtility } from "@/_deprecating/common/utils/use-storage-utility"
-import { cn } from "~/smui/utils"
-import { Modal } from "~/smui/modal/components"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { Modal } from "@/_deprecating/common/primitives/modal/components"
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()

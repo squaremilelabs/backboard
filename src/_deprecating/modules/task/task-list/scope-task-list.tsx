@@ -10,9 +10,9 @@ import {
   reorderIds,
   sortItemsByIdOrder,
 } from "@/_deprecating/common/utils/list-utils"
-import { GridList } from "~/smui/grid-list/components"
+import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
 import { CreateField } from "@/_deprecating/common/components/create-field"
-import { cn } from "~/smui/utils"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { useSessionStorageUtility } from "@/_deprecating/common/utils/use-storage-utility"
 import { typography } from "@/_deprecating/common/components/class-names"
 import { db, useDBQuery } from "@/database/db-client"

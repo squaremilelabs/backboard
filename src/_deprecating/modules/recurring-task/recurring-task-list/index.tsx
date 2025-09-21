@@ -6,8 +6,8 @@ import { getRecurringTaskInfo, RecurringTaskFrequencyType } from "../recurring-t
 import { RecurringTaskListItem } from "./list-item"
 import { RecurringTaskListCreateBox } from "./create-box"
 import { useCurrentScopeView } from "@/_deprecating/modules/scope/use-scope-views"
-import { GridList } from "~/smui/grid-list/components"
-import { cn } from "~/smui/utils"
+import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { useDBQuery } from "@/database/db-client"
 import { RecurringTask } from "@/database/models/recurring-task"
 

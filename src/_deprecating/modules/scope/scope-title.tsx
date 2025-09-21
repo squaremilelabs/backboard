@@ -1,9 +1,9 @@
 "use client"
 import { Emoji, EmojiStyle } from "emoji-picker-react"
 import ScopePanel from "./scope-panel"
-import { Modal, ModalTrigger } from "~/smui/modal/components"
-import { Button } from "~/smui/button/components"
-import { Icon } from "~/smui/icon/components"
+import { Modal, ModalTrigger } from "@/_deprecating/common/primitives/modal/components"
+import { Button } from "@/_deprecating/common/primitives/button/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { typography } from "@/_deprecating/common/components/class-names"
 import { useDBQuery } from "@/database/db-client"
 

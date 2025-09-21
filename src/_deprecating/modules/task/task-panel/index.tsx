@@ -10,12 +10,12 @@ import {
   TitleContentFieldValues,
 } from "@/_deprecating/common/components/title-content-fields"
 import { panel } from "@/_deprecating/common/components/class-names"
-import { Icon } from "~/smui/icon/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { parseTaskUpdateInput, Task } from "@/database/models/task"
 import { db } from "@/database/db-client"
 import { useAuth } from "@/_deprecating/modules/auth/use-auth"
-import { Button } from "~/smui/button/components"
-import { Tooltip, TooltipTrigger } from "~/smui/tooltip/components"
+import { Button } from "@/_deprecating/common/primitives/button/components"
+import { Tooltip, TooltipTrigger } from "@/_deprecating/common/primitives/tooltip/components"
 import { formatDate } from "@/_deprecating/common/utils/date-utils"
 
 export function TaskPanel({ task }: { task: Task }) {

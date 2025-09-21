@@ -2,8 +2,8 @@
 import Link from "next/link"
 import { ExternalLinkIcon, HeartHandshakeIcon, MapIcon, ScrollIcon } from "lucide-react"
 import { FEEDBACK_URL, PRINCIPLES_URL, ROADMAP_URL } from "../links"
-import { cn } from "~/smui/utils"
-import { Icon } from "~/smui/icon/components"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { typography } from "@/_deprecating/common/components/class-names"
 
 export function AppTrayResourceLinks() {

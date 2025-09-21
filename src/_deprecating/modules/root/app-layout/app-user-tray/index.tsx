@@ -7,11 +7,11 @@ import { AppTrayResourceLinks } from "./resource-links"
 import { AppUserTrayIntegrationInfo } from "./integration-info"
 import { AppUserTrayWorkHours } from "./work-hours"
 import { AppUserTrayThemeSelect } from "./theme-select"
-import { cn } from "~/smui/utils"
-import { Icon } from "~/smui/icon/components"
-import { Button } from "~/smui/button/components"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { Button } from "@/_deprecating/common/primitives/button/components"
 import { useAccountCurrentTasks } from "@/_deprecating/modules/task/account-tasks"
-import { Modal, ModalTrigger } from "~/smui/modal/components"
+import { Modal, ModalTrigger } from "@/_deprecating/common/primitives/modal/components"
 
 export function AppUserTray() {
   const pathname = usePathname()

@@ -6,8 +6,8 @@ import { createPortal } from "react-dom"
 import { useWindowSize } from "usehooks-ts"
 import { ArrowRightIcon, PartyPopperIcon } from "lucide-react"
 import { TaskStatus } from "@/database/models/task"
-import { Button } from "~/smui/button/components"
-import { Icon } from "~/smui/icon/components"
+import { Button } from "@/_deprecating/common/primitives/button/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 
 export function EmptyUI({ statusView }: { statusView: TaskStatus }) {
   const { width, height } = useWindowSize()

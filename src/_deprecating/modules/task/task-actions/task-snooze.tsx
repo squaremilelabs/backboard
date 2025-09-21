@@ -15,10 +15,10 @@ import {
   startOfHour,
   subHours,
 } from "date-fns"
-import { Icon } from "~/smui/icon/components"
-import { Button } from "~/smui/button/components"
-import { cn } from "~/smui/utils"
-import { Modal } from "~/smui/modal/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { Button } from "@/_deprecating/common/primitives/button/components"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { Modal } from "@/_deprecating/common/primitives/modal/components"
 import { panel, typography } from "@/_deprecating/common/components/class-names"
 import { db } from "@/database/db-client"
 import { parseTaskUpdateInput, TaskStatus, TaskUpdateOutput } from "@/database/models/task"

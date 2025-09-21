@@ -5,7 +5,7 @@ import { EllipsisVerticalIcon } from "lucide-react"
 import LoomPlayer from "react-loom-player"
 import { FEEDBACK_URL, PRINCIPLES_URL, ROADMAP_URL } from "./app-layout/links"
 import { typography } from "@/_deprecating/common/components/class-names"
-import { cn } from "~/smui/utils"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
 
 export default function LandingPage() {
   return (

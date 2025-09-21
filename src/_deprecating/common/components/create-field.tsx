@@ -2,9 +2,13 @@
 
 import { PlusIcon } from "lucide-react"
 import { useRef, useState } from "react"
-import { Button } from "~/smui/button/components"
-import { Icon, IconProps } from "~/smui/icon/components"
-import { TextField, TextFieldInput, TextFieldProps } from "~/smui/text-field/components"
+import { Button } from "@/_deprecating/common/primitives/button/components"
+import { Icon, IconProps } from "@/_deprecating/common/primitives/icon/components"
+import {
+  TextField,
+  TextFieldInput,
+  TextFieldProps,
+} from "@/_deprecating/common/primitives/text-field/components"
 
 export function CreateField({
   onSubmit,

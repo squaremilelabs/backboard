@@ -9,8 +9,8 @@ import {
 } from "@/_deprecating/common/components/title-content-fields"
 import { db } from "@/database/db-client"
 import { parseRecurringTaskUpdateInput, RecurringTask } from "@/database/models/recurring-task"
-import { Button } from "~/smui/button/components"
-import { Icon } from "~/smui/icon/components"
+import { Button } from "@/_deprecating/common/primitives/button/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 
 export function RecurringTaskPanel({ task }: { task: RecurringTask }) {
   const { base, section } = panel()

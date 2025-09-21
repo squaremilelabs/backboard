@@ -1,10 +1,8 @@
 import { Metadata, Viewport } from "next"
-import { SignedIn, SignedOut } from "@clerk/nextjs"
 import { fontsClassName } from "@/styles/fonts"
-import Providers from "@/_deprecating/modules/root/providers"
-import { AppLayout } from "@/_deprecating/modules/root/app-layout"
+import Providers from "@/app/providers"
 import "@/styles/index.css"
-import { cn } from "~/smui/utils"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { getAccountAccentColor } from "@/_deprecating/modules/root/get-accent-color"
 
 export const metadata: Metadata = {
@@ -54,12 +52,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       suppressHydrationWarning
     >
       <body className="relative flex h-full min-h-0 w-full flex-col overflow-hidden">
-        <Providers>
-          <SignedIn>
-            <AppLayout>{children}</AppLayout>
-          </SignedIn>
-          <SignedOut>{children}</SignedOut>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

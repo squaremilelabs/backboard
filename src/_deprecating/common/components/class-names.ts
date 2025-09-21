@@ -1,4 +1,4 @@
-import { tv, VariantProps } from "~/smui/utils"
+import { tv, VariantProps } from "@/_deprecating/common/utils/ui-utils"
 
 export const typography = tv({
   base: [],

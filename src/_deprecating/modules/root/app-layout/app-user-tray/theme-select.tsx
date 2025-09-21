@@ -4,10 +4,14 @@ import { useTheme } from "next-themes"
 import { Laptop2Icon, LucideIcon, MoonIcon, SunIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { typography } from "@/_deprecating/common/components/class-names"
-import { Select, SelectButton, SelectPopover } from "~/smui/select/components"
-import { ListBox, ListBoxItem } from "~/smui/list-box/components"
-import { cn } from "~/smui/utils"
-import { Icon } from "~/smui/icon/components"
+import {
+  Select,
+  SelectButton,
+  SelectPopover,
+} from "@/_deprecating/common/primitives/select/components"
+import { ListBox, ListBoxItem } from "@/_deprecating/common/primitives/list-box/components"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { useAuth } from "@/_deprecating/modules/auth/use-auth"
 import { Account, parseAccountUpdateInput } from "@/database/models/account"
 import { db } from "@/database/db-client"

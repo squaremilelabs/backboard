@@ -5,14 +5,14 @@ import { AppUserTray } from "./app-user-tray"
 import { useSessionStorageUtility } from "@/_deprecating/common/utils/use-storage-utility"
 import { useCurrentScopeView } from "@/_deprecating/modules/scope/use-scope-views"
 import { ScopeTitle } from "@/_deprecating/modules/scope/scope-title"
-import { Button } from "~/smui/button/components"
-import { Icon } from "~/smui/icon/components"
+import { Button } from "@/_deprecating/common/primitives/button/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { ScopeViewTabs } from "@/_deprecating/modules/scope/scope-view-tabs"
 import {
   useAccountCurrentTasks,
   useAccountSnoozedTasks,
 } from "@/_deprecating/modules/task/account-tasks"
-import { cn } from "~/smui/utils"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
 
 export function AppHeader() {
   const pathname = usePathname()

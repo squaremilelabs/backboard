@@ -9,11 +9,15 @@ import {
 } from "lucide-react"
 import { useRef, useState } from "react"
 import { TaskSnoozePicker } from "./task-snooze"
-import { Button, ButtonGroup, ButtonProps } from "~/smui/button/components"
-import { Tooltip, TooltipTrigger } from "~/smui/tooltip/components"
-import { Icon } from "~/smui/icon/components"
+import {
+  Button,
+  ButtonGroup,
+  ButtonProps,
+} from "@/_deprecating/common/primitives/button/components"
+import { Tooltip, TooltipTrigger } from "@/_deprecating/common/primitives/tooltip/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { palette, PaletteVariant } from "@/_deprecating/common/components/class-names"
-import { Modal } from "~/smui/modal/components"
+import { Modal } from "@/_deprecating/common/primitives/modal/components"
 import { parseTaskUpdateInput, TaskStatus } from "@/database/models/task"
 import { db } from "@/database/db-client"
 

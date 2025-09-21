@@ -3,8 +3,11 @@ import { TextIcon } from "lucide-react"
 import { useEffect } from "react"
 import { useDebouncedTypings } from "../utils/use-debounced"
 import { TextEditor } from "./text-editor"
-import { Icon } from "~/smui/icon/components"
-import { TextField, TextFieldTextArea } from "~/smui/text-field/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import {
+  TextField,
+  TextFieldTextArea,
+} from "@/_deprecating/common/primitives/text-field/components"
 
 export type TitleContentFieldValues = {
   title: string
