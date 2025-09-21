@@ -26,10 +26,20 @@ type _ViewTreeItem<K extends ViewTreeItemKind> = SMUIDataTreeListItem<
 >
 export type ViewTreeItem<K extends ViewTreeItemKind = ViewTreeItemKind> = _ViewTreeItem<K>
 export type AnyViewTreeItem = ViewTreeItem<ViewTreeItemKind>
-export type ViewTreeItemWithParent = AnyViewTreeItem & { parentId: string | null }
+export type ViewTreeItemCounts = {
+  scope: number
+  task: number
+  rtask: number
+  total: number
+}
+// Extended metadata wrapper for each node (parent linkage + aggregate descendant counts)
+export type ViewTreeItemMeta = AnyViewTreeItem & {
+  parentId: string | null
+  itemCounts: ViewTreeItemCounts
+}
 export type UseViewTreeDataResult = {
   items: AnyViewTreeItem[]
-  itemById: Map<string, ViewTreeItemWithParent>
+  itemById: Map<string, ViewTreeItemMeta>
 }
 
 /**
@@ -234,9 +244,37 @@ export function useViewTreeData({ viewParams }: { viewParams: ViewParams }): Use
       const scope = scopes.find((s) => s.id === rootScopeId)
       if (!scope) return { items: [], itemById: new Map() } // invalid id => empty
       const only: AnyViewTreeItem[] = [makeScopeNode(scope)]
-      const map = new Map<string, ViewTreeItemWithParent>()
+      const map = new Map<string, ViewTreeItemMeta>()
+
+      // Post-order traversal to compute descendant counts efficiently.
+      const computeCounts = (node: AnyViewTreeItem): ViewTreeItemCounts => {
+        if (!node.items || node.items.length === 0) {
+          return { scope: 0, task: 0, rtask: 0, total: 0 }
+        }
+        let scope = 0,
+          task = 0,
+          rtask = 0,
+          total = 0
+        for (const child of node.items as AnyViewTreeItem[]) {
+          // Recurse first
+          const childCounts = computeCounts(child)
+          // Add child itself
+          if (child.kind === "scope") scope += 1
+          else if (child.kind === "task") task += 1
+          else if (child.kind === "rtask") rtask += 1
+          // Add child's descendants
+          scope += childCounts.scope
+          task += childCounts.task
+          rtask += childCounts.rtask
+          total += 1 + childCounts.total
+        }
+        return { scope, task, rtask, total }
+      }
+
       const register = (node: AnyViewTreeItem, parentId: string | null) => {
-        map.set(node.id, { ...node, parentId })
+        // children already built; compute counts lazily (will recurse down tree)
+        const counts = computeCounts(node)
+        map.set(node.id, { ...node, parentId, itemCounts: counts })
         node.items?.forEach((c) => register(c as AnyViewTreeItem, node.id))
       }
       only.forEach((n) => register(n, null))
@@ -246,9 +284,32 @@ export function useViewTreeData({ viewParams }: { viewParams: ViewParams }): Use
     const rootItems: AnyViewTreeItem[] = buildChildrenForContainer(null)
 
     // Build the itemById map with parent links
-    const itemById = new Map<string, ViewTreeItemWithParent>()
+    const itemById = new Map<string, ViewTreeItemMeta>()
+
+    const computeCounts = (node: AnyViewTreeItem): ViewTreeItemCounts => {
+      if (!node.items || node.items.length === 0) {
+        return { scope: 0, task: 0, rtask: 0, total: 0 }
+      }
+      let scope = 0,
+        task = 0,
+        rtask = 0,
+        total = 0
+      for (const child of node.items as AnyViewTreeItem[]) {
+        const childCounts = computeCounts(child)
+        if (child.kind === "scope") scope += 1
+        else if (child.kind === "task") task += 1
+        else if (child.kind === "rtask") rtask += 1
+        scope += childCounts.scope
+        task += childCounts.task
+        rtask += childCounts.rtask
+        total += 1 + childCounts.total
+      }
+      return { scope, task, rtask, total }
+    }
+
     const register = (node: AnyViewTreeItem, parentId: string | null) => {
-      itemById.set(node.id, { ...node, parentId })
+      const counts = computeCounts(node)
+      itemById.set(node.id, { ...node, parentId, itemCounts: counts })
       node.items?.forEach((c) => register(c as AnyViewTreeItem, node.id))
     }
     rootItems.forEach((n) => register(n, null))

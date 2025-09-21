@@ -1,5 +1,5 @@
 import { useDragAndDrop, Key, isTextDropItem } from "react-aria-components"
-import { AnyViewTreeItem, useViewTreeData, ViewTreeItemWithParent } from "./use-view-tree-data"
+import { AnyViewTreeItem, useViewTreeData, ViewTreeItemMeta } from "./use-view-tree-data"
 import { ViewParams } from "./use-view-params"
 import { useAuth } from "./use-auth"
 import { ScopeListItemData } from "./use-root-list-data"
@@ -31,7 +31,7 @@ type DragTaskPayload = { "db/task": string }
 type DragRTaskPayload = { "db/rtask": string }
 type DragPayload = DragScopePayload | DragTaskPayload | DragRTaskPayload
 
-function serializeDragItem(node: ViewTreeItemWithParent): DragPayload | null {
+function serializeDragItem(node: ViewTreeItemMeta): DragPayload | null {
   if (node.kind === "scope") return { "db/scope": JSON.stringify({ id: node.id }) }
   if (node.kind === "task") return { "db/task": JSON.stringify({ id: node.id }) }
   if (node.kind === "rtask") return { "db/rtask": JSON.stringify({ id: node.id }) }
@@ -39,10 +39,7 @@ function serializeDragItem(node: ViewTreeItemWithParent): DragPayload | null {
 }
 
 // Extract ids from keys for scopes/tasks only
-function extractDragIds(
-  keys: Set<Key>,
-  getNode: (id: string) => ViewTreeItemWithParent | undefined
-) {
+function extractDragIds(keys: Set<Key>, getNode: (id: string) => ViewTreeItemMeta | undefined) {
   const ids: string[] = []
   keys.forEach((k) => {
     const id = String(k)
@@ -114,7 +111,7 @@ export function useViewTreeDragAndDrop({ viewParams }: { viewParams: ViewParams 
 
   // Helper: derive current rendered order for a parent for all kinds (scope/task/rtask) sequentially.
   const getRenderedChildSequence = (parentId: string | null) => {
-    const seq: ViewTreeItemWithParent[] = []
+    const seq: ViewTreeItemMeta[] = []
     itemById.forEach((node) => {
       if (node.parentId === parentId) seq.push(node)
     })
