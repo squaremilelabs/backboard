@@ -1,7 +1,7 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 @import "./colors.css";
 @import "../smui/css/layout.css";
+@plugin "@tailwindcss/typography";
 
 @theme {
   --font-sans: var(--font-sans);

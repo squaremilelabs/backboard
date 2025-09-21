@@ -19,7 +19,7 @@ import { db, useDBQuery } from "@/database/db-client"
 import { parseTaskCreateInput, Task, TaskStatus } from "@/database/models/task"
 import { parseScopeUpdateInput } from "@/database/models/scope"
 import { RecurringTask } from "@/database/models/recurring-task"
-import { useAuth } from "@/_deprecating/modules/auth/use-auth"
+import { useAuth } from "@/hooks/use-auth"
 
 export function ScopeTaskList({
   scopeId,

@@ -1,7 +1,7 @@
 "use client"
 import { getLocalTimeZone } from "@internationalized/date"
 import { typography } from "@/_deprecating/common/components/class-names"
-import { useAuth } from "@/_deprecating/modules/auth/use-auth"
+import { useAuth } from "@/hooks/use-auth"
 import { HourSelect } from "@/_deprecating/common/components/hour-select"
 import { AccountCustomWorkHours, parseAccountUpdateInput } from "@/database/models/account"
 import { db } from "@/database/db-client"

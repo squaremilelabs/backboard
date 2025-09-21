@@ -10,7 +10,7 @@ import { EmptyUI } from "./internal/empty-ui"
 import { TasklistDragPreview } from "./internal/drag-preview"
 import { db, useDBQuery } from "@/database/db-client"
 import { Task, TaskLinks, TaskStatus } from "@/database/models/task"
-import { useAuth } from "@/_deprecating/modules/auth/use-auth"
+import { useAuth } from "@/hooks/use-auth"
 import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
 import {

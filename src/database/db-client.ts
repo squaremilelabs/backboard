@@ -11,7 +11,7 @@ export const db = init({
 
 type QueryParams = InstaQLParams<AppSchema>
 
-export function useDBQuery<T extends ModelMap[K], K extends ModelKey>(
+export function useDBQuery<T extends ModelMap[K], K extends ModelKey = ModelKey>(
   model: K,
   params: QueryParams[K] | null
 ): {

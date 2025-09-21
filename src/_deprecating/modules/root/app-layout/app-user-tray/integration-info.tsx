@@ -7,7 +7,7 @@ import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { Button } from "@/_deprecating/common/primitives/button/components"
 import { typography } from "@/_deprecating/common/components/class-names"
-import { useAuth } from "@/_deprecating/modules/auth/use-auth"
+import { useAuth } from "@/hooks/use-auth"
 
 export function AppUserTrayIntegrationInfo() {
   const { account } = useAuth()

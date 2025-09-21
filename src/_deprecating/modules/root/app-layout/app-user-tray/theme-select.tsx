@@ -12,7 +12,7 @@ import {
 import { ListBox, ListBoxItem } from "@/_deprecating/common/primitives/list-box/components"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
-import { useAuth } from "@/_deprecating/modules/auth/use-auth"
+import { useAuth } from "@/hooks/use-auth"
 import { Account, parseAccountUpdateInput } from "@/database/models/account"
 import { db } from "@/database/db-client"
 

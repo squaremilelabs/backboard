@@ -21,7 +21,7 @@ import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { typography } from "@/_deprecating/common/components/class-names"
 import { Checkbox } from "@/_deprecating/common/primitives/checkbox/components"
 import { parseTaskUpdateInput, Task, TaskLinks } from "@/database/models/task"
-import { useAuth } from "@/_deprecating/modules/auth/use-auth"
+import { useAuth } from "@/hooks/use-auth"
 import { db } from "@/database/db-client"
 
 export function TaskListItem({

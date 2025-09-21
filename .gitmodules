@@ -1,4 +1,4 @@
 [submodule "src/smui"]
-	path = src/smui
+	path = smui
 	url = https://github.com/squaremilelabs/smui.git
 	branch = pivot-202509

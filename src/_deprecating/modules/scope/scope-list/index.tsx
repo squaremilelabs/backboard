@@ -3,7 +3,7 @@ import { useDragAndDrop } from "react-aria-components"
 import { EllipsisIcon } from "lucide-react"
 import { useCurrentScopeView } from "../use-scope-views"
 import { ScopeListItem } from "./list-item"
-import { useAuth } from "@/_deprecating/modules/auth/use-auth"
+import { useAuth } from "@/hooks/use-auth"
 import {
   processDropItems,
   processItemKeys,

@@ -1,5 +1,5 @@
 "use client"
-import { useAuth } from "../auth/use-auth"
+import { useAuth } from "../../../hooks/use-auth"
 import { db } from "@/database/db-client"
 import { Task } from "@/database/models/task"
 
