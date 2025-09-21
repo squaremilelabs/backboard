@@ -10,6 +10,9 @@ import { db } from "@/database/db-client"
 
 export default function Page() {
   const [_showInactive, _setShowInactive] = useState(false)
+
+  // # Instant errors demonstration for bug report
+
   db.useQuery({
     tasks: {
       $: {
