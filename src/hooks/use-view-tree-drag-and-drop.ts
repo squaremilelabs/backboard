@@ -180,8 +180,7 @@ export function useViewTreeDragAndDrop({ viewParams }: { viewParams: ViewParams 
       // Keep restriction: single-kind drag for simplicity.
       if (!movedIds.every((id) => itemById.get(id)?.kind === firstNode.kind)) return
       const movingKind = firstNode.kind // 'scope' | 'task' | 'rtask'
-      if (movingKind === "rtask") return // no rtask reordering
-      if (movingKind === "task" && activeView !== "current") return // only reorder current tasks view
+      if (movingKind === "rtask") return // no rtask movement for now
 
       // Ensure (for now) all moved nodes share the same original parent; else bail for simplicity
       const originalParentId = firstNode.parentId
@@ -199,6 +198,29 @@ export function useViewTreeDragAndDrop({ viewParams }: { viewParams: ViewParams 
       }
 
       const sameParent = originalParentId === newParentId
+
+      // Special handling: non-current task views (snoozed/done/recurring) allow cross-parent moves
+      // but do NOT allow intra-parent reordering nor any persisted ordering updates.
+      if (movingKind === "task" && activeView !== "current") {
+        // If same parent, treat as no-op (reordering disabled in these views)
+        if (sameParent) return
+        // Perform only link/unlink without touching ordering arrays.
+        const txns: Array<
+          | ReturnType<(typeof db.tx.tasks)[string]["link"]>
+          | ReturnType<(typeof db.tx.tasks)[string]["unlink"]>
+        > = []
+        movedIds.forEach((tid) => {
+          if (newParentId === null) {
+            // Move to root => unlink scope if had one
+            if (originalParentId) txns.push(db.tx.tasks[tid].unlink({ scope: originalParentId }))
+          } else {
+            // Move into a scope => link new parent (Instant will override previous link)
+            txns.push(db.tx.tasks[tid].link({ scope: newParentId }))
+          }
+        })
+        if (txns.length) db.transact(txns)
+        return
+      }
       // Retrieve order arrays (scopes or current tasks) for source/destination
       const sourceOrder =
         movingKind === "scope"
@@ -272,7 +294,7 @@ export function useViewTreeDragAndDrop({ viewParams }: { viewParams: ViewParams 
         return
       }
 
-      // Cross-parent move
+      // Cross-parent move (current view scopes/tasks with ordering persistence)
       const cleanedSource = sourceOrder.filter((id) => !movedOrdered.includes(id))
       const cleanedDest = destOrder.filter((id) => !movedOrdered.includes(id))
       let insertionIndex: number
@@ -353,7 +375,9 @@ export function useViewTreeDragAndDrop({ viewParams }: { viewParams: ViewParams 
     // Drop onto empty space / collection root.
     async onRootDrop(e) {
       if (!account) return
-      // Only meaningful for scopes and current tasks
+      // Determine target container: true root (null) or focused scope if viewing a subtree.
+      const targetParentId: string | null = viewParams.rootScopeId ?? null
+
       const moved: { scopeIds: string[]; taskIds: string[]; rtaskIds: string[] } = {
         scopeIds: [],
         taskIds: [],
@@ -380,36 +404,57 @@ export function useViewTreeDragAndDrop({ viewParams }: { viewParams: ViewParams 
       type RootTxn =
         | ReturnType<typeof accountScopesOrderTxn>
         | ReturnType<typeof accountCurrentTasksOrderTxn>
+        | ReturnType<typeof scopeScopesOrderTxn>
+        | ReturnType<typeof scopeCurrentTasksOrderTxn>
         | ReturnType<(typeof db.tx.scopes)[string]["unlink"]>
+        | ReturnType<(typeof db.tx.scopes)[string]["link"]>
         | ReturnType<(typeof db.tx.tasks)[string]["unlink"]>
+        | ReturnType<(typeof db.tx.tasks)[string]["link"]>
       const txns: RootTxn[] = []
+
+      // Scope ordering + link/unlink
       if (moved.scopeIds.length) {
-        const currentOrder = getScopeOrder(null).filter((id) => !moved.scopeIds.includes(id))
-        const newOrder = [...currentOrder, ...moved.scopeIds]
-        txns.push(accountScopesOrderTxn(account.id, newOrder))
-      }
-      if (moved.taskIds.length && activeView === "current") {
-        const currentTasksOrder = getCurrentTaskOrder(null).filter(
-          (id) => !moved.taskIds.includes(id)
+        const currentOrder = getScopeOrder(targetParentId).filter(
+          (id) => !moved.scopeIds.includes(id)
         )
-        const newTasksOrder = [...currentTasksOrder, ...moved.taskIds]
-        txns.push(accountCurrentTasksOrderTxn(account.id, newTasksOrder))
+        const newOrder = [...currentOrder, ...moved.scopeIds]
+        if (targetParentId === null) txns.push(accountScopesOrderTxn(account.id, newOrder))
+        else txns.push(scopeScopesOrderTxn(targetParentId, newOrder))
+        moved.scopeIds.forEach((sid) => {
+          const node = itemById.get(sid)
+          const currentParent = node?.parentId ?? null
+          if (currentParent === targetParentId) return
+          if (targetParentId === null) {
+            if (currentParent) txns.push(db.tx.scopes[sid].unlink({ parent_scope: currentParent }))
+          } else {
+            txns.push(db.tx.scopes[sid].link({ parent_scope: targetParentId }))
+          }
+        })
       }
 
-      // Unlink / link to root
-      moved.scopeIds.forEach((sid) => {
-        const node = itemById.get(sid)
-        if (node?.parentId) {
-          txns.push(db.tx.scopes[sid].unlink({ parent_scope: node.parentId }))
+      // Task ordering (only current view) + link/unlink
+      if (moved.taskIds.length) {
+        if (activeView === "current") {
+          const currentTasksOrder = getCurrentTaskOrder(targetParentId).filter(
+            (id) => !moved.taskIds.includes(id)
+          )
+          const newTasksOrder = [...currentTasksOrder, ...moved.taskIds]
+          if (targetParentId === null)
+            txns.push(accountCurrentTasksOrderTxn(account.id, newTasksOrder))
+          else txns.push(scopeCurrentTasksOrderTxn(targetParentId, newTasksOrder))
         }
-      })
-      moved.taskIds.forEach((tid) => {
-        const node = itemById.get(tid)
-        if (node?.parentId) {
-          txns.push(db.tx.tasks[tid].unlink({ scope: node.parentId }))
-        }
-      })
-      // rtask unlink not needed (we didn't move them)
+        moved.taskIds.forEach((tid) => {
+          const node = itemById.get(tid)
+          const currentParent = node?.parentId ?? null
+          if (currentParent === targetParentId) return
+          if (targetParentId === null) {
+            if (currentParent) txns.push(db.tx.tasks[tid].unlink({ scope: currentParent }))
+          } else {
+            txns.push(db.tx.tasks[tid].link({ scope: targetParentId }))
+          }
+        })
+      }
+      // rtask movement ignored for now (consistent with other handlers)
       if (txns.length) db.transact(txns)
     },
   })

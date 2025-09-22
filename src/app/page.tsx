@@ -39,10 +39,13 @@ export default function Page() {
   const { dragAndDropHooks } = useViewTreeDragAndDrop({ viewParams })
   return (
     <div>
+      {viewParams.rootScopeId !== null && (
+        <Button onPress={() => setViewParam("rootScopeId", null)}>Back to Root</Button>
+      )}
       <Button
         onPress={() => setViewParam("list", viewParams.list === "current" ? "snoozed" : "current")}
       >
-        Change
+        {viewParams.list}
       </Button>
       <SMUIDataTreeList
         ariaLabel="List"
@@ -61,6 +64,9 @@ export default function Page() {
             <p>{item.kind?.toUpperCase()}</p>
             <p>{item.data.title}</p>
             <Button slot="chevron">{itemById.get(item.id)?.itemCounts.task ?? 0}</Button>
+            {item.kind === "scope" && (
+              <Button onPress={() => setViewParam("rootScopeId", item.id)}>Open</Button>
+            )}
           </div>
         )}
         dragAndDropHooks={dragAndDropHooks}

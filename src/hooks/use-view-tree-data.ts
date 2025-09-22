@@ -44,6 +44,11 @@ export type ViewTreeItemMeta = AnyViewTreeItem & {
 export type UseViewTreeDataResult = {
   items: AnyViewTreeItem[]
   itemById: Map<string, ViewTreeItemMeta>
+  /**
+   * When viewing a scoped subtree, this is the ordered ancestry from the ultimate root (closest to account root first)
+   * down to the scope whose children are rendered at the top level. Null when viewing the true root.
+   */
+  rootPath: ScopeListItemData[] | null
 }
 
 /**
@@ -104,9 +109,9 @@ export function useViewTreeData({ viewParams }: { viewParams: ViewParams }): Use
   // - For root items, use `account.list_orders.scopes` for scopes, and `account.list_orders.tasks` for current tasks.
   // - Utility functions `sortScopes`, `sortTasks`, and `sortRtasks` are available for sorting at each level.
 
-  const { items, itemById } = useMemo<UseViewTreeDataResult>(() => {
+  const { items, itemById, rootPath } = useMemo<UseViewTreeDataResult>(() => {
     if (!account) {
-      return { items: [], itemById: new Map() }
+      return { items: [], itemById: new Map(), rootPath: null }
     }
 
     const { scopes = [], tasks = [], rtasks = [] } = data
@@ -197,8 +202,18 @@ export function useViewTreeData({ viewParams }: { viewParams: ViewParams }): Use
     // Root level builder (either a specific root scope or the overall root)
     if (rootScopeId) {
       const scope = scopes.find((s) => s.id === rootScopeId)
-      if (!scope) return { items: [], itemById: new Map() } // invalid id => empty
-      const only: AnyViewTreeItem[] = [makeScopeNode(scope)]
+      if (!scope) return { items: [], itemById: new Map(), rootPath: null } // invalid id => empty
+      // Build ancestry chain for breadcrumb (from highest ancestor down to this scope)
+      const ancestry: ScopeListItemData[] = []
+      let cursor: ScopeListItemData | undefined | null = scope
+      while (cursor) {
+        ancestry.push(cursor)
+        cursor = cursor.parent_scope ? scopes.find((s) => s.id === cursor!.parent_scope!.id) : null
+      }
+      ancestry.reverse()
+
+      // Instead of returning the scope as the sole root item, we flatten its children to be top-level.
+      const topLevelItems = buildChildrenForContainer(scope.id)
       const map = new Map<string, ViewTreeItemMeta>()
 
       // Post-order traversal to compute descendant counts efficiently.
@@ -232,8 +247,26 @@ export function useViewTreeData({ viewParams }: { viewParams: ViewParams }): Use
         map.set(node.id, { ...node, parentId, itemCounts: counts })
         node.items?.forEach((c) => register(c as AnyViewTreeItem, node.id))
       }
-      only.forEach((n) => register(n, null))
-      return { items: only, itemById: map }
+      topLevelItems.forEach((n) => register(n, null))
+      // Also register each ancestor scope itself (without its siblings) for breadcrumb lookups (no parent means previous ancestor)
+      // We store them with empty items to avoid rendering duplicates; counts will still be computed on demand if needed.
+      // Parent linking for breadcrumb scopes: chain them.
+      let prev: string | null = null
+      for (const anc of ancestry) {
+        if (!map.has(anc.id)) {
+          map.set(anc.id, {
+            id: anc.id,
+            kind: "scope",
+            label: anc.title,
+            data: anc,
+            items: [] as unknown as SMUIDataTreeListItem<ScopeListItemData, "scope">[],
+            parentId: prev,
+            itemCounts: { scope: 0, task: 0, rtask: 0, total: 0 },
+          })
+        }
+        prev = anc.id
+      }
+      return { items: topLevelItems, itemById: map, rootPath: ancestry }
     }
 
     const rootItems: AnyViewTreeItem[] = buildChildrenForContainer(null)
@@ -269,8 +302,8 @@ export function useViewTreeData({ viewParams }: { viewParams: ViewParams }): Use
     }
     rootItems.forEach((n) => register(n, null))
 
-    return { items: rootItems, itemById }
+    return { items: rootItems, itemById, rootPath: null }
   }, [account, data, viewParams.rootScopeId, viewParams.list])
 
-  return { items, itemById }
+  return { items, itemById, rootPath }
 }
