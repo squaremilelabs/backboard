@@ -2,104 +2,73 @@ import { RecurringTask } from "@/database/models/recurring-task"
 import { Scope } from "@/database/models/scope"
 import { Task, TaskStatus } from "@/database/models/task"
 
-export function sortTasks({
-  tasks,
-  listOrder,
-  statusView,
-}: {
-  tasks: Task[]
-  statusView: TaskStatus
-  listOrder?: string[]
-}): Task[] {
-  let result = [...tasks]
-  if (statusView === "current") {
-    result = sortByListOrder({
-      items: result,
-      listOrder: listOrder ?? [],
-      missingIdsPosition: "end",
-      sortMissingIds: (left, right) => {
-        return (left.status_time ?? 0) - (right.status_time ?? 0)
-      },
-    })
-  }
+// Persistent ordering only applies to scopes (across all views) and current tasks.
+// Snoozed / done / recurring lists use intrinsic temporal or custom logic.
 
-  if (statusView === "snoozed") {
-    result = sortByListOrder({
-      items: result,
-      listOrder: listOrder ?? [],
-      missingIdsPosition: "end",
-      sortMissingIds: (left, right) => {
-        if (left.status_time === right.status_time) {
-          return left.created_at - right.created_at
-        }
-        if (left.status_time == null) return 1
-        if (right.status_time == null) return -1
-        return left.status_time - right.status_time
-      },
-    })
+export function sortCurrentTasks<T extends Task>(tasks: T[], listOrder: string[]): T[] {
+  // Respect persisted order; append any new tasks by ascending status_time (nulls last) then created_at.
+  const idSet = new Set(listOrder)
+  const ordered: T[] = []
+  for (const id of listOrder) {
+    const t = tasks.find((x) => x.id === id && x.status === "current")
+    if (t) ordered.push(t)
   }
-
-  if (statusView === "done") {
-    result = sortByListOrder({
-      items: result,
-      listOrder: listOrder ?? [],
-      missingIdsPosition: "end",
-      sortMissingIds: (left, right) => {
-        if (left.status_time === right.status_time) {
-          return left.created_at - right.created_at
-        }
-        if (left.status_time == null) return 1
-        if (right.status_time == null) return -1
-        return right.status_time - left.status_time
-      },
-    })
-  }
-
-  return result
+  const missing = tasks.filter((t) => t.status === "current" && !idSet.has(t.id))
+  missing.sort(
+    (a, b) =>
+      (a.status_time ?? Infinity) - (b.status_time ?? Infinity) || a.created_at - b.created_at
+  )
+  return [...ordered, ...missing]
 }
 
-export function sortScopes({ scopes, listOrder }: { scopes: Scope[]; listOrder: string[] }) {
-  return sortByListOrder({
-    items: scopes,
-    listOrder,
-    missingIdsPosition: "end",
-    sortMissingIds: (left, right) => {
-      return (left.created_at ?? 0) - (right.created_at ?? 0)
-    },
-  })
+export function sortSnoozedTasks<T extends Task>(tasks: T[]): T[] {
+  // Ascending by status_time; nulls last; tie-breaker created_at ascending.
+  return [...tasks]
+    .filter((t) => t.status === "snoozed")
+    .sort((a, b) => {
+      if (a.status_time == null && b.status_time == null) return a.created_at - b.created_at
+      if (a.status_time == null) return 1
+      if (b.status_time == null) return -1
+      if (a.status_time === b.status_time) return a.created_at - b.created_at
+      return a.status_time - b.status_time
+    })
 }
 
-// placeholder
-export function sortRtasks({ rtasks }: { rtasks: RecurringTask[] }) {
+export function sortDoneTasks<T extends Task>(tasks: T[]): T[] {
+  // Descending by status_time (pre-validated non-null); tie-breaker created_at ascending
+  return [...tasks]
+    .filter((t) => t.status === "done")
+    .sort((a, b) => {
+      if (a.status_time === b.status_time) return a.created_at - b.created_at
+      return (b.status_time ?? 0) - (a.status_time ?? 0)
+    })
+}
+
+export function sortScopesPersistent<T extends Scope>(scopes: T[], listOrder: string[]): T[] {
+  const idSet = new Set(listOrder)
+  const ordered: T[] = []
+  for (const id of listOrder) {
+    const s = scopes.find((x) => x.id === id)
+    if (s) ordered.push(s)
+  }
+  const missing = scopes.filter((s) => !idSet.has(s.id))
+  missing.sort((a, b) => (a.created_at ?? 0) - (b.created_at ?? 0))
+  return [...ordered, ...missing]
+}
+
+// Placeholder: future custom logic for recurring tasks (currently stable insertion order)
+export function sortRecurringTasks<T extends RecurringTask>(rtasks: T[]): T[] {
   return [...rtasks]
 }
 
-export function sortByListOrder<T extends object & { id: string }>({
-  items,
-  listOrder,
-  missingIdsPosition,
-  sortMissingIds,
-}: {
-  items: T[]
+// Convenience unified dispatcher if needed by legacy code.
+export function sortTasksByView<T extends Task>(
+  tasks: T[],
+  view: TaskStatus,
   listOrder: string[]
-  missingIdsPosition?: "start" | "end"
-  sortMissingIds: (left: T, right: T) => number
-}): T[] {
-  const idSet = new Set(listOrder)
-  const sortedItems = items
-    .filter((item) => idSet.has(item.id))
-    .sort((a, b) => {
-      return listOrder.indexOf(a.id) - listOrder.indexOf(b.id)
-    })
-
-  const missingItems = items.filter((item) => !idSet.has(item.id))
-  if (missingItems.length === 0) return sortedItems
-
-  if (missingIdsPosition === "start") {
-    return [...missingItems.sort(sortMissingIds), ...sortedItems]
-  } else if (missingIdsPosition === "end") {
-    return [...sortedItems, ...missingItems.sort(sortMissingIds)]
-  }
-
-  return sortedItems
+): T[] {
+  if (view === "current") return sortCurrentTasks(tasks, listOrder)
+  if (view === "snoozed") return sortSnoozedTasks(tasks)
+  if (view === "done") return sortDoneTasks(tasks)
+  return tasks
 }

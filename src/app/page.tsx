@@ -35,7 +35,7 @@ export default function Page() {
   })
 
   const { viewParams, setViewParam } = useViewParams()
-  const { items } = useViewTreeData({ viewParams })
+  const { items, itemById } = useViewTreeData({ viewParams })
   const { dragAndDropHooks } = useViewTreeDragAndDrop({ viewParams })
   return (
     <div>
@@ -60,8 +60,7 @@ export default function Page() {
             <Button slot="drag">|||</Button>
             <p>{item.kind?.toUpperCase()}</p>
             <p>{item.data.title}</p>
-            <p>{item.data.id}</p>
-            <Button slot="chevron">{item.items?.length ?? 0}</Button>
+            <Button slot="chevron">{itemById.get(item.id)?.itemCounts.task ?? 0}</Button>
           </div>
         )}
         dragAndDropHooks={dragAndDropHooks}
