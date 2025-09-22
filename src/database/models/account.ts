@@ -2,6 +2,8 @@ import z from "zod"
 import { v4 } from "uuid"
 import { Scope } from "./scope"
 import { ListOrders, ListOrdersSchema } from "./_shared"
+import { Task } from "./task"
+import { RecurringTask } from "./recurring-task"
 
 export type Account = {
   id: string
@@ -18,6 +20,8 @@ export type AccountLinks = {
     email: string
   }
   scopes: Scope[]
+  tasks: Task[]
+  recurring_tasks: RecurringTask[]
 }
 
 const timezones = Intl.supportedValuesOf("timeZone")

@@ -2,6 +2,7 @@ import z from "zod"
 import { v4 } from "uuid"
 import { Scope } from "./scope"
 import { Task } from "./task"
+import { Account } from "./account"
 
 export type RecurringTask = {
   id: string
@@ -14,6 +15,7 @@ export type RecurringTask = {
 }
 
 export type RecurringTaskLinks = {
+  owner: Account
   scope: Scope
   tasks: Task[]
 }

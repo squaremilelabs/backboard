@@ -21,6 +21,8 @@ export type ScopeLinks = {
   owner: Account
   tasks: Task[]
   recurring_tasks: RecurringTask[]
+  parent_scope: Scope | null
+  child_scopes: Scope[]
 }
 
 const ScopeIconSchema = z.discriminatedUnion("type", [
