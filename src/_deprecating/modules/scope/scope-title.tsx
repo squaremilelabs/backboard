@@ -5,7 +5,7 @@ import { Modal, ModalTrigger } from "@/_deprecating/common/primitives/modal/comp
 import { Button } from "@/_deprecating/common/primitives/button/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { typography } from "@/_deprecating/common/components/class-names"
-import { useDBQuery } from "@/database/db-client"
+import { useDBQuery } from "@/hooks/use-db-query"
 
 export function ScopeTitle({ scopeId }: { scopeId: string | null | undefined }) {
   const { scopes } = useDBQuery(

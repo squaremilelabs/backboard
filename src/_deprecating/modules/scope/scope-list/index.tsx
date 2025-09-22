@@ -18,9 +18,10 @@ import { Button } from "@/_deprecating/common/primitives/button/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
 import { parseAccountUpdateInput } from "@/database/models/account"
-import { db, useDBQuery } from "@/database/db-client"
+import { db } from "@/database/db-client"
 import { parseScopeCreateInput, Scope } from "@/database/models/scope"
 import { Task } from "@/database/models/task"
+import { useDBQuery } from "@/hooks/use-db-query"
 
 export function ScopeList({ disableDragAndDrop = false }: { disableDragAndDrop?: boolean }) {
   const { account: account } = useAuth()
@@ -32,7 +33,7 @@ export function ScopeList({ disableDragAndDrop = false }: { disableDragAndDrop?:
       ? {
           $: {
             where: {
-              "owner.id": account.id, // random id placeholder for no account
+              "owner.id": account.id,
               "is_inactive": showInactive ? { $in: [true, false] } : false,
             },
           },

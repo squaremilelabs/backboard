@@ -6,8 +6,9 @@ import { ScopeViewTab } from "./tab"
 import { ListBox } from "@/_deprecating/common/primitives/list-box/components"
 import { processDropItems } from "@/_deprecating/common/utils/list-utils"
 import { TaskSnoozePicker } from "@/_deprecating/modules/task/task-actions/task-snooze"
-import { db, useDBQuery } from "@/database/db-client"
+import { db } from "@/database/db-client"
 import { parseTaskUpdateInput, Task, TaskStatus } from "@/database/models/task"
+import { useDBQuery } from "@/hooks/use-db-query"
 
 export function ScopeViewTabs({ scopeId }: { scopeId: string }) {
   const { scopes } = useDBQuery("scopes", { $: { where: { id: scopeId }, first: 1 } })

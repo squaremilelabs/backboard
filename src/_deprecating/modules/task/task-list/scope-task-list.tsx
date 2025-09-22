@@ -15,11 +15,12 @@ import { CreateField } from "@/_deprecating/common/components/create-field"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
 import { typography } from "@/_deprecating/common/components/class-names"
-import { db, useDBQuery } from "@/database/db-client"
+import { db } from "@/database/db-client"
 import { parseTaskCreateInput, Task, TaskStatus } from "@/database/models/task"
 import { parseScopeUpdateInput } from "@/database/models/scope"
 import { RecurringTask } from "@/database/models/recurring-task"
 import { useAuth } from "@/hooks/use-auth"
+import { useDBQuery } from "@/hooks/use-db-query"
 
 export function ScopeTaskList({
   scopeId,

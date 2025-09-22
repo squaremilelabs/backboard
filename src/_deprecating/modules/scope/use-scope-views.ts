@@ -9,9 +9,9 @@ import {
 import { useParams } from "next/navigation"
 import { startOfDay, subDays } from "date-fns"
 import { Task, TaskStatus } from "@/database/models/task"
-import { useDBQuery } from "@/database/db-client"
 import { Scope } from "@/database/models/scope"
 import { RecurringTask } from "@/database/models/recurring-task"
+import { useDBQuery } from "@/hooks/use-db-query"
 
 export type ScopeViewKey = TaskStatus | "recurring"
 export type ScopeViewInfo = { key: ScopeViewKey; title: string; Icon: LucideIcon }

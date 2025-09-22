@@ -34,7 +34,7 @@
 import { startOfDay, subDays } from "date-fns"
 import { useMemo } from "react"
 import { useAuth } from "./use-auth"
-import { useDBQuery } from "@/database/db-client"
+import { useDBQuery } from "./use-db-query"
 import { Scope } from "@/database/models/scope"
 import { Task } from "@/database/models/task"
 import { RecurringTask } from "@/database/models/recurring-task"

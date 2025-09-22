@@ -8,7 +8,7 @@ import { TaskListItem } from "./task-list-item"
 import { useTasklistSelection } from "./internal/use-selection"
 import { EmptyUI } from "./internal/empty-ui"
 import { TasklistDragPreview } from "./internal/drag-preview"
-import { db, useDBQuery } from "@/database/db-client"
+import { db } from "@/database/db-client"
 import { Task, TaskLinks, TaskStatus } from "@/database/models/task"
 import { useAuth } from "@/hooks/use-auth"
 import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
@@ -21,6 +21,7 @@ import {
 import { typography } from "@/_deprecating/common/components/class-names"
 import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { useDBQuery } from "@/hooks/use-db-query"
 
 export function GroupedTaskLists({ statusView }: { statusView: TaskStatus }) {
   const { account } = useAuth()

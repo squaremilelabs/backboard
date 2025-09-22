@@ -21,7 +21,7 @@
  *  - If migrating identifier from email to an immutable external ID, keep backward compatibility path (dual-lookup) temporarily.
  */
 import { useUser } from "@clerk/nextjs"
-import { useDBQuery } from "@/database/db-client"
+import { useDBQuery } from "./use-db-query"
 import { Account } from "@/database/models/account"
 
 export function useAuth(): {
