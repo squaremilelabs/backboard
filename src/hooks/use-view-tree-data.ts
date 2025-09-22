@@ -1,14 +1,17 @@
 "use client"
-
 import { useMemo } from "react"
-import { useRootListData } from "./use-root-list-data"
-import { ViewParams } from "./use-view-params"
 import { useAuth } from "./use-auth"
-import {
-  RecurringTaskListItemData,
-  ScopeListItemData,
-  TaskListItemData,
-} from "./use-root-list-data"
+import { useRootTreeData } from "./use-root-tree-data"
+import { useViewParams } from "./use-view-params"
+import type {
+  UseViewTreeDataResult,
+  ViewTreeItem,
+  AnyViewTreeItem,
+  ScopeItemData,
+  TaskItemData,
+  RtaskItemData,
+  RootTreeScope,
+} from "@/tokens/tree-list-data"
 import { SMUIDataTreeListItem } from "~/smui/components/data-tree-list"
 import {
   sortScopesPersistent,
@@ -17,39 +20,6 @@ import {
   sortDoneTasks,
   sortRecurringTasks,
 } from "@/utilities/data-sorters"
-
-export type ViewTreeItemKind = "scope" | "task" | "rtask"
-export type ViewTreeItemData = ScopeListItemData | TaskListItemData | RecurringTaskListItemData
-type _ViewTreeItem<K extends ViewTreeItemKind> = SMUIDataTreeListItem<
-  K extends "scope"
-    ? ScopeListItemData
-    : K extends "task"
-      ? TaskListItemData
-      : RecurringTaskListItemData,
-  K
->
-export type ViewTreeItem<K extends ViewTreeItemKind = ViewTreeItemKind> = _ViewTreeItem<K>
-export type AnyViewTreeItem = ViewTreeItem<ViewTreeItemKind>
-export type ViewTreeItemCounts = {
-  scope: number
-  task: number
-  rtask: number
-  total: number
-}
-// Extended metadata wrapper for each node (parent linkage + aggregate descendant counts)
-export type ViewTreeItemMeta = AnyViewTreeItem & {
-  parentId: string | null
-  itemCounts: ViewTreeItemCounts
-}
-export type UseViewTreeDataResult = {
-  items: AnyViewTreeItem[]
-  itemById: Map<string, ViewTreeItemMeta>
-  /**
-   * When viewing a scoped subtree, this is the ordered ancestry from the ultimate root (closest to account root first)
-   * down to the scope whose children are rendered at the top level. Null when viewing the true root.
-   */
-  rootPath: ScopeListItemData[] | null
-}
 
 /**
  * Hook: useViewTreeData
@@ -82,228 +52,119 @@ export type UseViewTreeDataResult = {
  *  - Because ordering for non-current task views is not persisted, a task moved while viewing another list may not reflect stable ordering on return.
  *  - Ensure `account` presence is validated early; returning deterministic empties avoids null checking cascades upstream.
  */
-export function useViewTreeData({ viewParams }: { viewParams: ViewParams }): UseViewTreeDataResult {
+export function useViewTreeData(): UseViewTreeDataResult {
+  const { viewParams } = useViewParams()
   const { account } = useAuth()
-  const { data } = useRootListData({ fetchInactiveData: viewParams.showInactive })
+  const { getTreeDataByScopeId, getScopePathByScopeId } = useRootTreeData({
+    fetchInactiveData: viewParams.showInactive,
+  })
 
-  // # Original prompt for this hook
-  // This hook should return data suitable for `SMUIDataTreeList` based on the current view params.
-  // ## Core nesting logic
-  // - Scopes can have child scopes (via `scope.parent_scope.id`), tasks, and recurring_tasks (aka `rtasks`)
-  // - Tasks and rtasks can belong to a single scope (`task.scope.id` or `rtask.scope.id`)
-  // - Anything without a parent scope is in the "root"
-  // - See `SMUIDataTreeList` docs for more details on the final resulting data structure
-  // ## Filtering logic
-  // - viewParams.rootScopeId is the root scope to show
-  // - viewParams.list is the view to show (current, snoozed, recurring, done)
-  //   - current: show tasks with status "current"
-  //   - snoozed: show tasks with status "snoozed"
-  //   - recurring: show recurring tasks
-  //   - done: show tasks with status "done"
-  // - Note that `useRootListData` already filters out inactive scopes/tasks/rtasks, so no need to filter again here
-  // - Use the data from `useRootListData` which includes all unfiltered scopes, tasks, and recurring tasks.
-  // - Utility `maps` have also been generated with `useRootListData` for easier lookup.
-  // ## Ordering logic
-  // - Every level of the tree should be properly ordered.
-  // - A `list_order` field is utilized for ordering child scopes across all views, and for ordering **current** tasks in a view.
-  // - For root items, use `account.list_orders.scopes` for scopes, and `account.list_orders.tasks` for current tasks.
-  // - Utility functions `sortScopes`, `sortTasks`, and `sortRtasks` are available for sorting at each level.
-
-  const { items, itemById, rootPath } = useMemo<UseViewTreeDataResult>(() => {
+  /**
+   * Transform a RootTreeScope children set into ordered view items recursively, applying:
+   *  - persisted ordering for child scopes & current tasks
+   *  - intrinsic sorters for snoozed/done/recurring
+   * Tasks/rtasks filtered by current list view.
+   */
+  const result = useMemo<UseViewTreeDataResult>(() => {
     if (!account) {
-      return { items: [], itemById: new Map(), rootPath: null }
+      return { rootScope: null, rootScopePath: [], items: [], itemById: new Map() }
     }
 
-    const { scopes = [], tasks = [], rtasks = [] } = data
-    const rootScopeId = viewParams.rootScopeId
+    const treeNode = getTreeDataByScopeId(viewParams.rootScopeId ?? null)
+    if (!treeNode) {
+      return { rootScope: null, rootScopePath: [], items: [], itemById: new Map() }
+    }
+
+    const rootScopePath = getScopePathByScopeId(viewParams.rootScopeId ?? null)
     const listView = viewParams.list
 
-    // Grouping maps (multi-maps) for structural relationships.
-    const scopesByParent = new Map<string | null, ScopeListItemData[]>()
-    const tasksByScope = new Map<string | null, TaskListItemData[]>()
-    const rtasksByScope = new Map<string | null, RecurringTaskListItemData[]>()
-    for (const s of scopes) {
-      const key = s.parent_scope?.id ?? null
-      if (!scopesByParent.has(key)) scopesByParent.set(key, [])
-      scopesByParent.get(key)!.push(s)
-    }
-    for (const t of tasks) {
-      const key = t.scope?.id ?? null
-      if (!tasksByScope.has(key)) tasksByScope.set(key, [])
-      tasksByScope.get(key)!.push(t)
-    }
-    for (const rt of rtasks) {
-      const key = rt.scope?.id ?? null
-      if (!rtasksByScope.has(key)) rtasksByScope.set(key, [])
-      rtasksByScope.get(key)!.push(rt)
-    }
-
-    // Decide which task statuses to include based on list view.
-    // Task inclusion handled per-view in ordering branch; helper removed in simplified model.
-    /**
-     * Build ordered children for a container (scopeId | null root) with simplified ordering rules.
-     * Scopes always first (persisted order), then tasks for current view (persisted current tasks order),
-     * then other view tasks sorted by intrinsic logic, and recurring tasks (recurring view only) by placeholder sorter.
-     */
-    const buildChildrenForContainer = (containerScopeId: string | null): AnyViewTreeItem[] => {
-      const containerScope = containerScopeId
-        ? scopes.find((s) => s.id === containerScopeId) || null
-        : null
-      const scopeOrder = (containerScope?.list_orders?.scopes ||
+    // Build a scope's children (scopes recurse first then tasks/rtasks leaves).
+    const buildScopeChildren = (container: RootTreeScope): AnyViewTreeItem[] => {
+      const scopeEntity: ScopeItemData | null = container.scope
+      const scopeOrder = (scopeEntity?.list_orders?.scopes ||
         account.list_orders?.scopes ||
         []) as string[]
-      const currentTaskOrder = (containerScope?.list_orders?.current_tasks ||
+      const currentTaskOrder = (scopeEntity?.list_orders?.current_tasks ||
         account.list_orders?.current_tasks ||
         []) as string[]
 
-      const childScopesRaw: ScopeListItemData[] = scopesByParent.get(containerScopeId) ?? []
-      const orderedScopes = sortScopesPersistent<ScopeListItemData>(childScopesRaw, scopeOrder)
-
-      const allTasks: TaskListItemData[] = tasksByScope.get(containerScopeId) ?? []
-      const currentTasks: TaskListItemData[] = allTasks.filter((t) => t.status === "current")
-      const snoozedTasks: TaskListItemData[] = allTasks.filter((t) => t.status === "snoozed")
-      const doneTasks: TaskListItemData[] = allTasks.filter((t) => t.status === "done")
-      const childRtasks: RecurringTaskListItemData[] =
-        listView === "recurring" ? (rtasksByScope.get(containerScopeId) ?? []) : []
-
-      let orderedTasks: TaskListItemData[] = []
-      if (listView === "current")
-        orderedTasks = sortCurrentTasks<TaskListItemData>(currentTasks, currentTaskOrder)
-      else if (listView === "snoozed")
-        orderedTasks = sortSnoozedTasks<TaskListItemData>(snoozedTasks)
-      else if (listView === "done") orderedTasks = sortDoneTasks<TaskListItemData>(doneTasks)
-
-      const orderedRtasks: RecurringTaskListItemData[] =
-        listView === "recurring" ? sortRecurringTasks<RecurringTaskListItemData>(childRtasks) : []
-
-      const children: AnyViewTreeItem[] = []
-      for (const s of orderedScopes) children.push(makeScopeNode(s))
-      if (listView !== "recurring") {
-        for (const t of orderedTasks)
-          children.push({ id: t.id, kind: "task", label: t.title, data: t })
-      } else {
-        for (const rt of orderedRtasks)
-          children.push({ id: rt.id, kind: "rtask", label: rt.title, data: rt })
+      // Order child scopes
+      // Convert child scope nodes to their `scope` entities (filter out synthetic just in case) for ordering,
+      // then map back to nodes.
+      const scopeEntities: ScopeItemData[] = []
+      const scopeNodeById = new Map<string, RootTreeScope>()
+      for (const sn of container.children.scopes) {
+        if (!sn.scope) continue
+        scopeEntities.push(sn.scope)
+        scopeNodeById.set(sn.scope.id, sn)
       }
-      return children
-    }
+      const orderedEntities = sortScopesPersistent<ScopeItemData>(scopeEntities, scopeOrder)
+      const orderedScopeNodes: RootTreeScope[] = orderedEntities.map(
+        (e) => scopeNodeById.get(e.id)!
+      )
 
-    const makeScopeNode = (scope: ScopeListItemData): ViewTreeItem<"scope"> => {
-      const children = buildChildrenForContainer(scope.id)
-      return {
-        id: scope.id,
-        kind: "scope",
-        label: scope.title,
-        data: scope,
-        items: children as unknown as SMUIDataTreeListItem<ScopeListItemData, "scope">[],
-      }
-    }
-
-    // Root level builder (either a specific root scope or the overall root)
-    if (rootScopeId) {
-      const scope = scopes.find((s) => s.id === rootScopeId)
-      if (!scope) return { items: [], itemById: new Map(), rootPath: null } // invalid id => empty
-      // Build ancestry chain for breadcrumb (from highest ancestor down to this scope)
-      const ancestry: ScopeListItemData[] = []
-      let cursor: ScopeListItemData | undefined | null = scope
-      while (cursor) {
-        ancestry.push(cursor)
-        cursor = cursor.parent_scope ? scopes.find((s) => s.id === cursor!.parent_scope!.id) : null
-      }
-      ancestry.reverse()
-
-      // Instead of returning the scope as the sole root item, we flatten its children to be top-level.
-      const topLevelItems = buildChildrenForContainer(scope.id)
-      const map = new Map<string, ViewTreeItemMeta>()
-
-      // Post-order traversal to compute descendant counts efficiently.
-      const computeCounts = (node: AnyViewTreeItem): ViewTreeItemCounts => {
-        if (!node.items || node.items.length === 0) {
-          return { scope: 0, task: 0, rtask: 0, total: 0 }
+      const items: AnyViewTreeItem[] = []
+      for (const sNode of orderedScopeNodes) {
+        if (!sNode.scope) continue // safety for root synthetic node
+        const scopeItem: ViewTreeItem<"scope"> = {
+          id: sNode.scope.id,
+          kind: "scope",
+          label: sNode.scope.title,
+          data: sNode.scope,
+          items: buildScopeChildren(sNode) as unknown as SMUIDataTreeListItem<
+            ScopeItemData,
+            "scope"
+          >[],
         }
-        let scope = 0,
-          task = 0,
-          rtask = 0,
-          total = 0
-        for (const child of node.items as AnyViewTreeItem[]) {
-          // Recurse first
-          const childCounts = computeCounts(child)
-          // Add child itself
-          if (child.kind === "scope") scope += 1
-          else if (child.kind === "task") task += 1
-          else if (child.kind === "rtask") rtask += 1
-          // Add child's descendants
-          scope += childCounts.scope
-          task += childCounts.task
-          rtask += childCounts.rtask
-          total += 1 + childCounts.total
-        }
-        return { scope, task, rtask, total }
+        items.push(scopeItem)
       }
 
-      const register = (node: AnyViewTreeItem, parentId: string | null) => {
-        // children already built; compute counts lazily (will recurse down tree)
-        const counts = computeCounts(node)
-        map.set(node.id, { ...node, parentId, itemCounts: counts })
-        node.items?.forEach((c) => register(c as AnyViewTreeItem, node.id))
+      // Tasks / rtasks filtering per list
+      if (listView === "current") {
+        const ordered = sortCurrentTasks<TaskItemData>(
+          container.children.tasks.current,
+          currentTaskOrder
+        )
+        for (const t of ordered) items.push({ id: t.id, kind: "task", label: t.title, data: t })
+      } else if (listView === "snoozed") {
+        const ordered = sortSnoozedTasks<TaskItemData>(container.children.tasks.snoozed)
+        for (const t of ordered) items.push({ id: t.id, kind: "task", label: t.title, data: t })
+      } else if (listView === "done") {
+        const ordered = sortDoneTasks<TaskItemData>(container.children.tasks.done)
+        for (const t of ordered) items.push({ id: t.id, kind: "task", label: t.title, data: t })
+      } else if (listView === "recurring") {
+        const ordered = sortRecurringTasks<RtaskItemData>(container.children.rtasks)
+        for (const rt of ordered)
+          items.push({ id: rt.id, kind: "rtask", label: rt.title, data: rt })
       }
-      topLevelItems.forEach((n) => register(n, null))
-      // Also register each ancestor scope itself (without its siblings) for breadcrumb lookups (no parent means previous ancestor)
-      // We store them with empty items to avoid rendering duplicates; counts will still be computed on demand if needed.
-      // Parent linking for breadcrumb scopes: chain them.
-      let prev: string | null = null
-      for (const anc of ancestry) {
-        if (!map.has(anc.id)) {
-          map.set(anc.id, {
-            id: anc.id,
-            kind: "scope",
-            label: anc.title,
-            data: anc,
-            items: [] as unknown as SMUIDataTreeListItem<ScopeListItemData, "scope">[],
-            parentId: prev,
-            itemCounts: { scope: 0, task: 0, rtask: 0, total: 0 },
-          })
-        }
-        prev = anc.id
-      }
-      return { items: topLevelItems, itemById: map, rootPath: ancestry }
+
+      return items
     }
 
-    const rootItems: AnyViewTreeItem[] = buildChildrenForContainer(null)
+    // When scoping to a particular root scope, we flatten its children to top-level items
+    const topLevelItems = buildScopeChildren(treeNode)
 
-    // Build the itemById map with parent links
-    const itemById = new Map<string, ViewTreeItemMeta>()
-
-    const computeCounts = (node: AnyViewTreeItem): ViewTreeItemCounts => {
-      if (!node.items || node.items.length === 0) {
-        return { scope: 0, task: 0, rtask: 0, total: 0 }
-      }
-      let scope = 0,
-        task = 0,
-        rtask = 0,
-        total = 0
-      for (const child of node.items as AnyViewTreeItem[]) {
-        const childCounts = computeCounts(child)
-        if (child.kind === "scope") scope += 1
-        else if (child.kind === "task") task += 1
-        else if (child.kind === "rtask") rtask += 1
-        scope += childCounts.scope
-        task += childCounts.task
-        rtask += childCounts.rtask
-        total += 1 + childCounts.total
-      }
-      return { scope, task, rtask, total }
+    // Build itemById (flat map) for O(1) lookup (descendant counts now available via root tree if needed by consumer)
+    const itemById = new Map<string, ViewTreeItem>()
+    const register = (node: AnyViewTreeItem) => {
+      itemById.set(node.id, node as ViewTreeItem)
+      node.items?.forEach((c) => register(c as AnyViewTreeItem))
     }
+    topLevelItems.forEach(register)
 
-    const register = (node: AnyViewTreeItem, parentId: string | null) => {
-      const counts = computeCounts(node)
-      itemById.set(node.id, { ...node, parentId, itemCounts: counts })
-      node.items?.forEach((c) => register(c as AnyViewTreeItem, node.id))
+    return {
+      rootScope: treeNode.scope, // null if global synthetic root
+      rootScopePath,
+      items: topLevelItems,
+      itemById,
     }
-    rootItems.forEach((n) => register(n, null))
+  }, [
+    account,
+    getTreeDataByScopeId,
+    getScopePathByScopeId,
+    viewParams.rootScopeId,
+    viewParams.list,
+  ])
 
-    return { items: rootItems, itemById, rootPath: null }
-  }, [account, data, viewParams.rootScopeId, viewParams.list])
-
-  return { items, itemById, rootPath }
+  return result
 }

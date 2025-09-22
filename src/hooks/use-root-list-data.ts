@@ -35,25 +35,17 @@ import { startOfDay, subDays } from "date-fns"
 import { useMemo } from "react"
 import { useAuth } from "./use-auth"
 import { useDBQuery } from "./use-db-query"
-import { Scope } from "@/database/models/scope"
-import { Task } from "@/database/models/task"
-import { RecurringTask } from "@/database/models/recurring-task"
+import { RtaskItemData, ScopeItemData, TaskItemData } from "@/tokens/tree-list-data"
 
-export type ScopeListItemData = Scope & { parent_scope: { id: string } | null }
-export type TaskListItemData = Task & {
-  scope: { id: string } | null
-  recurring_task: { id: string } | null
-}
-export type RecurringTaskListItemData = RecurringTask & { scope: { id: string } | null }
-
-export function useRootListData({ fetchInactiveData }: { fetchInactiveData?: boolean }) {
+export function useRootListData(options?: { fetchInactiveData?: boolean }) {
+  const { fetchInactiveData } = options || {}
   const { account } = useAuth()
 
   const {
     scopes,
     isLoading: scopesLoading,
     error: scopesError,
-  } = useDBQuery<ScopeListItemData>(
+  } = useDBQuery<ScopeItemData>(
     "scopes",
     account
       ? {
@@ -72,7 +64,7 @@ export function useRootListData({ fetchInactiveData }: { fetchInactiveData?: boo
     tasks,
     isLoading: tasksLoading,
     error: tasksError,
-  } = useDBQuery<TaskListItemData>(
+  } = useDBQuery<TaskItemData>(
     "tasks",
     account
       ? {
@@ -106,7 +98,7 @@ export function useRootListData({ fetchInactiveData }: { fetchInactiveData?: boo
     recurring_tasks: rtasks,
     isLoading: rtasksLoading,
     error: rtasksError,
-  } = useDBQuery<RecurringTaskListItemData>(
+  } = useDBQuery<RtaskItemData>(
     "recurring_tasks",
     account
       ? {
@@ -130,25 +122,45 @@ export function useRootListData({ fetchInactiveData }: { fetchInactiveData?: boo
   const tasksById = useMemo(() => new Map(tasks?.map((t) => [t.id, t])), [tasks])
   const rtasksById = useMemo(() => new Map(rtasks?.map((rt) => [rt.id, rt])), [rtasks])
 
-  const scopesByScopeId = useMemo(
-    () => new Map(scopes?.map((s) => [s.parent_scope?.id ?? null, s])),
-    [scopes]
-  )
-  const tasksByScopeId = useMemo(
-    () => new Map(tasks?.map((t) => [t.scope?.id ?? null, t])),
-    [tasks]
-  )
-  const rtasksByScopeId = useMemo(
-    () => new Map(rtasks?.map((rt) => [rt.scope?.id ?? null, rt])),
-    [rtasks]
-  )
+  const scopesByScopeId = useMemo(() => {
+    const map = new Map<string | null, ScopeItemData[]>()
+    for (const s of scopes || []) {
+      const key = s.parent_scope?.id ?? null
+      const arr = map.get(key)
+      if (arr) arr.push(s)
+      else map.set(key, [s])
+    }
+    return map
+  }, [scopes])
+
+  const tasksByScopeId = useMemo(() => {
+    const map = new Map<string | null, TaskItemData[]>()
+    for (const t of tasks || []) {
+      const key = t.scope?.id ?? null
+      const arr = map.get(key)
+      if (arr) arr.push(t)
+      else map.set(key, [t])
+    }
+    return map
+  }, [tasks])
+
+  const rtasksByScopeId = useMemo(() => {
+    const map = new Map<string | null, RtaskItemData[]>()
+    for (const rt of rtasks || []) {
+      const key = rt.scope?.id ?? null
+      const arr = map.get(key)
+      if (arr) arr.push(rt)
+      else map.set(key, [rt])
+    }
+    return map
+  }, [rtasks])
 
   const isLoading = scopesLoading || tasksLoading || rtasksLoading
 
   const errors = [
-    scopesError && { data: "scopes", error: scopesError },
-    tasksError && { data: "tasks", error: tasksError },
-    rtasksError && { data: "recurring_tasks", error: rtasksError },
+    scopesError && { entity: "scopes", error: scopesError.message },
+    tasksError && { entity: "tasks", error: tasksError.message },
+    rtasksError && { entity: "recurring_tasks", error: rtasksError.message },
   ].filter(Boolean)
 
   return {

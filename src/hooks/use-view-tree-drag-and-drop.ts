@@ -1,13 +1,74 @@
-import { useDragAndDrop, Key, isTextDropItem } from "react-aria-components"
-import { AnyViewTreeItem, useViewTreeData, ViewTreeItemMeta } from "./use-view-tree-data"
-import { ViewParams } from "./use-view-params"
+/**
+ * Hook: useViewTreeDragAndDrop
+ * =============================================================
+ * Responsibility
+ *  - Supplies React Aria drag & drop configuration for the view tree produced by `useViewTreeData`.
+ *  - Implements reordering + cross-scope movement with persistence rules constrained to:
+ *      * scopes (all views) and
+ *      * tasks only when the active list view is `current`.
+ *  - Enforces that snoozed/done/recurring views do NOT persist ordering (only structural parent moves where allowed).
+ *  - Excludes recurring tasks (rtasks) from all drag operations for now.
+ *
+ * Persistence Model (Simplified / Legacy-Compatible)
+ *  - Account + scope entities each own two arrays in `list_orders`:
+ *      * `scopes`: ordering of direct child scopes
+ *      * `current_tasks`: ordering of direct child current tasks
+ *  - When reordering inside the same parent we rewrite only that parent's relevant array.
+ *  - When moving across parents we rewrite both: remove from source, append/insert into destination.
+ *  - If an ordering array is empty (e.g. new parent never had a persisted order) we derive a reference order from the currently rendered sequence so relative multi-select order is preserved for the move.
+ *
+ * Drag Constraints & Rules
+ *  - Multi-selection must be homogeneous (all scopes OR all tasks). Mixed kinds abort.
+ *  - All selected items must share the same original parent for a reorder or a cross-parent move with persistence.
+ *  - Tasks in non-`current` views (snoozed/done/recurring) can be dragged only to change scope membership; reordering is ignored.
+ *  - Rtasks: not draggable (omitted from acceptedDragTypes + early return guards).
+ *  - Drop target semantics:
+ *      * dropPosition = "on" + target kind = scope  -> append as last child of that scope.
+ *      * dropPosition = before/after -> insert adjacent to target within target's parent.
+ *  - Root background drop (onRootDrop) appends at end of the appropriate ordering array (if persisted).
+ *
+ * Algorithm Highlights
+ *  - Parent/children maps are (re)built each render from view tree items (O(N)); acceptable for current scale.
+ *  - Reorder within same parent: remove moving IDs, compute insertion index that accounts for selected block displacing original indices, then splice.
+ *  - Cross-parent: produce cleaned source/destination arrays before constructing new destination ordering.
+ *  - Target resolution when target itself is inside the moving set: walk forward/backward to find the nearest non-moving sibling (matches prior UX expectations of relative placement).
+ *
+ * Edge Cases Handled
+ *  - Dropping selection onto itself (no-op after target displacement logic).
+ *  - Empty original order arrays (fallback to rendered grouping).
+ *  - Repeated multi-select drags preserving original relative order even when some items were not yet persisted.
+ *  - Moving to root vs into a nested scope (null parent vs scope ID).
+ *
+ * Potential Future Extensions (documented here for clarity / TODO list)
+ *  - Add rtask drag support (would require deciding persistence semantics or keeping them ephemeral).
+ *  - Batch link/unlink optimization (currently sequential array build; could compress to single account / scope merge when backend supports patch merging multiple arrays).
+ *  - Provide parent/children maps from `useRootTreeData` directly to eliminate O(N) rebuild here (premature for now).
+ *  - Introduce keyboard reordering affordances (current logic would support via a thin imperative wrapper invoking same transaction builders).
+ *
+ * Complexity
+ *  - Reorder operations are O(k + n) where k = moved items, n = siblings count.
+ *  - Cross-parent moves allocate new arrays of sibling size (still O(n)).
+ *  - Map reconstruction O(N) per hook invocation (memoization optional later).
+ *
+ * Type Safety Notes
+ *  - Avoids `any`; uses narrow helper interfaces (`ScopeListOrders`, `RootDropEvent`).
+ *  - External library DropItem typing is adapted through a safe cast helper `asDropItems`.
+ *
+ * Reliability Guarantees
+ *  - If transactions array ends empty (no structural or ordering change) we early return to avoid spurious writes.
+ *  - All mutation paths funnel through `db.transact` with granular ops that mirror existing persistence model.
+ */
+
+import { useDragAndDrop, Key, isTextDropItem, DropItem } from "react-aria-components"
+import { useViewTreeData } from "./use-view-tree-data"
 import { useAuth } from "./use-auth"
-// (No direct ScopeListItemData usage needed after simplification)
-import { db } from "@/database/db-client"
+import { useViewParams } from "./use-view-params"
 import { parseAccountUpdateInput } from "@/database/models/account"
 import { parseScopeUpdateInput } from "@/database/models/scope"
+import type { ViewTreeItem } from "@/tokens/tree-list-data"
+import { db } from "@/database/db-client"
 
-// Helpers for persisting separate arrays: scopes (always) and current_tasks (only when current view)
+// Persistence helpers
 function accountScopesOrderTxn(accountId: string, scopes: string[]) {
   const { data } = parseAccountUpdateInput({ list_orders: { scopes } })
   return db.tx.accounts[accountId].merge(data)
@@ -30,284 +91,236 @@ type DragTaskPayload = { "db/task": string }
 type DragRTaskPayload = { "db/rtask": string }
 type DragPayload = DragScopePayload | DragTaskPayload | DragRTaskPayload
 
-function serializeDragItem(node: ViewTreeItemMeta): DragPayload | null {
+/**
+ * Serialize a tree node into a drag payload understood by external drop targets *or*
+ * our own internal onRootDrop/onMove handlers.
+ */
+function serializeDragItem(node: ViewTreeItem): DragPayload | null {
   if (node.kind === "scope") return { "db/scope": JSON.stringify({ id: node.id }) }
   if (node.kind === "task") return { "db/task": JSON.stringify({ id: node.id }) }
   if (node.kind === "rtask") return { "db/rtask": JSON.stringify({ id: node.id }) }
   return null
 }
 
-// Extract ids from keys for scopes/tasks only
-function extractDragIds(keys: Set<Key>, getNode: (id: string) => ViewTreeItemMeta | undefined) {
+/**
+ * Utility: Given a Set<Key> from React Aria, return only valid draggable IDs (scope/task/rtask).
+ * Filters out any unknown keys defensively.
+ */
+function extractDragIds(keys: Set<Key>, getNode: (id: string) => ViewTreeItem | undefined) {
   const ids: string[] = []
-  keys.forEach((k) => {
+  keys.forEach((k: Key) => {
     const id = String(k)
     const node = getNode(id)
-    if (node && (node.kind === "scope" || node.kind === "task" || node.kind === "rtask")) {
+    if (node && (node.kind === "scope" || node.kind === "task" || node.kind === "rtask"))
       ids.push(id)
-    }
   })
   return ids
 }
 
+// Minimal shape for drag items from react-aria-components we actually use
+// Minimal root drop event shape (subset of react-aria's DroppableCollectionRootDropEvent)
+interface RootDropEvent {
+  items: Iterable<unknown>
+}
+
+/** Narrow an unknown iterable into DropItem iterable (internal helper to keep exported surface clean). */
+function asDropItems(iter: Iterable<unknown>): Iterable<DropItem> {
+  return iter as Iterable<DropItem>
+}
+
 /**
- * Hook: useViewTreeDragAndDrop
- * Core Responsibility:
- *  - Supply `react-aria-components` Tree with drag & drop for scopes & current tasks.
- *  - Persisted ordering model now limited to: scopes (always) and current tasks (when in current view).
- * Design Highlights:
- *  - Single `onMove` handler unifies intra-parent reorders and inter-parent migrations; reduces branching vs legacy `onReorder` + `onItemDrop` split.
- *  - `onRootDrop` handles drops onto the empty collection surface (background) to move items directly to root.
- *  - Transactions are batched (order + link/unlink) for atomicity so UI doesn't transiently desync.
- * Ordering Persistence Policy:
- *  - Scope moves adjust `list_orders.scopes` for old/new containers (account root or parent scope).
- *  - Task ordering persisted only for current tasks via `current_tasks` arrays on account/scope.
- * Link Management:
- *  - Moving to root => `unlink` parent; moving under a scope => `link` that scope.
- *  - Scope moves similarly unlink/link via `parent_scope` relation.
- * Safety Checks:
- *  - Reject mixed-kind drags (scope + task simultaneously) to avoid ambiguous ordering semantics.
- *  - Enforce same-original-parent for multi-select drags (simplifies ordering math); can be relaxed in future by building per-parent delta sets.
- *  - Bail early if account is absent or target node cannot be resolved.
- * Data Dependencies:
- *  - Relies on `itemById` (from `useViewTreeData`) to infer current rendered order for computing new order arrays.
- *  - Uses a depth-first snapshot; any visual grouping changes require updating `getOrderedChildIds` strategy accordingly.
- * Extensibility Notes:
- *  - Recurring / snoozed / done task ordering not persisted; drag of tasks in those views disabled.
- *  - Multi-parent multi-select moves: group moved IDs by original parent and apply independent old-parent order trims.
- * Edge Cases Addressed:
- *  - Move into empty scope (append logic falls back to end insertion).
- *  - Drop before/after a target that itself is being moved (filtered from insertion list first).
- *  - Root drop after previously root-based items (ensures uniqueness via filter when appending).
- * Failure Modes:
- *  - If a transaction partially fails (unlikely with Instant local-first), state may temporarily diverge; no explicit rollback currently.
- *  - Dragging a node not present in `itemById` (stale selection) is ignored safely.
- * Future Hardening:
- *  - Consider optimistic local reorder before transact to further minimize perceptual latency.
- *  - Add analytics hooks around reorder/move events for UX insights.
+ * Main exported hook providing `dragAndDropHooks` consumed by the tree list component.
  */
-export function useViewTreeDragAndDrop({ viewParams }: { viewParams: ViewParams }) {
+export function useViewTreeDragAndDrop() {
   const { account } = useAuth()
-  const { itemById } = useViewTreeData({ viewParams })
+  const { viewParams } = useViewParams()
+  const { itemById, items } = useViewTreeData()
+  const activeView = viewParams.list
 
-  // # Original prompt for this hook
-  // This hook should provide drag-and-drop functionality for the view tree.
-  // - Use `useDragAndDrop` from `react-aria-components`.
-  // - Review the drag and drop section of the Aria Tree docs for full understanding https://react-spectrum.adobe.com/react-aria/Tree.html
-  // - Should support reordering scopes and tasks within the same parent (account for root parent).
-  // - Task level reordering should only be supported when `viewParams.list` is "current".
-  // - Tasks and scopes should be able to be moved between different scopes (including to/from root).
-  // - Should not allow reordering between different item types (e.g., a task in between 2 scopes).
-  // - On drop, the new order should be persisted to the database.
-  //   - For scopes/tasks moved within the same parent, update that parent scope's `list_orders` field (or account's if root).
-  //   - For scopes/tasks moved to a different parent, update both the old and new parent's `list_orders` field (or account's if root).
-  // - Use the provided `accountListUpdateTxn` and `scopeListUpdateTxn` functions to create the necessary db transactions.
-  // - Ensure all edge cases are handled (e.g., moving to/from root, moving first/last items, etc.)
-  // - Review https://www.instantdb.com/docs for more info on how to use DB if needed.
-  // - InstantDB is local-first, so updating in the database should automatically update the UI via reactivity.
-
-  // Helper: derive current rendered order for a parent for all kinds (scope/task/rtask) sequentially.
-  const getRenderedChildSequence = (parentId: string | null) => {
-    const seq: ViewTreeItemMeta[] = []
-    itemById.forEach((node) => {
-      if (node.parentId === parentId) seq.push(node)
-    })
-    // Depth-first produced order is fine as approximation of pre-token state for fallback.
-    return seq
+  // Build parent maps from tree shape (top-level parent = rootScopeId or null)
+  const parentIdById = new Map<string, string | null>()
+  const childrenByParent = new Map<string | null, ViewTreeItem[]>()
+  const walk = (parentId: string | null, list: ViewTreeItem[]) => {
+    childrenByParent.set(parentId, list)
+    for (const child of list) {
+      parentIdById.set(child.id, parentId)
+      if (child.kind === "scope" && child.items?.length) {
+        walk(child.id, child.items as ViewTreeItem[])
+      }
+    }
   }
+  walk(viewParams.rootScopeId ?? null, items)
 
-  const activeView = viewParams.list // 'current' | 'snoozed' | 'done' | 'recurring'
+  const getRenderedChildSequence = (parentId: string | null) => childrenByParent.get(parentId) ?? []
 
-  // Helpers to fetch/modify ordering arrays for a container (null => account root)
+  interface ScopeListOrders {
+    list_orders?: { scopes?: string[]; current_tasks?: string[] }
+  }
   const getScopeOrder = (parentId: string | null): string[] => {
     if (!account) return []
     if (parentId === null) return (account.list_orders?.scopes as string[] | undefined) ?? []
-    const parent = itemById.get(parentId)
-    if (parent?.kind === "scope") {
-      const data = parent.data as { list_orders?: { scopes?: string[] } }
-      return data.list_orders?.scopes ?? []
-    }
+    const node = itemById.get(parentId)
+    if (node?.kind === "scope") return (node.data as ScopeListOrders).list_orders?.scopes ?? []
     return []
   }
   const getCurrentTaskOrder = (parentId: string | null): string[] => {
     if (activeView !== "current" || !account) return []
     if (parentId === null) return (account.list_orders?.current_tasks as string[] | undefined) ?? []
-    const parent = itemById.get(parentId)
-    if (parent?.kind === "scope") {
-      const data = parent.data as { list_orders?: { current_tasks?: string[] } }
-      return data.list_orders?.current_tasks ?? []
-    }
+    const node = itemById.get(parentId)
+    if (node?.kind === "scope")
+      return (node.data as ScopeListOrders).list_orders?.current_tasks ?? []
     return []
   }
 
-  // (Potential future) moveBetweenParents removed for now – onItemDrop handles moves.
-
-  const { dragAndDropHooks } = useDragAndDrop<AnyViewTreeItem>({
-    getItems: (keys) => {
-      const items: Record<string, string>[] = []
-      keys.forEach((k) => {
+  const { dragAndDropHooks } = useDragAndDrop<ViewTreeItem>({
+    getItems: (keys: Set<Key>) => {
+      const arr: Record<string, string>[] = []
+      keys.forEach((k: Key) => {
         const node = itemById.get(String(k))
-        const payload = node ? serializeDragItem(node) : null
-        if (payload) items.push(payload)
+        const payload = node ? serializeDragItem(node as ViewTreeItem) : null
+        if (payload) arr.push(payload)
       })
-      return items
+      return arr
     },
-    acceptedDragTypes: ["db/scope", "db/task"], // rtask drag unsupported (no persisted order)
+    acceptedDragTypes: ["db/scope", "db/task"],
     getDropOperation: () => "move",
-    // Decide if a particular drop target (item + position) should be accepted.
-    shouldAcceptItemDrop: (target) => {
-      const targetNode = itemById.get(String(target.key))
-      if (!targetNode) return false
-      // Allow dropping:
-      // - on a scope (to become its child) for any draggable kind (scopes/tasks/rtasks)
-      // - before/after any item (mixed-type interleaving supported)
-      if (target.dropPosition === "on") return targetNode.kind === "scope"
-      if (target.dropPosition === "before" || target.dropPosition === "after") return true
-      return false
+    shouldAcceptItemDrop: (target: { key: Key; dropPosition: string }) => {
+      const node = itemById.get(String(target.key))
+      if (!node) return false
+      if (target.dropPosition === "on") return node.kind === "scope"
+      return target.dropPosition === "before" || target.dropPosition === "after"
     },
-    // Unified handler for reordering within a level and moving between levels.
-    async onMove(e) {
+    /**
+     * Core reordering / moving handler invoked by React Aria when a collection move occurs.
+     * Performs:
+     *  1. Validation (homogeneous kinds, shared parent, allowed view semantics)
+     *  2. Parent resolution from drop target
+     *  3. Branch: same-parent reorder vs cross-parent move
+     *  4. Persistence mutation generation
+     */
+    async onMove(e: {
+      target: { key: Key; dropPosition: "before" | "after" | "on" }
+      keys: Set<Key>
+    }) {
       if (!account) return
-      const targetId = String(e.target.key)
-      const targetNode = itemById.get(targetId)
+      const targetNode = itemById.get(String(e.target.key)) as ViewTreeItem | undefined
       if (!targetNode) return
 
-      // Extract moved ids (scopes/tasks/rtasks)
-      const movedIds = extractDragIds(e.keys, (id) => itemById.get(id))
+      const movedIds = extractDragIds(e.keys, (id) => itemById.get(id) as ViewTreeItem | undefined)
       if (!movedIds.length) return
-
-      const firstNode = itemById.get(movedIds[0])!
-      // Keep restriction: single-kind drag for simplicity.
-      if (!movedIds.every((id) => itemById.get(id)?.kind === firstNode.kind)) return
-      const movingKind = firstNode.kind // 'scope' | 'task' | 'rtask'
-      if (movingKind === "rtask") return // no rtask movement for now
-
-      // Ensure (for now) all moved nodes share the same original parent; else bail for simplicity
-      const originalParentId = firstNode.parentId
-      if (!movedIds.every((id) => itemById.get(id)?.parentId === originalParentId)) return
-
-      // Derive new parent based on drop position
-      let newParentId: string | null
-      if (e.target.dropPosition === "on" && targetNode.kind === "scope") {
-        newParentId = targetNode.id
-      } else if (e.target.dropPosition === "before" || e.target.dropPosition === "after") {
-        // Insert before/after target inside its parent (may be root null)
-        newParentId = targetNode.parentId
-      } else {
+      const first = itemById.get(movedIds[0]) as ViewTreeItem
+      if (
+        !movedIds.every((id) => (itemById.get(id) as ViewTreeItem | undefined)?.kind === first.kind)
+      )
         return
-      }
+      const kind = first.kind
+      if (kind === "rtask") return
+      const originalParent = parentIdById.get(first.id) ?? null
+      if (!movedIds.every((id) => (parentIdById.get(id) ?? null) === originalParent)) return
 
-      const sameParent = originalParentId === newParentId
+      let newParent: string | null
+      if (e.target.dropPosition === "on" && targetNode.kind === "scope") newParent = targetNode.id
+      else if (e.target.dropPosition === "before" || e.target.dropPosition === "after")
+        newParent = parentIdById.get(targetNode.id) ?? null
+      else return
 
-      // Special handling: non-current task views (snoozed/done/recurring) allow cross-parent moves
-      // but do NOT allow intra-parent reordering nor any persisted ordering updates.
-      if (movingKind === "task" && activeView !== "current") {
-        // If same parent, treat as no-op (reordering disabled in these views)
+      const sameParent = newParent === originalParent
+
+      if (kind === "task" && activeView !== "current") {
         if (sameParent) return
-        // Perform only link/unlink without touching ordering arrays.
-        const txns: Array<
+        const txs: Array<
           | ReturnType<(typeof db.tx.tasks)[string]["link"]>
           | ReturnType<(typeof db.tx.tasks)[string]["unlink"]>
         > = []
-        movedIds.forEach((tid) => {
-          if (newParentId === null) {
-            // Move to root => unlink scope if had one
-            if (originalParentId) txns.push(db.tx.tasks[tid].unlink({ scope: originalParentId }))
-          } else {
-            // Move into a scope => link new parent (Instant will override previous link)
-            txns.push(db.tx.tasks[tid].link({ scope: newParentId }))
-          }
+        movedIds.forEach((id) => {
+          if (newParent === null) {
+            if (originalParent) txs.push(db.tx.tasks[id].unlink({ scope: originalParent }))
+          } else txs.push(db.tx.tasks[id].link({ scope: newParent }))
         })
-        if (txns.length) db.transact(txns)
+        if (txs.length) db.transact(txs)
         return
       }
-      // Retrieve order arrays (scopes or current tasks) for source/destination
-      const sourceOrder =
-        movingKind === "scope"
-          ? getScopeOrder(originalParentId)
-          : getCurrentTaskOrder(originalParentId)
-      const destOrder =
-        movingKind === "scope" ? getScopeOrder(newParentId) : getCurrentTaskOrder(newParentId)
 
-      const referenceOrder = sourceOrder.length
+      const sourceOrder =
+        kind === "scope" ? getScopeOrder(originalParent) : getCurrentTaskOrder(originalParent)
+      const destOrder = kind === "scope" ? getScopeOrder(newParent) : getCurrentTaskOrder(newParent)
+      const reference = sourceOrder.length
         ? sourceOrder
-        : getRenderedChildSequence(originalParentId)
-            .filter((n) => n.kind === movingKind)
+        : getRenderedChildSequence(originalParent)
+            .filter((n) => n.kind === kind)
             .map((n) => n.id)
-      const movedOrdered = referenceOrder.filter((id) => movedIds.includes(id))
+      const movedOrdered = reference.filter((id) => movedIds.includes(id))
       for (const id of movedIds) if (!movedOrdered.includes(id)) movedOrdered.push(id)
 
-      let newSourceOrder = sourceOrder
       if (sameParent) {
-        const original = sourceOrder
-        const movingSet = new Set(movedOrdered)
-        const cleaned = original.filter((id) => !movingSet.has(id))
+        const moving = new Set(movedOrdered)
+        const cleaned = sourceOrder.filter((id) => !moving.has(id))
         let targetIdEffective = targetNode.id
         if (
-          movingSet.has(targetIdEffective) &&
+          moving.has(targetIdEffective) &&
           (e.target.dropPosition === "before" || e.target.dropPosition === "after")
         ) {
-          const originalIdx = original.indexOf(targetIdEffective)
+          const idx = sourceOrder.indexOf(targetIdEffective)
           const dir = e.target.dropPosition === "before" ? -1 : 1
-          let probe = originalIdx + dir
-          while (probe >= 0 && probe < original.length) {
-            const candidate = original[probe]
-            if (!movingSet.has(candidate)) {
-              targetIdEffective = candidate
+          let probe = idx + dir
+          while (probe >= 0 && probe < sourceOrder.length) {
+            const cand = sourceOrder[probe]
+            if (!moving.has(cand)) {
+              targetIdEffective = cand
               break
             }
             probe += dir
           }
         }
-        let insertionIndex: number
-        if (e.target.dropPosition === "on") insertionIndex = cleaned.length
+        let insertion: number
+        if (e.target.dropPosition === "on") insertion = cleaned.length
         else {
-          const targetIdx = original.indexOf(targetIdEffective)
-          if (targetIdx === -1) insertionIndex = cleaned.length
+          const tIdx = sourceOrder.indexOf(targetIdEffective)
+          if (tIdx === -1) insertion = cleaned.length
           else {
-            const movedBefore = original
-              .slice(0, targetIdx)
-              .filter((id) => movingSet.has(id)).length
-            const baseIndex = targetIdx - movedBefore
-            insertionIndex = e.target.dropPosition === "before" ? baseIndex : baseIndex + 1
+            const movedBefore = sourceOrder.slice(0, tIdx).filter((id) => moving.has(id)).length
+            const base = tIdx - movedBefore
+            insertion = e.target.dropPosition === "before" ? base : base + 1
           }
         }
-        const merged = [
-          ...cleaned.slice(0, insertionIndex),
+        const newOrder = [
+          ...cleaned.slice(0, insertion),
           ...movedOrdered,
-          ...cleaned.slice(insertionIndex),
+          ...cleaned.slice(insertion),
         ]
-        newSourceOrder = merged
-        if (movingKind === "scope") {
-          const txn =
-            originalParentId === null
-              ? accountScopesOrderTxn(account.id, newSourceOrder)
-              : scopeScopesOrderTxn(originalParentId!, newSourceOrder)
-          db.transact(txn)
-        } else if (movingKind === "task") {
-          const txn =
-            originalParentId === null
-              ? accountCurrentTasksOrderTxn(account.id, newSourceOrder)
-              : scopeCurrentTasksOrderTxn(originalParentId!, newSourceOrder)
-          db.transact(txn)
+        let txn:
+          | ReturnType<typeof accountScopesOrderTxn>
+          | ReturnType<typeof scopeScopesOrderTxn>
+          | ReturnType<typeof accountCurrentTasksOrderTxn>
+          | ReturnType<typeof scopeCurrentTasksOrderTxn>
+        if (kind === "scope") {
+          txn =
+            originalParent === null
+              ? accountScopesOrderTxn(account.id, newOrder)
+              : scopeScopesOrderTxn(originalParent!, newOrder)
+        } else {
+          txn =
+            originalParent === null
+              ? accountCurrentTasksOrderTxn(account.id, newOrder)
+              : scopeCurrentTasksOrderTxn(originalParent!, newOrder)
         }
+        db.transact(txn!)
         return
       }
 
-      // Cross-parent move (current view scopes/tasks with ordering persistence)
       const cleanedSource = sourceOrder.filter((id) => !movedOrdered.includes(id))
       const cleanedDest = destOrder.filter((id) => !movedOrdered.includes(id))
-      let insertionIndex: number
-      if (e.target.dropPosition === "on") insertionIndex = cleanedDest.length
+      let insertionIdx: number
+      if (e.target.dropPosition === "on") insertionIdx = cleanedDest.length
       else {
-        const targetIdx = cleanedDest.indexOf(targetNode.id)
-        insertionIndex = targetIdx === -1 ? cleanedDest.length : targetIdx
-        if (e.target.dropPosition === "after") insertionIndex += 1
+        const tIdx = cleanedDest.indexOf(targetNode.id)
+        insertionIdx = tIdx === -1 ? cleanedDest.length : tIdx
+        if (e.target.dropPosition === "after") insertionIdx += 1
       }
       const newDest = [
-        ...cleanedDest.slice(0, insertionIndex),
+        ...cleanedDest.slice(0, insertionIdx),
         ...movedOrdered,
-        ...cleanedDest.slice(insertionIndex),
+        ...cleanedDest.slice(insertionIdx),
       ]
 
       type Txn =
@@ -319,142 +332,120 @@ export function useViewTreeDragAndDrop({ viewParams }: { viewParams: ViewParams 
         | ReturnType<(typeof db.tx.scopes)[string]["unlink"]>
         | ReturnType<(typeof db.tx.tasks)[string]["link"]>
         | ReturnType<(typeof db.tx.tasks)[string]["unlink"]>
-        | ReturnType<(typeof db.tx.recurring_tasks)[string]["link"]>
-        | ReturnType<(typeof db.tx.recurring_tasks)[string]["unlink"]>
       const txns: Txn[] = []
-      if (movingKind === "scope") {
+      if (kind === "scope") {
         txns.push(
-          originalParentId === null
+          originalParent === null
             ? accountScopesOrderTxn(account.id, cleanedSource)
-            : scopeScopesOrderTxn(originalParentId!, cleanedSource)
+            : scopeScopesOrderTxn(originalParent!, cleanedSource)
         )
         txns.push(
-          newParentId === null
+          newParent === null
             ? accountScopesOrderTxn(account.id, newDest)
-            : scopeScopesOrderTxn(newParentId!, newDest)
+            : scopeScopesOrderTxn(newParent!, newDest)
         )
-      } else if (movingKind === "task") {
+      } else {
         txns.push(
-          originalParentId === null
+          originalParent === null
             ? accountCurrentTasksOrderTxn(account.id, cleanedSource)
-            : scopeCurrentTasksOrderTxn(originalParentId!, cleanedSource)
+            : scopeCurrentTasksOrderTxn(originalParent!, cleanedSource)
         )
         txns.push(
-          newParentId === null
+          newParent === null
             ? accountCurrentTasksOrderTxn(account.id, newDest)
-            : scopeCurrentTasksOrderTxn(newParentId!, newDest)
+            : scopeCurrentTasksOrderTxn(newParent!, newDest)
         )
       }
 
-      // Link / unlink operations for actual parent relations
-      if (movingKind === "scope") {
-        if (newParentId === null) {
+      if (kind === "scope") {
+        if (newParent === null)
           movedIds.forEach((sid) => {
-            if (originalParentId) {
-              txns.push(db.tx.scopes[sid].unlink({ parent_scope: originalParentId }))
-            }
+            if (originalParent)
+              txns.push(db.tx.scopes[sid].unlink({ parent_scope: originalParent }))
           })
-        } else {
-          movedIds.forEach((sid) => {
-            txns.push(db.tx.scopes[sid].link({ parent_scope: newParentId! }))
-          })
-        }
-      } else if (movingKind === "task") {
+        else
+          movedIds.forEach((sid) => txns.push(db.tx.scopes[sid].link({ parent_scope: newParent! })))
+      } else {
         movedIds.forEach((tid) => {
-          if (newParentId === null) {
-            if (originalParentId) {
-              txns.push(db.tx.tasks[tid].unlink({ scope: originalParentId }))
-            }
-          } else {
-            txns.push(db.tx.tasks[tid].link({ scope: newParentId! }))
-          }
+          if (newParent === null) {
+            if (originalParent) txns.push(db.tx.tasks[tid].unlink({ scope: originalParent }))
+          } else txns.push(db.tx.tasks[tid].link({ scope: newParent! }))
         })
       }
       if (txns.length) db.transact(txns)
     },
-    // Drop onto empty space / collection root.
-    async onRootDrop(e) {
+    // Root background drop (adds at end)
+    /** Handle drops onto background / collection root area. */
+    async onRootDrop(e: RootDropEvent) {
       if (!account) return
-      // Determine target container: true root (null) or focused scope if viewing a subtree.
-      const targetParentId: string | null = viewParams.rootScopeId ?? null
-
-      const moved: { scopeIds: string[]; taskIds: string[]; rtaskIds: string[] } = {
-        scopeIds: [],
-        taskIds: [],
-        rtaskIds: [],
+      const targetParent: string | null = viewParams.rootScopeId ?? null
+      const moved = { scopeIds: [] as string[], taskIds: [] as string[] }
+      const promises: Promise<void>[] = []
+      for (const raw of asDropItems(e.items)) {
+        if (!isTextDropItem(raw)) continue
+        const item = raw
+        if (item.types.has("db/scope")) {
+          promises.push(
+            item.getText("db/scope").then((txt) => {
+              moved.scopeIds.push(JSON.parse(txt).id)
+            })
+          )
+        } else if (item.types.has("db/task")) {
+          promises.push(
+            item.getText("db/task").then((txt) => {
+              moved.taskIds.push(JSON.parse(txt).id)
+            })
+          )
+        }
       }
-      await Promise.all(
-        Array.from(e.items)
-          .filter(isTextDropItem)
-          .map(async (di) => {
-            if (di.types.has("db/scope")) {
-              const { id } = JSON.parse(await di.getText("db/scope")) as { id: string }
-              moved.scopeIds.push(id)
-            } else if (di.types.has("db/task")) {
-              const { id } = JSON.parse(await di.getText("db/task")) as { id: string }
-              moved.taskIds.push(id)
-            } else if (di.types.has("db/rtask")) {
-              const { id } = JSON.parse(await di.getText("db/rtask")) as { id: string }
-              moved.rtaskIds.push(id)
-            }
-          })
-      )
-      if (!moved.scopeIds.length && !moved.taskIds.length && !moved.rtaskIds.length) return
-
+      if (promises.length) await Promise.all(promises)
+      if (!moved.scopeIds.length && !moved.taskIds.length) return
       type RootTxn =
         | ReturnType<typeof accountScopesOrderTxn>
         | ReturnType<typeof accountCurrentTasksOrderTxn>
         | ReturnType<typeof scopeScopesOrderTxn>
         | ReturnType<typeof scopeCurrentTasksOrderTxn>
-        | ReturnType<(typeof db.tx.scopes)[string]["unlink"]>
         | ReturnType<(typeof db.tx.scopes)[string]["link"]>
-        | ReturnType<(typeof db.tx.tasks)[string]["unlink"]>
+        | ReturnType<(typeof db.tx.scopes)[string]["unlink"]>
         | ReturnType<(typeof db.tx.tasks)[string]["link"]>
+        | ReturnType<(typeof db.tx.tasks)[string]["unlink"]>
       const txns: RootTxn[] = []
-
-      // Scope ordering + link/unlink
       if (moved.scopeIds.length) {
-        const currentOrder = getScopeOrder(targetParentId).filter(
-          (id) => !moved.scopeIds.includes(id)
+        const existing = getScopeOrder(targetParent).filter((id) => !moved.scopeIds.includes(id))
+        const newOrder = [...existing, ...moved.scopeIds]
+        txns.push(
+          targetParent === null
+            ? accountScopesOrderTxn(account.id, newOrder)
+            : scopeScopesOrderTxn(targetParent, newOrder)
         )
-        const newOrder = [...currentOrder, ...moved.scopeIds]
-        if (targetParentId === null) txns.push(accountScopesOrderTxn(account.id, newOrder))
-        else txns.push(scopeScopesOrderTxn(targetParentId, newOrder))
         moved.scopeIds.forEach((sid) => {
-          const node = itemById.get(sid)
-          const currentParent = node?.parentId ?? null
-          if (currentParent === targetParentId) return
-          if (targetParentId === null) {
-            if (currentParent) txns.push(db.tx.scopes[sid].unlink({ parent_scope: currentParent }))
-          } else {
-            txns.push(db.tx.scopes[sid].link({ parent_scope: targetParentId }))
-          }
+          const curParent = parentIdById.get(sid) ?? null
+          if (curParent === targetParent) return
+          if (targetParent === null) {
+            if (curParent) txns.push(db.tx.scopes[sid].unlink({ parent_scope: curParent }))
+          } else txns.push(db.tx.scopes[sid].link({ parent_scope: targetParent }))
         })
       }
-
-      // Task ordering (only current view) + link/unlink
       if (moved.taskIds.length) {
         if (activeView === "current") {
-          const currentTasksOrder = getCurrentTaskOrder(targetParentId).filter(
+          const existing = getCurrentTaskOrder(targetParent).filter(
             (id) => !moved.taskIds.includes(id)
           )
-          const newTasksOrder = [...currentTasksOrder, ...moved.taskIds]
-          if (targetParentId === null)
-            txns.push(accountCurrentTasksOrderTxn(account.id, newTasksOrder))
-          else txns.push(scopeCurrentTasksOrderTxn(targetParentId, newTasksOrder))
+          const newOrder = [...existing, ...moved.taskIds]
+          txns.push(
+            targetParent === null
+              ? accountCurrentTasksOrderTxn(account.id, newOrder)
+              : scopeCurrentTasksOrderTxn(targetParent, newOrder)
+          )
         }
         moved.taskIds.forEach((tid) => {
-          const node = itemById.get(tid)
-          const currentParent = node?.parentId ?? null
-          if (currentParent === targetParentId) return
-          if (targetParentId === null) {
-            if (currentParent) txns.push(db.tx.tasks[tid].unlink({ scope: currentParent }))
-          } else {
-            txns.push(db.tx.tasks[tid].link({ scope: targetParentId }))
-          }
+          const curParent = parentIdById.get(tid) ?? null
+          if (curParent === targetParent) return
+          if (targetParent === null) {
+            if (curParent) txns.push(db.tx.tasks[tid].unlink({ scope: curParent }))
+          } else txns.push(db.tx.tasks[tid].link({ scope: targetParent }))
         })
       }
-      // rtask movement ignored for now (consistent with other handlers)
       if (txns.length) db.transact(txns)
     },
   })

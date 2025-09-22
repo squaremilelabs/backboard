@@ -1,5 +1,4 @@
 "use client"
-
 import { Button } from "react-aria-components"
 import { useState } from "react"
 import { useViewParams } from "@/hooks/use-view-params"
@@ -7,6 +6,7 @@ import { useViewTreeData } from "@/hooks/use-view-tree-data"
 import { SMUIDataTreeList } from "~/smui/components/data-tree-list"
 import { useViewTreeDragAndDrop } from "@/hooks/use-view-tree-drag-and-drop"
 import { db } from "@/database/db-client"
+import { ViewListSelect } from "@/components/view-list-select"
 
 export default function Page() {
   const [_showInactive, _setShowInactive] = useState(false)
@@ -35,18 +35,14 @@ export default function Page() {
   })
 
   const { viewParams, setViewParam } = useViewParams()
-  const { items, itemById } = useViewTreeData({ viewParams })
-  const { dragAndDropHooks } = useViewTreeDragAndDrop({ viewParams })
+  const { items } = useViewTreeData()
+  const { dragAndDropHooks } = useViewTreeDragAndDrop()
   return (
     <div>
       {viewParams.rootScopeId !== null && (
         <Button onPress={() => setViewParam("rootScopeId", null)}>Back to Root</Button>
       )}
-      <Button
-        onPress={() => setViewParam("list", viewParams.list === "current" ? "snoozed" : "current")}
-      >
-        {viewParams.list}
-      </Button>
+      <ViewListSelect />
       <SMUIDataTreeList
         ariaLabel="List"
         items={items}
@@ -63,7 +59,7 @@ export default function Page() {
             <Button slot="drag">|||</Button>
             <p>{item.kind?.toUpperCase()}</p>
             <p>{item.data.title}</p>
-            <Button slot="chevron">{itemById.get(item.id)?.itemCounts.task ?? 0}</Button>
+            <Button slot="chevron">expand</Button>
             {item.kind === "scope" && (
               <Button onPress={() => setViewParam("rootScopeId", item.id)}>Open</Button>
             )}

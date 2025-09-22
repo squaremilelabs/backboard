@@ -16,20 +16,7 @@
  *  - For derived / computed view state, build a separate selector hook rather than embedding logic here to keep concerns clear.
  */
 import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
-
-export type ViewList = "current" | "snoozed" | "recurring" | "done"
-
-export type ViewParams = {
-  list: ViewList
-  rootScopeId: string | null
-  showInactive: boolean
-}
-
-export const DEFAULT_VIEW_PARAMS: ViewParams = {
-  list: "current",
-  rootScopeId: null,
-  showInactive: false,
-}
+import { DEFAULT_VIEW_PARAMS, ViewParams } from "@/tokens/view-params"
 
 export function useViewParams() {
   const [viewParams, setViewParams] = useSessionStorageUtility("view-params", DEFAULT_VIEW_PARAMS)
