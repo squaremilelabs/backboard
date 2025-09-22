@@ -61,6 +61,14 @@ export type UseRootTreeDataResult = {
   getTreeDataByScopeId: (scopeId: string | null) => RootTreeScope | null
   // Returns ancestor chain excluding the scope itself; empty array when scopeId null or top-level.
   getScopePathByScopeId: (scopeId: string | null) => ScopeItemData[]
+  // Hierarchy indexes (scope + task + rtask) for O(1) parent/children / ancestor operations.
+  indexes: {
+    scopeParentById: Map<string, string | null>
+    scopeChildrenByParentId: Map<string | null, string[]>
+    taskParentById: Map<string, string | null>
+    rtaskParentById: Map<string, string | null>
+    ancestorsByScopeId: Map<string, string[]> // scopeId -> ordered ancestor scopeIds (rootward)
+  }
 }
 
 export type ViewTreeItemKind = "scope" | "task" | "rtask"

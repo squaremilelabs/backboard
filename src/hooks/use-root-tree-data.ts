@@ -44,6 +44,13 @@ export function useRootTreeData({
       return {
         getTreeDataByScopeId: () => null,
         getScopePathByScopeId: () => [],
+        indexes: {
+          scopeParentById: new Map(),
+          scopeChildrenByParentId: new Map(),
+          taskParentById: new Map(),
+          rtaskParentById: new Map(),
+          ancestorsByScopeId: new Map(),
+        },
       }
     }
 
@@ -152,7 +159,56 @@ export function useRootTreeData({
       return scopeTreeById.get(scopeId) || null
     }
 
-    return { getTreeDataByScopeId, getScopePathByScopeId }
+    // --------- Build Optimized Indexes ---------
+    const scopeParentById = new Map<string, string | null>()
+    const scopeChildrenByParentId = new Map<string | null, string[]>()
+    const taskParentById = new Map<string, string | null>()
+    const rtaskParentById = new Map<string, string | null>()
+    const ancestorsByScopeId = new Map<string, string[]>()
+
+    // Initialize children array for root null parent
+    scopeChildrenByParentId.set(null, [])
+
+    // Walk scopes to populate parent/children and ancestor chains
+    const buildScopeIndexes = (node: RootTreeScope, ancestorChain: string[]) => {
+      if (node.scopeId !== null) {
+        scopeParentById.set(node.scopeId, node.parentScopeId)
+        // Record ancestors (copy existing chain)
+        ancestorsByScopeId.set(node.scopeId, ancestorChain)
+      }
+      // Ensure entry for parent -> children array
+      const parentKey = node.parentScopeId ?? null
+      if (!scopeChildrenByParentId.has(parentKey)) scopeChildrenByParentId.set(parentKey, [])
+      if (node.scopeId !== null) scopeChildrenByParentId.get(parentKey)!.push(node.scopeId)
+
+      const nextChain = node.scopeId === null ? ancestorChain : [...ancestorChain, node.scopeId]
+      for (const childScope of node.children.scopes) buildScopeIndexes(childScope, nextChain)
+    }
+    buildScopeIndexes(rootNode, [])
+
+    // Tasks & recurring tasks parent map population (flat scan per scope)
+    const populateTaskIndexes = (node: RootTreeScope) => {
+      const sid = node.scopeId
+      const pushTasks = (arr: TaskItemData[]) => arr.forEach((t) => taskParentById.set(t.id, sid))
+      pushTasks(node.children.tasks.current)
+      pushTasks(node.children.tasks.snoozed)
+      pushTasks(node.children.tasks.done)
+      node.children.rtasks.forEach((rt) => rtaskParentById.set(rt.id, sid))
+      for (const childScope of node.children.scopes) populateTaskIndexes(childScope)
+    }
+    populateTaskIndexes(rootNode)
+
+    return {
+      getTreeDataByScopeId,
+      getScopePathByScopeId,
+      indexes: {
+        scopeParentById,
+        scopeChildrenByParentId,
+        taskParentById,
+        rtaskParentById,
+        ancestorsByScopeId,
+      },
+    }
   }, [account, data.scopes, data.tasks, data.rtasks])
 
   return result

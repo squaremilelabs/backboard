@@ -61,6 +61,7 @@
 
 import { useDragAndDrop, Key, isTextDropItem, DropItem } from "react-aria-components"
 import { useViewTreeData } from "./use-view-tree-data"
+import { useRootTreeData } from "./use-root-tree-data"
 import { useAuth } from "./use-auth"
 import { useViewParams } from "./use-view-params"
 import { parseAccountUpdateInput } from "@/database/models/account"
@@ -135,21 +136,34 @@ export function useViewTreeDragAndDrop() {
   const { account } = useAuth()
   const { viewParams } = useViewParams()
   const { itemById, items } = useViewTreeData()
+  const { indexes } = useRootTreeData()
   const activeView = viewParams.list
 
-  // Build parent maps from tree shape (top-level parent = rootScopeId or null)
+  // Derive parent/children at view level. For scopes we rely on root indexes; for tasks we consult taskParentById.
   const parentIdById = new Map<string, string | null>()
   const childrenByParent = new Map<string | null, ViewTreeItem[]>()
-  const walk = (parentId: string | null, list: ViewTreeItem[]) => {
+  const rootParent = viewParams.rootScopeId ?? null
+  const registerChildren = (parentId: string | null, list: ViewTreeItem[]) => {
     childrenByParent.set(parentId, list)
-    for (const child of list) {
-      parentIdById.set(child.id, parentId)
-      if (child.kind === "scope" && child.items?.length) {
-        walk(child.id, child.items as ViewTreeItem[])
+    for (const node of list) {
+      let resolvedParent: string | null
+      if (node.kind === "scope") {
+        // If focusing a subtree, treat that focused scope's children as top-level (parent = focused scope id)
+        resolvedParent = parentId
+      } else if (node.kind === "task") {
+        resolvedParent = indexes.taskParentById.get(node.id) ?? null
+        // If focusing a subtree but this task belongs to that subtree root or descendants, keep its real scope parent.
+      } else {
+        // rtask
+        resolvedParent = indexes.rtaskParentById.get(node.id) ?? null
+      }
+      parentIdById.set(node.id, resolvedParent === rootParent ? rootParent : resolvedParent)
+      if (node.kind === "scope" && node.items?.length) {
+        registerChildren(node.id, node.items as ViewTreeItem[])
       }
     }
   }
-  walk(viewParams.rootScopeId ?? null, items)
+  registerChildren(rootParent, items)
 
   const getRenderedChildSequence = (parentId: string | null) => childrenByParent.get(parentId) ?? []
 
