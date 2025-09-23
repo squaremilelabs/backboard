@@ -55,9 +55,7 @@ import {
 export function useViewTreeData(): UseViewTreeDataResult {
   const { viewParams } = useViewParams()
   const { account } = useAuth()
-  const { getTreeDataByScopeId, getScopePathByScopeId } = useRootTreeData({
-    fetchInactiveData: viewParams.showInactive,
-  })
+  const { getTreeDataByScopeId, getScopePathByScopeId } = useRootTreeData()
 
   /**
    * Transform a RootTreeScope children set into ordered view items recursively, applying:

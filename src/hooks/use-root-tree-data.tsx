@@ -22,7 +22,7 @@
  *  - Query object identity stability is assumed; standard useMemo dependency on source arrays is sufficient.
  */
 
-import { useMemo } from "react"
+import { createContext, useContext, useMemo } from "react"
 import { useRootListData } from "./use-root-list-data"
 import { useAuth } from "./use-auth"
 import type {
@@ -33,26 +33,36 @@ import type {
   RtaskItemData,
 } from "@/tokens/tree-list-data"
 
-export function useRootTreeData({
-  fetchInactiveData,
-}: { fetchInactiveData?: boolean } = {}): UseRootTreeDataResult {
+const EMPTY_RESULT: UseRootTreeDataResult = {
+  getTreeDataByScopeId: () => null,
+  getScopePathByScopeId: () => [],
+  indexes: {
+    scopeParentById: new Map(),
+    scopeChildrenByParentId: new Map(),
+    taskParentById: new Map(),
+    rtaskParentById: new Map(),
+    ancestorsByScopeId: new Map(),
+  },
+}
+
+const RootTreeDataContext = createContext<UseRootTreeDataResult>(EMPTY_RESULT)
+
+export function RootTreeDataProvider({ children }: { children: React.ReactNode }) {
+  const value = useRootTreeDataContext()
+  return <RootTreeDataContext value={value}>{children}</RootTreeDataContext>
+}
+
+export function useRootTreeData(): UseRootTreeDataResult {
+  const context = useContext(RootTreeDataContext)
+  return context
+}
+
+function useRootTreeDataContext(): UseRootTreeDataResult {
   const { account } = useAuth()
-  const { data } = useRootListData({ fetchInactiveData })
+  const { data } = useRootListData()
 
   const result = useMemo<UseRootTreeDataResult>(() => {
-    if (!account) {
-      return {
-        getTreeDataByScopeId: () => null,
-        getScopePathByScopeId: () => [],
-        indexes: {
-          scopeParentById: new Map(),
-          scopeChildrenByParentId: new Map(),
-          taskParentById: new Map(),
-          rtaskParentById: new Map(),
-          ancestorsByScopeId: new Map(),
-        },
-      }
-    }
+    if (!account) return EMPTY_RESULT
 
     const scopes: ScopeItemData[] = data.scopes || []
     const tasks: TaskItemData[] = data.tasks || []

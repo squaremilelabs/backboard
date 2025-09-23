@@ -1,29 +1,28 @@
 "use client"
 import { VIEW_LISTS, ViewList, ViewListDisplayItem } from "@/tokens/view-params"
-import { SMUITabList, SMUITabListItem } from "~/smui/components/tab-list"
+import { SMUITabList } from "~/smui/components/tab-list"
 import { useViewParams } from "@/hooks/use-view-params"
-import { SMUIOptionListNode } from "~/smui/components/option-list"
 import { SMUIPicker } from "~/smui/components/picker"
+import { useRootTreeData } from "@/hooks/use-root-tree-data"
 
 export function ViewListSelect() {
   const { viewParams, setViewParam } = useViewParams()
+  const { getTreeDataByScopeId } = useRootTreeData()
+
+  const rootData = getTreeDataByScopeId(viewParams.rootScopeId)
 
   type ItemData = ViewListDisplayItem & { count: number }
-  const viewTabItems: SMUITabListItem<ItemData>[] = VIEW_LISTS.map((item) => {
-    // TODO: Implement counts per list type.
-    return {
-      id: item.key,
-      label: item.label,
-      data: { ...item, count: 0 },
+  const items = VIEW_LISTS.map((item) => {
+    let count = 0
+    if (item.key === "recurring") {
+      count = rootData?.counts.rtasks ?? 0
+    } else {
+      count = rootData?.counts.tasks[item.key] ?? 0
     }
-  })
-
-  const viewPickerItems: SMUIOptionListNode<ItemData>[] = VIEW_LISTS.map((item) => {
     return {
       id: item.key,
-      type: "item",
       label: item.label,
-      data: { ...item, count: 0 },
+      data: { ...item, count },
     }
   })
 
@@ -31,7 +30,7 @@ export function ViewListSelect() {
     <div className="gap-space-sm flex items-center">
       <itemData.Icon className="size-content-xs min-w-content-xs" />
       <p className="grow">{itemData.label}</p>
-      {/* <p>{itemData.count}</p> */}
+      <p>{itemData.count}</p>
     </div>
   )
 
@@ -42,7 +41,7 @@ export function ViewListSelect() {
           selectedKey={viewParams.list}
           onSelectionChange={(key) => setViewParam("list", key as ViewList)}
           ariaLabel="Select list"
-          items={viewTabItems}
+          items={items}
           classNames={{
             list: "flex gap-space-md",
             tab: [
@@ -61,7 +60,7 @@ export function ViewListSelect() {
           ariaLabel="Select list"
           selectedKey={viewParams.list}
           onSelectionChange={(key) => setViewParam("list", key as ViewList)}
-          options={viewPickerItems}
+          options={items.map((i) => ({ ...i, type: "item" }))}
           renderItemContent={(item, _renderProps) => {
             if (item?.type !== "item") return null
             return item.data ? renderItemContent(item.data) : null

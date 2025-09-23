@@ -32,13 +32,47 @@
  *  - For very large datasets, consider server-side pagination or status partition queries; current approach assumes modest list sizes.
  */
 import { startOfDay, subDays } from "date-fns"
-import { useMemo } from "react"
+import { createContext, useContext, useMemo } from "react"
 import { useAuth } from "./use-auth"
 import { useDBQuery } from "./use-db-query"
-import { RtaskItemData, ScopeItemData, TaskItemData } from "@/tokens/tree-list-data"
+import { useViewParams } from "./use-view-params"
+import {
+  RtaskItemData,
+  ScopeItemData,
+  TaskItemData,
+  UseRootListDataResult,
+} from "@/tokens/tree-list-data"
 
-export function useRootListData(options?: { fetchInactiveData?: boolean }) {
-  const { fetchInactiveData } = options || {}
+const EXMPTY_RESULT: UseRootListDataResult = {
+  data: { scopes: [], tasks: [], rtasks: [] },
+  maps: {
+    scopeById: new Map(),
+    taskById: new Map(),
+    rtaskById: new Map(),
+    scopesByScopeId: new Map(),
+    tasksByScopeId: new Map(),
+    rtasksByScopeId: new Map(),
+  },
+  isLoading: true,
+  errors: null,
+}
+
+const RootListDataContext = createContext<UseRootListDataResult>(EXMPTY_RESULT)
+
+export function RootListDataProvider({ children }: { children: React.ReactNode }) {
+  const { viewParams } = useViewParams()
+  const value = useRootListDataContext({ fetchInactiveData: viewParams.showInactive })
+  return <RootListDataContext value={value}>{children}</RootListDataContext>
+}
+
+export function useRootListData(): UseRootListDataResult {
+  const context = useContext(RootListDataContext)
+  return context
+}
+
+function useRootListDataContext({
+  fetchInactiveData,
+}: { fetchInactiveData?: boolean } = {}): UseRootListDataResult {
   const { account } = useAuth()
 
   const {
@@ -118,9 +152,18 @@ export function useRootListData(options?: { fetchInactiveData?: boolean }) {
       : null
   )
 
-  const scopesById = useMemo(() => new Map(scopes?.map((s) => [s.id, s])), [scopes])
-  const tasksById = useMemo(() => new Map(tasks?.map((t) => [t.id, t])), [tasks])
-  const rtasksById = useMemo(() => new Map(rtasks?.map((rt) => [rt.id, rt])), [rtasks])
+  const scopeById: Map<string, ScopeItemData> = useMemo(
+    () => new Map(scopes?.map((s) => [s.id, s])),
+    [scopes]
+  )
+  const taskById: Map<string, TaskItemData> = useMemo(
+    () => new Map(tasks?.map((t) => [t.id, t])),
+    [tasks]
+  )
+  const rtaskById: Map<string, RtaskItemData> = useMemo(
+    () => new Map(rtasks?.map((rt) => [rt.id, rt])),
+    [rtasks]
+  )
 
   const scopesByScopeId = useMemo(() => {
     const map = new Map<string | null, ScopeItemData[]>()
@@ -158,14 +201,21 @@ export function useRootListData(options?: { fetchInactiveData?: boolean }) {
   const isLoading = scopesLoading || tasksLoading || rtasksLoading
 
   const errors = [
-    scopesError && { entity: "scopes", error: scopesError.message },
-    tasksError && { entity: "tasks", error: tasksError.message },
-    rtasksError && { entity: "recurring_tasks", error: rtasksError.message },
-  ].filter(Boolean)
+    scopesError && { entity: "scopes" as const, error: scopesError.message },
+    tasksError && { entity: "tasks" as const, error: tasksError.message },
+    rtasksError && { entity: "recurring_tasks" as const, error: rtasksError.message },
+  ].filter((val) => val !== undefined)
 
   return {
-    data: { scopes, tasks, rtasks },
-    maps: { scopesById, tasksById, rtasksById, scopesByScopeId, tasksByScopeId, rtasksByScopeId },
+    data: { scopes: scopes ?? [], tasks: tasks ?? [], rtasks: rtasks ?? [] },
+    maps: {
+      scopeById,
+      taskById,
+      rtaskById,
+      scopesByScopeId,
+      tasksByScopeId,
+      rtasksByScopeId,
+    },
     isLoading,
     errors: errors.length ? errors : null,
   }
