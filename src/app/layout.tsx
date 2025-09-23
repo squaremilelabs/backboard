@@ -1,7 +1,7 @@
 import { Metadata, Viewport } from "next"
-import { fontsClassName } from "@/styles/fonts"
+import { fontsClassName } from "./_styles/fonts"
+import "./_styles/index.css"
 import Providers from "@/app/providers"
-import "@/styles/index.css"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { getAccountAccentColor } from "@/_deprecating/modules/root/get-accent-color"
 
