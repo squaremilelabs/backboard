@@ -1,6 +1,6 @@
 import { RecurringTask } from "@/database/models/recurring-task"
 import { Scope } from "@/database/models/scope"
-import { Task, TaskStatus } from "@/database/models/task"
+import { Task } from "@/database/models/task"
 
 // Persistent ordering only applies to scopes (across all views) and current tasks.
 // Snoozed / done / recurring lists use intrinsic temporal or custom logic.
@@ -44,7 +44,7 @@ export function sortDoneTasks<T extends Task>(tasks: T[]): T[] {
     })
 }
 
-export function sortScopesPersistent<T extends Scope>(scopes: T[], listOrder: string[]): T[] {
+export function sortScopes<T extends Scope>(scopes: T[], listOrder: string[]): T[] {
   const idSet = new Set(listOrder)
   const ordered: T[] = []
   for (const id of listOrder) {
@@ -61,14 +61,32 @@ export function sortRecurringTasks<T extends RecurringTask>(rtasks: T[]): T[] {
   return [...rtasks]
 }
 
-// Convenience unified dispatcher if needed by legacy code.
-export function sortTasksByView<T extends Task>(
-  tasks: T[],
-  view: TaskStatus,
-  listOrder: string[]
-): T[] {
-  if (view === "current") return sortCurrentTasks(tasks, listOrder)
-  if (view === "snoozed") return sortSnoozedTasks(tasks)
-  if (view === "done") return sortDoneTasks(tasks)
-  return tasks
+export function sortItemsByIdOrder<T extends object & { id: string }>({
+  items,
+  idOrder,
+  missingIdsPosition,
+  sortMissingIds,
+}: {
+  items: T[]
+  idOrder: string[]
+  missingIdsPosition?: "start" | "end"
+  sortMissingIds: (left: T, right: T) => number
+}): T[] {
+  const idSet = new Set(idOrder)
+  const sortedItems = items
+    .filter((item) => idSet.has(item.id))
+    .sort((a, b) => {
+      return idOrder.indexOf(a.id) - idOrder.indexOf(b.id)
+    })
+
+  const missingItems = items.filter((item) => !idSet.has(item.id))
+  if (missingItems.length === 0) return sortedItems
+
+  if (missingIdsPosition === "start") {
+    return [...missingItems.sort(sortMissingIds), ...sortedItems]
+  } else if (missingIdsPosition === "end") {
+    return [...sortedItems, ...missingItems.sort(sortMissingIds)]
+  }
+
+  return sortedItems
 }

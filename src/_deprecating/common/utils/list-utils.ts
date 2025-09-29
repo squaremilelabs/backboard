@@ -105,13 +105,13 @@ export function sortItemsByIdOrder<T extends object & { id: string }>({
   sortMissingIds: (left: T, right: T) => number
 }): T[] {
   const idSet = new Set(idOrder)
-  const sortedItems = items
+  const sortedItems = [...items]
     .filter((item) => idSet.has(item.id))
     .sort((a, b) => {
       return idOrder.indexOf(a.id) - idOrder.indexOf(b.id)
     })
 
-  const missingItems = items.filter((item) => !idSet.has(item.id))
+  const missingItems = [...items].filter((item) => !idSet.has(item.id))
   if (missingItems.length === 0) return sortedItems
 
   if (missingIdsPosition === "start") {

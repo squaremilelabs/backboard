@@ -10,6 +10,7 @@ import { ClerkProvider, SignedIn, useAuth } from "@clerk/nextjs"
 import { useTheme } from "next-themes"
 import { useEffect } from "react"
 import { dark } from "@clerk/themes"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { db } from "@/database/db-client"
 import { parseAccountCreateInput } from "@/database/models/account"
 
@@ -20,11 +21,13 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <>
       <Suspense>
         <NextThemeProvider attribute="class" enableSystem>
-          <AuthProvider>
-            <QueryClientProvider client={queryClient}>
-              <RouterProvider navigate={router.push}>{children}</RouterProvider>
-            </QueryClientProvider>
-          </AuthProvider>
+          <NuqsAdapter>
+            <AuthProvider>
+              <QueryClientProvider client={queryClient}>
+                <RouterProvider navigate={router.push}>{children}</RouterProvider>
+              </QueryClientProvider>
+            </AuthProvider>
+          </NuqsAdapter>
         </NextThemeProvider>
       </Suspense>
       <Analytics />
