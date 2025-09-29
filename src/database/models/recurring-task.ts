@@ -29,6 +29,7 @@ export const RecurringTaskCreateSchema = z
     z
       .object({
         id: z.uuidv4().optional(),
+        owner_id: z.uuidv4(),
         scope_id: z.uuidv4(),
         title: z.string().trim().min(1),
         content: z.string().trim().nullish(),
@@ -50,12 +51,13 @@ export const RecurringTaskCreateSchema = z
       }),
     ])
   )
-  .transform(({ id, scope_id, ...data }) => {
+  .transform(({ id, scope_id, owner_id, ...data }) => {
     return {
       id: id ?? v4(),
       data,
       link: {
         scope: scope_id,
+        owner: owner_id,
       },
     }
   })

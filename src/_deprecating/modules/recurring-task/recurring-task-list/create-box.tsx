@@ -10,8 +10,10 @@ import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
 import { useCurrentScopeView } from "@/_deprecating/modules/scope/use-scope-views"
 import { parseRecurringTaskCreateInput } from "@/database/models/recurring-task"
 import { db } from "@/database/db-client"
+import { useAuth } from "@/hooks/use-auth"
 
 export function RecurringTaskListCreateBox() {
+  const { account } = useAuth()
   const { id: scopeId } = useCurrentScopeView()
   const [frequencyPickerOpen, setFrequencyPickerOpen] = useState(false)
 
@@ -32,6 +34,7 @@ export function RecurringTaskListCreateBox() {
     const { id, data, link } = parseRecurringTaskCreateInput({
       title,
       scope_id: scopeId,
+      owner_id: account!.id,
       ...frequency,
     })
     db.transact(db.tx.recurring_tasks[id].link(link).create(data))

@@ -29,6 +29,7 @@ export function ScopeTaskList({
   scopeId: string
   statusView: TaskStatus
 }) {
+  const { account } = useAuth()
   const { tasks, order } = useTaskListQuery({ scopeId, statusView })
 
   const [_, setIsTasksDragging] = useSessionStorageUtility("is-tasks-dragging", false)
@@ -60,6 +61,7 @@ export function ScopeTaskList({
   const handleCreate = async (title: string) => {
     const { id, data, link } = parseTaskCreateInput({
       title,
+      owner_id: account!.id,
       scope_id: scopeId,
       ...(statusView === "snoozed"
         ? {

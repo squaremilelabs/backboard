@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       title,
       content,
       scope_id,
+      owner_id: account.id,
       status: "current",
       status_time: Date.now(),
     })

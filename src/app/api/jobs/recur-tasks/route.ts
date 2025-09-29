@@ -31,7 +31,7 @@ export async function GET() {
           },
           owner: {
             $: {
-              fields: ["custom_work_hours"],
+              fields: ["id", "custom_work_hours"],
             },
           },
         },
@@ -42,7 +42,7 @@ export async function GET() {
     const recurringTasks = query.recurring_tasks.filter((task) => task.tasks.length === 0) as Array<
       RecurringTask & {
         tasks: Array<{ id: string }>
-        scope: { id: string; owner: { custom_work_hours: AccountCustomWorkHours } }
+        scope: { id: string; owner: { id: string; custom_work_hours: AccountCustomWorkHours } }
       }
     >
 
@@ -67,6 +67,7 @@ export async function GET() {
     await db.transact(
       tasksToRecur.map((task) => {
         const { id, data, link } = parseTaskCreateInput({
+          owner_id: task.scope.owner.id,
           scope_id: task.scope.id,
           recurring_task_id: task.id,
           title: task.title,
