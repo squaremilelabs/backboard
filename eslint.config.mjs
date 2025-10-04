@@ -9,7 +9,32 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript", "plugin:prettier/recommended"),
   {
     rules: {
-      "import/order": "warn",
+      "import/order": [
+        "warn",
+        {
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+            "object",
+            "type",
+          ],
+          pathGroups: [
+            {
+              pattern: "@/**",
+              group: "internal",
+            },
+          ],
+          pathGroupsExcludedImportTypes: ["builtin"],
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
+          },
+        },
+      ],
       "no-console": "warn",
       "@typescript-eslint/no-unused-vars": [
         "warn",

@@ -1,9 +1,9 @@
 "use client"
 
-import { InstaQLParams } from "@instantdb/admin"
+import { InstaQLParams } from "@instantdb/react"
+import { db } from "@/database/db-client"
 import { AppSchema } from "@/database/instant.schema"
 import { ModelMap, ModelKey } from "@/database/models/_map"
-import { db } from "@/database/db-client"
 
 type QueryParams = InstaQLParams<AppSchema>
 

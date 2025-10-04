@@ -1,14 +1,66 @@
 @import "tailwindcss";
 @import "./colors.css";
-@import "../../../smui/css/layout.css";
-@import "../../../smui/css/defaults.css";
 @plugin "@tailwindcss/typography";
+@plugin "tailwindcss-react-aria-components";
 
 @theme {
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
   --spacing: 1px;
+
+  --spacing-space-xxs: 1px;
+  --spacing-space-xs: 2px;
+  --spacing-space-sm: 4px;
+  --spacing-space-md: 8px;
+  --spacing-space-lg: 12px;
+  --spacing-space-xl: 20px;
+  --spacing-space-xxl: 28px;
+
+  --spacing-content-xs: 12px;
+  --spacing-content-sm: 16px;
+  --spacing-content-md: 20px;
+  --spacing-content-lg: 24px;
+  --spacing-content-xl: 32px;
+
+  --spacing-box-xs: 16px;
+  --spacing-box-sm: 24px;
+  --spacing-box-md: 36px;
+  --spacing-box-lg: 48px;
+  --spacing-box-xl: 72px;
+
+  --text-*: initial;
+  --text-xs: 10px;
+  --text-sm: 12px;
+  --text-md: 14px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-xs--line-height: 12px;
+  --text-sm--line-height: 16px;
+  --text-md--line-height: 20px;
+  --text-lg--line-height: 24px;
+  --text-xl--line-height: 32px;
+
+  --radius-*: initial;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+
+  --breakpoint-*: initial;
+  --breakpoint-xs: 288px;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 864px;
+  --breakpoint-lg: 1152px;
+  --breakpoint-xl: 1440px;
+
+  --container-*: initial;
+  --container-xs: 288px;
+  --container-sm: 576px;
+  --container-md: 864px;
+  --container-lg: 1152px;
+  --container-xl: 1440px;
 }
 
 html {
@@ -33,6 +85,10 @@ html {
 }
 
 @layer components {
+  .lucide {
+    width: 1em;
+    height: 1lh;
+  }
   .react-aria-DropIndicator {
     &[data-drop-target] {
       height: 2px;

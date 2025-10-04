@@ -1,4 +1,5 @@
 "use client"
+import { startOfDay, subDays } from "date-fns"
 import {
   AlarmClockIcon,
   CircleCheckBigIcon,
@@ -7,10 +8,9 @@ import {
   DiamondIcon,
 } from "lucide-react"
 import { useParams } from "next/navigation"
-import { startOfDay, subDays } from "date-fns"
-import { Task, TaskStatus } from "@/database/models/task"
-import { Scope } from "@/database/models/scope"
 import { RecurringTask } from "@/database/models/recurring-task"
+import { Scope } from "@/database/models/scope"
+import { Task, TaskStatus } from "@/database/models/task"
 import { useDBQuery } from "@/hooks/use-db-query"
 
 export type ScopeViewKey = TaskStatus | "recurring"

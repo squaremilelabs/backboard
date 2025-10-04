@@ -1,12 +1,11 @@
 import { startOfDay, subDays } from "date-fns"
 import { createContext, useContext, useMemo } from "react"
-import { useShowInactiveScopesQueryState } from "./use-query-states"
+import { sortItemsByIdOrder } from "@/core/functions/sort-data"
+import { db } from "@/database/db-client"
+import { Account } from "@/database/models/account"
 import { Scope } from "@/database/models/scope"
 import { Task, TaskStatus } from "@/database/models/task"
-import { useAuth } from "@/hooks/use-auth"
 import { useDBQuery } from "@/hooks/use-db-query"
-import { db } from "@/database/db-client"
-import { sortItemsByIdOrder } from "@/functions/sort-data"
 
 type FetchedTaskInfo = Pick<Task, "id" | "status">
 type FetchedScope = Scope & {
@@ -15,7 +14,7 @@ type FetchedScope = Scope & {
 }
 
 type GenericTreeNode = {
-  id: string | null // null for the root (no scope)
+  id: "root" | string // "root" for the root node; otherwise scope ID
   scope: Scope | null // null for the root (no scope); note that parent_scope and tasks should be dropped.
   path: string[] | null // array of scope IDs from the root down to this scope (excluding this scope) -- does not include null as the first entry
   children: ScopeTreeNode[]
@@ -26,7 +25,7 @@ type GenericTreeNode = {
 }
 
 export type RootTreeNode = GenericTreeNode & {
-  id: null
+  id: "root"
   scope: null
   path: null
 }
@@ -39,6 +38,11 @@ export type ScopeTreeNode = GenericTreeNode & {
 
 export type RootOrScopeTreeNode = RootTreeNode | ScopeTreeNode
 
+export type UseRootScopeTreeOptions = {
+  account: Account | null
+  fetchInactiveScopes: boolean
+}
+
 export type UseRootScopeTreeResult = {
   rootNode: RootTreeNode
   nodeById: Map<string, ScopeTreeNode>
@@ -47,7 +51,7 @@ export type UseRootScopeTreeResult = {
 
 const emptyRootScopeTreeValue: UseRootScopeTreeResult = {
   rootNode: {
-    id: null,
+    id: "root",
     scope: null,
     path: null,
     children: [],
@@ -62,8 +66,12 @@ const emptyRootScopeTreeValue: UseRootScopeTreeResult = {
 
 const RootScopeTreeContext = createContext<UseRootScopeTreeResult>(emptyRootScopeTreeValue)
 
-export function RootScopeTreeProvider({ children }: { children: React.ReactNode }) {
-  const value = useRootScopeTreeContext()
+export function RootScopeTreeProvider({
+  account,
+  fetchInactiveScopes,
+  children,
+}: UseRootScopeTreeOptions & { children: React.ReactNode }) {
+  const value = useRootScopeTreeContext({ account, fetchInactiveScopes })
   return <RootScopeTreeContext value={value}>{children}</RootScopeTreeContext>
 }
 
@@ -71,10 +79,13 @@ export function useRootScopeTree() {
   return useContext(RootScopeTreeContext)
 }
 
-function useRootScopeTreeContext(): UseRootScopeTreeResult {
-  const { account } = useAuth()
-  const [fetchInactiveScopes] = useShowInactiveScopesQueryState()
-
+function useRootScopeTreeContext({
+  account,
+  fetchInactiveScopes,
+}: {
+  account: Account | null
+  fetchInactiveScopes: boolean
+}): UseRootScopeTreeResult {
   const taskStatusFilter = {
     or: [
       { status: { $in: ["current", "snoozed"] } },
@@ -125,50 +136,6 @@ function useRootScopeTreeContext(): UseRootScopeTreeResult {
   )
 
   return useMemo<UseRootScopeTreeResult>(() => {
-    /**
-     * # Specifications:
-     * - Core objective: Build the tree structure with RootTreeNode as the entry point.
-     * - Utilize the `parent_scope` relationships to nest scopes recursively.
-     *
-     * ## Orphans
-     * - Note that there may be "orphans" - specifically when the `fetchInactiveScopes` param is ommitted (default behavior).
-     * - For example, consider the below fetched scopes:
-     *   - Scope A (id: "A", parent: null)
-     *   - Scope B (id: "B", parent: null)
-     *   - Scope B.1 (id: "B.1", parent: "B")
-     *   - Scope B.2 (id: "B.2", parent: "B")
-     *   - Scope C (id: "C", parent: "X")  <-- orphan, because "X" was not fetched
-     * - In this example, scope "X" was not fetched because it is inactive.
-     * - However, scope "C" is still active so it was included in the fetch.
-     * - We consider "C" to be an orphan because its parent was not fetched, and excluded from the tree structure.
-     * - If `fetchInactiveScopes` were true, then "X" would have been fetched and "C" would not be an orphan.
-     * - There may still be some orphans even if `fetchInactiveScopes` were true - for example, any hard database deletions.
-     * - So we should not assume that `fetchInactiveScopes` guarantees no orphans, and build the tree recursively regardless.
-     *
-     * ## Task Counts (orphan aware)
-     * - `taskCounts` include `direct` and `deep` counts (then broken down by `TaskStatus`).
-     *   - `direct` counts are tasks directly in that scope. `deep` counts aggregate direct + descendant scope counts recursively.
-     * - Note that each fetched scope includes its direct tasks
-     * - For the root, we've made a smaller query for `rootTasks`.
-     * - The `rootTasks` should be computed as part of the `RootTreeNode` only.
-     * - Counts should be fully computed based on the tree structure, keeping orphans in mind.
-     * - Abstract example:
-     *   - Active Scope A -- 2 direct tasks
-     *     - Active Scope A.1 -- 2 direct tasks
-     *     - Active Scope A.2 -- 4 direct tasks
-     *     - Inactive Scope A.3 -- 1 direct task <-- was not fetched
-     *       - Active Scope A.3.1 -- 3 direct tasks <-- fetched, delcared as orphan
-     *       - Active Scope A.3.2 -- 2 direct tasks <-- fetched, delcared as orphan
-     * - In this example, the resulting counts for Scope A should be (showing total for simplicity, but should be split by status per the result type):
-     *   - `direct`: 2
-     *   - `deep`: 8 (2 + 2 + 4) -- does NOT include tasks from A.3 or its children, because A.3 was not fetched
-     * - If we handle the ommission of orphans first, then the task count computation should be straightforward.
-     * - But something to keep in mind if we end up computing task counts as we compose the tree simultaneously with orphan detection.
-     *
-     */
-
-    // # LLM Implemented Code
-
     // Create local, stable views of fetched arrays inside the memo to avoid identity churn
     const scopesLocal = (scopesQuery.scopes ?? []) as FetchedScope[]
     const rootTasksLocal = (rootTasksQuery.data?.tasks ?? []) as FetchedTaskInfo[]
@@ -341,7 +308,7 @@ function useRootScopeTreeContext(): UseRootScopeTreeResult {
     }
 
     const rootNode: RootTreeNode = {
-      id: null,
+      id: "root",
       scope: null,
       path: null,
       children: sortedRootChildren,
