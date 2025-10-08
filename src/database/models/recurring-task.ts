@@ -1,8 +1,8 @@
-import z from "zod"
 import { v4 } from "uuid"
+import z from "zod"
+import { Account } from "./account"
 import { Scope } from "./scope"
 import { Task } from "./task"
-import { Account } from "./account"
 
 export type RecurringTask = {
   id: string

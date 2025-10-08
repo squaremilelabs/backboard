@@ -1,10 +1,10 @@
 "use client"
-import Link from "next/link"
 import { ExternalLinkIcon, HeartHandshakeIcon, MapIcon, ScrollIcon } from "lucide-react"
-import { FEEDBACK_URL, PRINCIPLES_URL, ROADMAP_URL } from "../links"
-import { cn } from "@/_deprecating/common/utils/ui-utils"
-import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import Link from "next/link"
 import { typography } from "@/_deprecating/common/components/class-names"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { FEEDBACK_URL, PRINCIPLES_URL, ROADMAP_URL } from "../links"
 
 export function AppTrayResourceLinks() {
   return (

@@ -1,9 +1,9 @@
 import { Metadata, Viewport } from "next"
-import { fontsClassName } from "./_styles/fonts"
-import "./_styles/index.css"
-import Providers from "@/app/providers"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { getAccountAccentColor } from "@/_deprecating/modules/root/get-accent-color"
+import Providers from "@/app/providers"
+import { fontsClassName } from "./_styles/fonts"
+import "./_styles/index.css"
 
 export const metadata: Metadata = {
   title: {

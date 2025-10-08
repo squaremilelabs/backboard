@@ -1,5 +1,6 @@
 "use client"
 
+import { SquareCheckIcon, SquareIcon, SquareMinusIcon } from "lucide-react"
 import {
   Checkbox as AriaCheckbox,
   CheckboxProps as AriaCheckboxProps,
@@ -8,7 +9,6 @@ import {
   CheckboxGroupProps as AriaCheckboxGroupProps,
   CheckboxGroupRenderProps as AriaCheckboxGroupRenderProps,
 } from "react-aria-components"
-import { SquareCheckIcon, SquareIcon, SquareMinusIcon } from "lucide-react"
 import { cn, DeepPartial, renderChildren, WithDefaultChildren } from "../../utils/ui-utils"
 import { FieldClassNames, fieldVariants } from "../field/variants"
 import {

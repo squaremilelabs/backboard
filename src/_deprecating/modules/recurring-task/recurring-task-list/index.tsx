@@ -2,14 +2,14 @@
 
 // TODO: Refactor
 
-import { getRecurringTaskInfo, RecurringTaskFrequencyType } from "../recurring-task-info"
-import { RecurringTaskListItem } from "./list-item"
-import { RecurringTaskListCreateBox } from "./create-box"
-import { useCurrentScopeView } from "@/_deprecating/modules/scope/use-scope-views"
 import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { useCurrentScopeView } from "@/_deprecating/modules/scope/use-scope-views"
 import { RecurringTask } from "@/database/models/recurring-task"
 import { useDBQuery } from "@/hooks/use-db-query"
+import { getRecurringTaskInfo, RecurringTaskFrequencyType } from "../recurring-task-info"
+import { RecurringTaskListCreateBox } from "./create-box"
+import { RecurringTaskListItem } from "./list-item"
 
 export function RecurringTaskList() {
   const { id: scopeId } = useCurrentScopeView()

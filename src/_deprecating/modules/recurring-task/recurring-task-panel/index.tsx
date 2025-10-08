@@ -1,16 +1,16 @@
-import { useState } from "react"
 import { RefreshCwIcon, RefreshCwOffIcon } from "lucide-react"
-import { getRecurringTaskInfo, RecurringTaskFrequencyValues } from "../recurring-task-info"
-import { RecurringTaskFrequencyPicker } from "../recurring-task-frequency"
+import { useState } from "react"
 import { palette, panel } from "@/_deprecating/common/components/class-names"
 import {
   TitleContentFields,
   TitleContentFieldValues,
 } from "@/_deprecating/common/components/title-content-fields"
-import { db } from "@/database/db-client"
-import { parseRecurringTaskUpdateInput, RecurringTask } from "@/database/models/recurring-task"
 import { Button } from "@/_deprecating/common/primitives/button/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { db } from "@/database/db-client"
+import { parseRecurringTaskUpdateInput, RecurringTask } from "@/database/models/recurring-task"
+import { RecurringTaskFrequencyPicker } from "../recurring-task-frequency"
+import { getRecurringTaskInfo, RecurringTaskFrequencyValues } from "../recurring-task-info"
 
 export function RecurringTaskPanel({ task }: { task: RecurringTask }) {
   const { base, section } = panel()

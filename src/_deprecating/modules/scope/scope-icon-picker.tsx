@@ -6,13 +6,13 @@ import EmojiPicker, {
   Theme as EmojiTheme,
 } from "emoji-picker-react"
 import { CircleChevronDownIcon, XIcon } from "lucide-react"
-import { useState } from "react"
 import { useTheme } from "next-themes"
-import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { useState } from "react"
 import { Button } from "@/_deprecating/common/primitives/button/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { Popover, PopoverTrigger } from "@/_deprecating/common/primitives/popover/components"
-import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
 import { db } from "@/database/db-client"
+import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
 
 export function ScopeIconPicker({ scope }: { scope: Scope }) {
   const [open, setOpen] = useState(false)

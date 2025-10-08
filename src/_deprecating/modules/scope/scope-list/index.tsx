@@ -1,27 +1,27 @@
 "use client"
-import { useDragAndDrop } from "react-aria-components"
 import { EllipsisIcon } from "lucide-react"
-import { useCurrentScopeView } from "../use-scope-views"
-import { ScopeListItem } from "./list-item"
-import { useAuth } from "@/hooks/use-auth"
+import { useDragAndDrop } from "react-aria-components"
+import { CreateField } from "@/_deprecating/common/components/create-field"
+import { Button } from "@/_deprecating/common/primitives/button/components"
+import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { Popover, PopoverTrigger } from "@/_deprecating/common/primitives/popover/components"
+import { ToggleButton } from "@/_deprecating/common/primitives/toggle-button/components"
 import {
   processDropItems,
   processItemKeys,
   reorderIds,
   sortItemsByIdOrder,
 } from "@/_deprecating/common/utils/list-utils"
-import { CreateField } from "@/_deprecating/common/components/create-field"
-import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
-import { ToggleButton } from "@/_deprecating/common/primitives/toggle-button/components"
-import { Popover, PopoverTrigger } from "@/_deprecating/common/primitives/popover/components"
-import { Button } from "@/_deprecating/common/primitives/button/components"
-import { Icon } from "@/_deprecating/common/primitives/icon/components"
-import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
-import { parseAccountUpdateInput } from "@/database/models/account"
 import { db } from "@/database/db-client"
+import { parseAccountUpdateInput } from "@/database/models/account"
 import { parseScopeCreateInput, Scope } from "@/database/models/scope"
 import { Task } from "@/database/models/task"
+import { useAuth } from "@/hooks/use-auth"
 import { useDBQuery } from "@/hooks/use-db-query"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
+import { useCurrentScopeView } from "../use-scope-views"
+import { ScopeListItem } from "./list-item"
 
 export function ScopeList({ disableDragAndDrop = false }: { disableDragAndDrop?: boolean }) {
   const { account: account } = useAuth()

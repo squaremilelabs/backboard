@@ -1,16 +1,16 @@
 "use client"
 
 import { ArchiveIcon, ArchiveRestoreIcon } from "lucide-react"
-import { ScopeIconPicker } from "../scope-icon-picker"
+import { palette, panel } from "@/_deprecating/common/components/class-names"
 import {
   TitleContentFields,
   TitleContentFieldValues,
 } from "@/_deprecating/common/components/title-content-fields"
-import { palette, panel } from "@/_deprecating/common/components/class-names"
 import { Button } from "@/_deprecating/common/primitives/button/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
-import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
 import { db } from "@/database/db-client"
+import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
+import { ScopeIconPicker } from "../scope-icon-picker"
 
 export default function ScopePanel({ scope }: { scope: Scope }) {
   const { base, section } = panel()

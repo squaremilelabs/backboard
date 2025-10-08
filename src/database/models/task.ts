@@ -1,8 +1,8 @@
-import * as z from "zod"
 import { v4 } from "uuid"
+import * as z from "zod"
+import { Account } from "./account"
 import { RecurringTask } from "./recurring-task"
 import { Scope } from "./scope"
-import { Account } from "./account"
 
 export type Task = CurrentTask | SnoozedTask | DoneTask
 

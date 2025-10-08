@@ -115,8 +115,8 @@
   --base-text: var(--neutral-0);
   --base-border: var(--neutral-800);
 
-  --neutral-bg: var(--neutral-300);
-  --neutral-fg: var(--neutral-900);
+  --neutral-bg: var(--neutral-500);
+  --neutral-fg: var(--neutral-50);
   --neutral-text: var(--neutral-300);
   --neutral-border: var(--neutral-300);
 
@@ -166,10 +166,10 @@
 .sml-gold.dark {
   --base-outline: var(--sml-gold-500);
 
-  --primary-bg: var(--sml-gold-700);
+  --primary-bg: var(--sml-gold-600);
   --primary-fg: var(--sml-gold-100);
   --primary-text: var(--sml-gold-500);
-  --primary-border: var(--sml-gold-800);
+  --primary-border: var(--sml-gold-700);
 
   --primary-muted-bg: var(--sml-gold-950);
   --primary-muted-fg: var(--sml-gold-500);

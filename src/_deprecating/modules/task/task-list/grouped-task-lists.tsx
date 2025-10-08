@@ -1,27 +1,27 @@
 "use client"
 
-import { useDragAndDrop } from "react-aria-components"
-import Link from "next/link"
 import { Emoji, EmojiStyle } from "emoji-picker-react"
-import { TaskActionBar } from "../task-actions"
-import { TaskListItem } from "./task-list-item"
-import { useTasklistSelection } from "./internal/use-selection"
-import { EmptyUI } from "./internal/empty-ui"
-import { TasklistDragPreview } from "./internal/drag-preview"
-import { db } from "@/database/db-client"
-import { Task, TaskLinks, TaskStatus } from "@/database/models/task"
-import { useAuth } from "@/hooks/use-auth"
+import Link from "next/link"
+import { useDragAndDrop } from "react-aria-components"
+import { typography } from "@/_deprecating/common/components/class-names"
 import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
-import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import {
   processItemKeys,
   reorderIds,
   sortItemsByIdOrder,
 } from "@/_deprecating/common/utils/list-utils"
-import { typography } from "@/_deprecating/common/components/class-names"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { db } from "@/database/db-client"
+import { Task, TaskLinks, TaskStatus } from "@/database/models/task"
+import { useAuth } from "@/hooks/use-auth"
 import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
-import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { useDBQuery } from "@/hooks/use-db-query"
+import { TaskActionBar } from "../task-actions"
+import { TasklistDragPreview } from "./internal/drag-preview"
+import { EmptyUI } from "./internal/empty-ui"
+import { useTasklistSelection } from "./internal/use-selection"
+import { TaskListItem } from "./task-list-item"
 
 export function GroupedTaskLists({ statusView }: { statusView: TaskStatus }) {
   const { account } = useAuth()

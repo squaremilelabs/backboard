@@ -1,23 +1,25 @@
 "use client"
-import { ChevronLeftIcon, GripVerticalIcon } from "lucide-react"
-import { useEffect, useState } from "react"
+import { ArrowUpDownIcon, BanIcon, ChevronLeftIcon, PlusIcon } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 import {
   Button,
   Collection,
   DragAndDropHooks,
   DropIndicator,
+  Group,
+  Input,
   Tree,
   TreeItem,
   TreeItemContent,
   useDragAndDrop,
 } from "react-aria-components"
+import { twm } from "@/core/lib/tailwind"
 import { db } from "@/database/db-client"
 import { parseAccountUpdateInput } from "@/database/models/account"
-import { parseScopeUpdateInput } from "@/database/models/scope"
+import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
 import { TaskStatus } from "@/database/models/task"
 import { useAuth } from "@/hooks/use-auth"
 import { useRootScopeTree } from "@/hooks/use-root-scope-tree"
-import { twm } from "~/smui/utils/tailwind"
 import { RootOrScopeTreeNode, ScopeTreeNode } from "../hooks/use-root-scope-tree"
 import { badgeVariants } from "./class-variants/badge"
 
@@ -27,13 +29,13 @@ export function ScopeTreeList({
   countStatus,
   withDragAndDrop,
 }: {
-  selectedId: string | null
+  selectedId: "root" | string
   onSelectId: (id: string) => void
   countStatus?: TaskStatus
   withDragAndDrop?: boolean
 }) {
-  const dragAndDropHooks = useScopeTreeListDragAndDrop()
   const { rootNode, nodeById } = useRootScopeTree()
+  const dragAndDropHooks = useScopeTreeListDragAndDrop()
 
   // When rootNode or passed selectedId changes, ensure it's expanded
   const [expandedIds, setExpandedIds] = useState(new Set<string>())
@@ -57,32 +59,35 @@ export function ScopeTreeList({
   ]
 
   return (
-    <Tree
-      aria-label="Scopes"
-      items={items}
-      selectionMode="single"
-      selectionBehavior="toggle"
-      selectedKeys={selectedId ? [selectedId] : []}
-      onSelectionChange={(keys) => onSelectId([...keys][0] as string)}
-      expandedKeys={expandedIds}
-      onExpandedChange={(keys) => setExpandedIds(keys as Set<string>)}
-      disallowEmptySelection
-      className={twm("flex flex-col")}
-      dragAndDropHooks={withDragAndDrop ? dragAndDropHooks : undefined}
-      dependencies={[countStatus, rootNode]}
-    >
-      {function renderNode(node) {
-        // Note the recursion!
-        return (
-          <ScopeTreeListItem
-            isRoot={node.id === rootNode.id}
-            node={node}
-            renderNode={renderNode}
-            countStatus={countStatus}
-          />
-        )
-      }}
-    </Tree>
+    <div className="gap-space-sm flex flex-col">
+      <Tree
+        aria-label="Scopes"
+        items={items}
+        selectionMode="single"
+        selectionBehavior="toggle"
+        selectedKeys={selectedId ? [selectedId] : []}
+        onSelectionChange={(keys) => onSelectId([...keys][0] as string)}
+        expandedKeys={expandedIds}
+        onExpandedChange={(keys) => setExpandedIds(keys as Set<string>)}
+        disallowEmptySelection
+        className={twm("gap-space-sm flex flex-col")}
+        dragAndDropHooks={withDragAndDrop ? dragAndDropHooks : undefined}
+        dependencies={[countStatus, rootNode]}
+      >
+        {function renderNode(node) {
+          // Note the recursion!
+          return (
+            <ScopeTreeListItem
+              isRoot={node.id === rootNode.id}
+              node={node}
+              renderNode={renderNode}
+              countStatus={countStatus}
+            />
+          )
+        }}
+      </Tree>
+      <ScopeTreeCreateField />
+    </div>
   )
 }
 
@@ -101,6 +106,7 @@ function ScopeTreeListItem({
 
   const directCount = countStatus ? (taskCounts.direct[countStatus] ?? 0) : 0
   const deepCount = countStatus ? (taskCounts.deep[countStatus] ?? 0) : 0
+  const descendantCount = deepCount - directCount
 
   return (
     <TreeItem
@@ -117,9 +123,7 @@ function ScopeTreeListItem({
       ])}
     >
       <TreeItemContent>
-        {(renderProps) => {
-          const displayedCount =
-            id === "root" ? directCount : renderProps.isExpanded ? directCount : deepCount
+        {({ isExpanded, allowsDragging, hasChildItems, isDragging }) => {
           return (
             <>
               <div
@@ -128,37 +132,47 @@ function ScopeTreeListItem({
                   "pl-space-lg py-space-md gap-space-md"
                 )}
               >
-                {renderProps.allowsDragging && id !== "root" && (
-                  <Button slot="drag">
-                    <GripVerticalIcon className="text-md text-neutral-muted-text shrink-0" />
-                  </Button>
+                {allowsDragging && (
+                  <Button slot="drag" className={"sr-only"} excludeFromTabOrder></Button>
                 )}
-                <p className="grow truncate">{scope?.title || "Main"}</p>
-                {countStatus && displayedCount ? (
+                {isDragging && <ArrowUpDownIcon className="text-base-outline" strokeWidth={2.5} />}
+                {countStatus && directCount ? (
                   <span
                     className={badgeVariants({
                       color: countStatus === "current" ? "primary" : "neutral",
-                      type: directCount > 0 ? "solid" : "outline",
-                      className: [!renderProps.hasChildItems ? "mr-space-md" : "mr-space-xs"],
                     })}
                   >
-                    {displayedCount}
+                    {directCount}
                   </span>
                 ) : null}
+                <p className="grow truncate">{scope?.title || "Main"}</p>
               </div>
-              {renderProps.hasChildItems ? (
+              {hasChildItems ? (
                 <Button
-                  slot="chevron"
+                  slot={"chevron"}
                   className={twm(
                     "flex items-center justify-center",
                     "shrink-0 transition-all",
-                    "size-box-md rounded-r-md",
-                    "hover:bg-neutral-muted-bg hover:text-base-text"
+                    "h-box-md rounded-md",
+                    "hover:bg-neutral-muted-bg hover:text-base-text",
+                    "pl-space-lg gap-space-sm"
                   )}
                 >
-                  <ChevronLeftIcon
-                    className={twm("transition-all", renderProps.isExpanded && "-rotate-90")}
-                  />
+                  {!isExpanded && descendantCount > 0 && (
+                    <span
+                      className={badgeVariants({
+                        color: countStatus === "current" ? "primary" : "neutral",
+                        type: "outline",
+                      })}
+                    >
+                      {descendantCount}
+                    </span>
+                  )}
+                  <div className="mr-space-lg flex justify-center">
+                    <ChevronLeftIcon
+                      className={twm("transition-all", isExpanded && "-rotate-90")}
+                    />
+                  </div>
                 </Button>
               ) : null}
             </>
@@ -167,6 +181,38 @@ function ScopeTreeListItem({
       </TreeItemContent>
       <Collection items={node.children ?? []}>{renderNode}</Collection>
     </TreeItem>
+  )
+}
+
+function ScopeTreeCreateField({}) {
+  const [title, setTitle] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  return (
+    <Group
+      className={twm([
+        "flex items-center",
+        "px-space-lg gap-space-md",
+        "rounded-md border-2 border-transparent",
+        "focus-within:bg-base-bg/70",
+        "hover:bg-base-bg/50",
+      ])}
+    >
+      <Button
+        onPress={() => inputRef.current?.focus()}
+        excludeFromTabOrder
+        className={"!outline-0"}
+      >
+        <PlusIcon />
+      </Button>
+      <Input
+        ref={inputRef}
+        placeholder="Add scope of work"
+        className={twm(["py-space-md grow", "!outline-0"])}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+    </Group>
   )
 }
 
@@ -229,6 +275,22 @@ function useScopeTreeListDragAndDrop(): DragAndDropHooks<ScopeTreeNode> {
         return true
       }
       return true
+    },
+    renderDragPreview(items) {
+      // For now, only render single item preview
+      const scope = JSON.parse(items[0]?.["db/scope"] ?? null) as Scope | null
+      return (
+        <div
+          className={twm(
+            "flex items-center justify-center",
+            "size-box-md rounded-md",
+            "bg-base-bg text-base-outline",
+            !scope && "text-neutral-text"
+          )}
+        >
+          {scope ? <ArrowUpDownIcon strokeWidth={2.5} /> : <BanIcon />}
+        </div>
+      )
     },
     renderDropIndicator(target) {
       const isRoot = target.type === "item" && target.key === "root"

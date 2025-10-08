@@ -1,6 +1,5 @@
 "use client"
 
-import { ClassValue } from "tailwind-variants"
 import {
   GripVerticalIcon,
   ListChecksIcon,
@@ -10,19 +9,20 @@ import {
   TextIcon,
 } from "lucide-react"
 import { useState } from "react"
-import { TaskPanel } from "../task-panel"
-import { getTaskStatusInfo } from "../task-status"
-import { TaskActionBar } from "../task-actions"
-import { GridListItem } from "@/_deprecating/common/primitives/grid-list/components"
+import { ClassValue } from "tailwind-variants"
+import { typography } from "@/_deprecating/common/components/class-names"
 import { Button } from "@/_deprecating/common/primitives/button/components"
+import { Checkbox } from "@/_deprecating/common/primitives/checkbox/components"
+import { GridListItem } from "@/_deprecating/common/primitives/grid-list/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
 import { Modal, ModalTrigger } from "@/_deprecating/common/primitives/modal/components"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
-import { typography } from "@/_deprecating/common/components/class-names"
-import { Checkbox } from "@/_deprecating/common/primitives/checkbox/components"
+import { db } from "@/database/db-client"
 import { parseTaskUpdateInput, Task, TaskLinks } from "@/database/models/task"
 import { useAuth } from "@/hooks/use-auth"
-import { db } from "@/database/db-client"
+import { TaskActionBar } from "../task-actions"
+import { TaskPanel } from "../task-panel"
+import { getTaskStatusInfo } from "../task-status"
 
 export function TaskListItem({
   task,

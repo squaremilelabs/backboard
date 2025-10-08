@@ -1,8 +1,8 @@
-import { Metadata } from "next"
 import { currentUser } from "@clerk/nextjs/server"
+import { Metadata } from "next"
 import { ScopePageRouter } from "@/_deprecating/modules/scope/scope-page-router"
-import { Scope } from "@/database/models/scope"
 import { db } from "@/database/db-admin"
+import { Scope } from "@/database/models/scope"
 
 export async function generateMetadata({
   params,

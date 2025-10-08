@@ -1,9 +1,9 @@
 "use client"
 
+import { TaskStatus } from "@/database/models/task"
 import { RecurringTaskList } from "../recurring-task/recurring-task-list"
 import { ScopeTaskList } from "../task/task-list/scope-task-list"
 import { ScopeViewKey, useCurrentScopeView } from "./use-scope-views"
-import { TaskStatus } from "@/database/models/task"
 
 export function ScopePageRouter() {
   const { id, view } = useCurrentScopeView()

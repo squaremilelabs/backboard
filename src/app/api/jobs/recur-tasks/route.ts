@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server"
 import { tz } from "@date-fns/tz"
 import { getDate, getDay, getHours } from "date-fns"
+import { NextResponse } from "next/server"
+import { DEFAULT_WORKING_HOURS } from "@/_deprecating/modules/auth/account-hours"
 import { db } from "@/database/db-admin"
+import { AccountCustomWorkHours } from "@/database/models/account"
 import { RecurringTask } from "@/database/models/recurring-task"
 import { parseTaskCreateInput } from "@/database/models/task"
-import { AccountCustomWorkHours } from "@/database/models/account"
-import { DEFAULT_WORKING_HOURS } from "@/_deprecating/modules/auth/account-hours"
 
 export async function GET() {
   try {

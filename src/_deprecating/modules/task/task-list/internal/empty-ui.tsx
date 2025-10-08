@@ -1,13 +1,13 @@
 "use client"
-import { useState } from "react"
+import { ArrowRightIcon, PartyPopperIcon } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 import ReactConfetti from "react-confetti"
 import { createPortal } from "react-dom"
 import { useWindowSize } from "usehooks-ts"
-import { ArrowRightIcon, PartyPopperIcon } from "lucide-react"
-import { TaskStatus } from "@/database/models/task"
 import { Button } from "@/_deprecating/common/primitives/button/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { TaskStatus } from "@/database/models/task"
 
 export function EmptyUI({ statusView }: { statusView: TaskStatus }) {
   const { width, height } = useWindowSize()

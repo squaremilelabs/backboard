@@ -1,12 +1,12 @@
 "use client"
 
-import { useEditor, EditorContent, Content, useEditorState, Extension } from "@tiptap/react"
-import { Plugin, PluginKey } from "@tiptap/pm/state"
-import StarterKit from "@tiptap/starter-kit"
 import { TaskItem, TaskList } from "@tiptap/extension-list"
-import { useEffect } from "react"
-import { deepEqual } from "fast-equals"
 import { Placeholder } from "@tiptap/extensions"
+import { Plugin, PluginKey } from "@tiptap/pm/state"
+import { useEditor, EditorContent, Content, useEditorState, Extension } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
+import { deepEqual } from "fast-equals"
+import { useEffect } from "react"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { useDebouncedTypings } from "@/_deprecating/common/utils/use-debounced"
 

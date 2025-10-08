@@ -9,8 +9,8 @@ import {
   Key,
 } from "react-aria-components"
 import { cn } from "../../utils/ui-utils"
-import type { DeepPartial, WithDefaultChildren, ClassValue } from "../../utils/ui-utils"
 import type { GridListVariantProps, GridListClassNames } from "./variants"
+import type { DeepPartial, WithDefaultChildren, ClassValue } from "../../utils/ui-utils"
 
 export type GridListProps<T extends object> = Omit<
   AriaGridListProps<T>,

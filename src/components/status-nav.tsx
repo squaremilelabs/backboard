@@ -39,13 +39,14 @@ export function StatusNav() {
               "rounded-lg border-2 border-transparent",
               "px-space-lg py-space-md gap-space-lg",
               "text-md",
+              "transition-all",
+              "hover:bg-neutral-muted-bg",
               "opacity-50 hover:opacity-100 data-selected:opacity-100",
               "data-selected:bg-neutral-muted-bg data-selected:border-base-border",
               "data-selected:font-semibold",
               "!cursor-default",
             ])}
           >
-            <p>{label}</p>
             {count > 0 && (
               <span
                 className={badgeVariants({
@@ -56,6 +57,7 @@ export function StatusNav() {
                 {count}
               </span>
             )}
+            <p>{label}</p>
           </ListBoxItem>
         )
       }}

@@ -2,15 +2,15 @@
 
 import { useState } from "react"
 import { Group } from "react-aria-components"
-import { RecurringTaskFrequencyPicker } from "../recurring-task-frequency"
-import { RecurringTaskFrequencyValues } from "../recurring-task-info"
 import { CreateField } from "@/_deprecating/common/components/create-field"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
-import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
 import { useCurrentScopeView } from "@/_deprecating/modules/scope/use-scope-views"
-import { parseRecurringTaskCreateInput } from "@/database/models/recurring-task"
 import { db } from "@/database/db-client"
+import { parseRecurringTaskCreateInput } from "@/database/models/recurring-task"
 import { useAuth } from "@/hooks/use-auth"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
+import { RecurringTaskFrequencyPicker } from "../recurring-task-frequency"
+import { RecurringTaskFrequencyValues } from "../recurring-task-info"
 
 export function RecurringTaskListCreateBox() {
   const { account } = useAuth()

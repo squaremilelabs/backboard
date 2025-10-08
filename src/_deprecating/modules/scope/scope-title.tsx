@@ -1,11 +1,11 @@
 "use client"
 import { Emoji, EmojiStyle } from "emoji-picker-react"
-import ScopePanel from "./scope-panel"
-import { Modal, ModalTrigger } from "@/_deprecating/common/primitives/modal/components"
+import { typography } from "@/_deprecating/common/components/class-names"
 import { Button } from "@/_deprecating/common/primitives/button/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
-import { typography } from "@/_deprecating/common/components/class-names"
+import { Modal, ModalTrigger } from "@/_deprecating/common/primitives/modal/components"
 import { useDBQuery } from "@/hooks/use-db-query"
+import ScopePanel from "./scope-panel"
 
 export function ScopeTitle({ scopeId }: { scopeId: string | null | undefined }) {
   const { scopes } = useDBQuery(

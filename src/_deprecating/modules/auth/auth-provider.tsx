@@ -1,8 +1,8 @@
 "use client"
 import { ClerkProvider, SignedIn, useAuth } from "@clerk/nextjs"
+import { dark } from "@clerk/themes"
 import { useTheme } from "next-themes"
 import { useEffect } from "react"
-import { dark } from "@clerk/themes"
 import { db } from "@/database/db-client"
 import { parseAccountCreateInput } from "@/database/models/account"
 

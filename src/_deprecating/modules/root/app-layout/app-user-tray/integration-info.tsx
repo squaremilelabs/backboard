@@ -1,13 +1,13 @@
 "use client"
-import Link from "next/link"
 import { ClipboardCheckIcon, ClipboardIcon, ExternalLinkIcon, InfoIcon } from "lucide-react"
+import Link from "next/link"
 import { useCopyToClipboard } from "usehooks-ts"
-import { INTEGRATION_INFO_URL } from "../links"
-import { cn } from "@/_deprecating/common/utils/ui-utils"
-import { Icon } from "@/_deprecating/common/primitives/icon/components"
-import { Button } from "@/_deprecating/common/primitives/button/components"
 import { typography } from "@/_deprecating/common/components/class-names"
+import { Button } from "@/_deprecating/common/primitives/button/components"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
 import { useAuth } from "@/hooks/use-auth"
+import { INTEGRATION_INFO_URL } from "../links"
 
 export function AppUserTrayIntegrationInfo() {
   const { account } = useAuth()

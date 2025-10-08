@@ -1,11 +1,11 @@
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs"
+import { EllipsisVerticalIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { EllipsisVerticalIcon } from "lucide-react"
 import LoomPlayer from "react-loom-player"
-import { FEEDBACK_URL, PRINCIPLES_URL, ROADMAP_URL } from "./app-layout/links"
 import { typography } from "@/_deprecating/common/components/class-names"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { FEEDBACK_URL, PRINCIPLES_URL, ROADMAP_URL } from "./app-layout/links"
 
 export default function LandingPage() {
   return (

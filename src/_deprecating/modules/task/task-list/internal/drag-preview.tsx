@@ -1,5 +1,5 @@
-import { Task } from "@/database/models/task"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { Task } from "@/database/models/task"
 
 export function TasklistDragPreview({ tasks }: { tasks: Task[] }) {
   const firstTask = tasks[0]

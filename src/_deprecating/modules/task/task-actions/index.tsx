@@ -8,18 +8,18 @@ import {
   Undo2Icon,
 } from "lucide-react"
 import { useRef, useState } from "react"
-import { TaskSnoozePicker } from "./task-snooze"
+import { palette, PaletteVariant } from "@/_deprecating/common/components/class-names"
 import {
   Button,
   ButtonGroup,
   ButtonProps,
 } from "@/_deprecating/common/primitives/button/components"
-import { Tooltip, TooltipTrigger } from "@/_deprecating/common/primitives/tooltip/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
-import { palette, PaletteVariant } from "@/_deprecating/common/components/class-names"
 import { Modal } from "@/_deprecating/common/primitives/modal/components"
-import { parseTaskUpdateInput, TaskStatus } from "@/database/models/task"
+import { Tooltip, TooltipTrigger } from "@/_deprecating/common/primitives/tooltip/components"
 import { db } from "@/database/db-client"
+import { parseTaskUpdateInput, TaskStatus } from "@/database/models/task"
+import { TaskSnoozePicker } from "./task-snooze"
 
 export type TaskActionButtonProps = {
   currentStatus: TaskStatus

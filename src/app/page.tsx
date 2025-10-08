@@ -1,10 +1,12 @@
 "use client"
+
+import { SignedOut, SignInButton } from "@clerk/nextjs"
 import { ScopeTreeList } from "@/components/scope-tree-list"
 import { StatusNav } from "@/components/status-nav"
+import { twm } from "@/core/lib/tailwind"
 import { useAuth } from "@/hooks/use-auth"
 import { useQueryStates } from "@/hooks/use-query-states"
 import { RootScopeTreeProvider } from "@/hooks/use-root-scope-tree"
-import { twm } from "~/smui/utils/tailwind"
 
 export default function Page() {
   const { account } = useAuth()
@@ -20,7 +22,12 @@ export default function Page() {
           "gap-space-xl p-space-xl",
         ])}
       >
-        <StatusNav />
+        <div className="flex items-center justify-between">
+          <StatusNav />
+          <SignedOut>
+            <SignInButton>Sign in</SignInButton>
+          </SignedOut>
+        </div>
         <div
           className={twm([
             "flex",

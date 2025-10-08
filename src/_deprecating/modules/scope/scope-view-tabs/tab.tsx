@@ -1,10 +1,10 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
-import { ScopeViewInfo, useCurrentScopeView } from "../use-scope-views"
-import { ClassValue, cn } from "@/_deprecating/common/utils/ui-utils"
-import { ListBoxItem } from "@/_deprecating/common/primitives/list-box/components"
-import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { ListBoxItem } from "@/_deprecating/common/primitives/list-box/components"
+import { ClassValue, cn } from "@/_deprecating/common/utils/ui-utils"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
+import { ScopeViewInfo, useCurrentScopeView } from "../use-scope-views"
 
 export function ScopeViewTab({
   scopeId,

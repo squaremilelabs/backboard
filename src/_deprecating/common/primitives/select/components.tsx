@@ -1,5 +1,6 @@
 "use client"
 
+import { ChevronsUpDownIcon } from "lucide-react"
 import React from "react"
 import {
   Select as AriaSelect,
@@ -13,7 +14,6 @@ import {
   Popover as AriaPopover,
   PopoverProps as AriaPopoverProps,
 } from "react-aria-components"
-import { ChevronsUpDownIcon } from "lucide-react"
 import { cn, DeepPartial, ClassValue, WithDefaultChildren } from "../../utils/ui-utils"
 import { FieldClassNames, fieldVariants as getFieldVariants } from "../field/variants"
 import { popoverVariants } from "../popover/variants"

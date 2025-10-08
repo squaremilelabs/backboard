@@ -1,13 +1,13 @@
 "use client"
 
+import { usePathname } from "next/navigation"
 import React, { useEffect } from "react"
 import { useWindowSize } from "usehooks-ts"
-import { usePathname } from "next/navigation"
+import { Modal } from "@/_deprecating/common/primitives/modal/components"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
 import { AppHeader } from "./app-header"
 import { AppSidebar } from "./app-sidebar"
-import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
-import { cn } from "@/_deprecating/common/utils/ui-utils"
-import { Modal } from "@/_deprecating/common/primitives/modal/components"
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()

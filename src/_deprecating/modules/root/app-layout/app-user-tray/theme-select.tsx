@@ -1,20 +1,20 @@
 "use client"
 
-import { useTheme } from "next-themes"
 import { Laptop2Icon, LucideIcon, MoonIcon, SunIcon } from "lucide-react"
+import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { typography } from "@/_deprecating/common/components/class-names"
+import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { ListBox, ListBoxItem } from "@/_deprecating/common/primitives/list-box/components"
 import {
   Select,
   SelectButton,
   SelectPopover,
 } from "@/_deprecating/common/primitives/select/components"
-import { ListBox, ListBoxItem } from "@/_deprecating/common/primitives/list-box/components"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
-import { Icon } from "@/_deprecating/common/primitives/icon/components"
-import { useAuth } from "@/hooks/use-auth"
-import { Account, parseAccountUpdateInput } from "@/database/models/account"
 import { db } from "@/database/db-client"
+import { Account, parseAccountUpdateInput } from "@/database/models/account"
+import { useAuth } from "@/hooks/use-auth"
 
 type AccentColorKey = NonNullable<NonNullable<Account["app_config"]>["accent_color"]>
 

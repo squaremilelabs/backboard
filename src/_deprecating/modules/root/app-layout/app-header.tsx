@@ -1,18 +1,18 @@
 "use client"
 import { AlarmClockIcon, DiamondIcon, LucideIcon, MenuIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
-import { AppUserTray } from "./app-user-tray"
-import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
-import { useCurrentScopeView } from "@/_deprecating/modules/scope/use-scope-views"
-import { ScopeTitle } from "@/_deprecating/modules/scope/scope-title"
 import { Button } from "@/_deprecating/common/primitives/button/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
+import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { ScopeTitle } from "@/_deprecating/modules/scope/scope-title"
 import { ScopeViewTabs } from "@/_deprecating/modules/scope/scope-view-tabs"
+import { useCurrentScopeView } from "@/_deprecating/modules/scope/use-scope-views"
 import {
   useAccountCurrentTasks,
   useAccountSnoozedTasks,
 } from "@/_deprecating/modules/task/account-tasks"
-import { cn } from "@/_deprecating/common/utils/ui-utils"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
+import { AppUserTray } from "./app-user-tray"
 
 export function AppHeader() {
   const pathname = usePathname()

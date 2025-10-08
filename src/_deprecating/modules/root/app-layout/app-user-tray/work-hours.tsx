@@ -1,11 +1,11 @@
 "use client"
 import { getLocalTimeZone } from "@internationalized/date"
 import { typography } from "@/_deprecating/common/components/class-names"
-import { useAuth } from "@/hooks/use-auth"
 import { HourSelect } from "@/_deprecating/common/components/hour-select"
-import { AccountCustomWorkHours, parseAccountUpdateInput } from "@/database/models/account"
-import { db } from "@/database/db-client"
 import { DEFAULT_WORKING_HOURS, isWorkHoursValid } from "@/_deprecating/modules/auth/account-hours"
+import { db } from "@/database/db-client"
+import { AccountCustomWorkHours, parseAccountUpdateInput } from "@/database/models/account"
+import { useAuth } from "@/hooks/use-auth"
 
 export function AppUserTrayWorkHours() {
   const { account } = useAuth()

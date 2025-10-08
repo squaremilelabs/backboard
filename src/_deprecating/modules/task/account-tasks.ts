@@ -1,7 +1,7 @@
 "use client"
-import { useAuth } from "../../../hooks/use-auth"
 import { db } from "@/database/db-client"
 import { Task } from "@/database/models/task"
+import { useAuth } from "../../../hooks/use-auth"
 
 export function useAccountCurrentTasks() {
   const { account: account } = useAuth()

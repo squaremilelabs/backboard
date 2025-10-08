@@ -1,26 +1,26 @@
 "use client"
-import { useDragAndDrop } from "react-aria-components"
 import { startOfDay, subDays } from "date-fns"
-import { TaskActionBar } from "../task-actions"
-import { TaskListItem } from "./task-list-item"
-import { TasklistDragPreview } from "./internal/drag-preview"
-import { useTasklistSelection } from "./internal/use-selection"
+import { useDragAndDrop } from "react-aria-components"
+import { typography } from "@/_deprecating/common/components/class-names"
+import { CreateField } from "@/_deprecating/common/components/create-field"
+import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
 import {
   processItemKeys,
   reorderIds,
   sortItemsByIdOrder,
 } from "@/_deprecating/common/utils/list-utils"
-import { GridList } from "@/_deprecating/common/primitives/grid-list/components"
-import { CreateField } from "@/_deprecating/common/components/create-field"
 import { cn } from "@/_deprecating/common/utils/ui-utils"
-import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
-import { typography } from "@/_deprecating/common/components/class-names"
 import { db } from "@/database/db-client"
-import { parseTaskCreateInput, Task, TaskStatus } from "@/database/models/task"
-import { parseScopeUpdateInput } from "@/database/models/scope"
 import { RecurringTask } from "@/database/models/recurring-task"
+import { parseScopeUpdateInput } from "@/database/models/scope"
+import { parseTaskCreateInput, Task, TaskStatus } from "@/database/models/task"
 import { useAuth } from "@/hooks/use-auth"
 import { useDBQuery } from "@/hooks/use-db-query"
+import { useSessionStorageUtility } from "@/hooks/use-storage-utility"
+import { TaskActionBar } from "../task-actions"
+import { TasklistDragPreview } from "./internal/drag-preview"
+import { useTasklistSelection } from "./internal/use-selection"
+import { TaskListItem } from "./task-list-item"
 
 export function ScopeTaskList({
   scopeId,

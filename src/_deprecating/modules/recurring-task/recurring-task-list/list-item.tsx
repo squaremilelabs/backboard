@@ -1,16 +1,16 @@
 import { RefreshCwIcon, TextIcon } from "lucide-react"
 import { useState } from "react"
-import { getRecurringTaskInfo, RecurringTaskFrequencyValues } from "../recurring-task-info"
-import { RecurringTaskPanel } from "../recurring-task-panel"
-import { RecurringTaskFrequencyPicker } from "../recurring-task-frequency"
+import { typography } from "@/_deprecating/common/components/class-names"
+import { Button } from "@/_deprecating/common/primitives/button/components"
 import { GridListItem } from "@/_deprecating/common/primitives/grid-list/components"
 import { Icon } from "@/_deprecating/common/primitives/icon/components"
-import { ClassValue } from "@/_deprecating/common/utils/ui-utils"
-import { Button } from "@/_deprecating/common/primitives/button/components"
-import { typography } from "@/_deprecating/common/components/class-names"
-import { parseRecurringTaskUpdateInput, RecurringTask } from "@/database/models/recurring-task"
 import { Modal, ModalTrigger } from "@/_deprecating/common/primitives/modal/components"
+import { ClassValue } from "@/_deprecating/common/utils/ui-utils"
 import { db } from "@/database/db-client"
+import { parseRecurringTaskUpdateInput, RecurringTask } from "@/database/models/recurring-task"
+import { RecurringTaskFrequencyPicker } from "../recurring-task-frequency"
+import { getRecurringTaskInfo, RecurringTaskFrequencyValues } from "../recurring-task-info"
+import { RecurringTaskPanel } from "../recurring-task-panel"
 
 export function RecurringTaskListItem({
   task,
