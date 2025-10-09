@@ -1,10 +1,10 @@
 import { startOfDay, subDays } from "date-fns"
 import { createContext, useContext, useMemo } from "react"
-import { sortItemsByIdOrder } from "@/core/functions/sort-data"
 import { db } from "@/database/db-client"
 import { Account } from "@/database/models/account"
 import { Scope } from "@/database/models/scope"
 import { Task, TaskStatus } from "@/database/models/task"
+import { sortItemsByIdOrder } from "@/functions/sort-data"
 import { useDBQuery } from "@/hooks/use-db-query"
 
 type FetchedTaskInfo = Pick<Task, "id" | "status">

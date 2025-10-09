@@ -1,4 +1,4 @@
-import { twv } from "@/core/lib/tailwind"
+import { twv } from "@/lib/tailwind"
 
 export const listVariants = twv({
   slots: {

@@ -3,10 +3,10 @@
 import { SignedOut, SignInButton } from "@clerk/nextjs"
 import { ScopeTreeList } from "@/components/scope-tree-list"
 import { StatusNav } from "@/components/status-nav"
-import { twm } from "@/core/lib/tailwind"
 import { useAuth } from "@/hooks/use-auth"
 import { useQueryStates } from "@/hooks/use-query-states"
 import { RootScopeTreeProvider } from "@/hooks/use-root-scope-tree"
+import { twm } from "@/lib/tailwind"
 
 export default function Page() {
   const { account } = useAuth()

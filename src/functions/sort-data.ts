@@ -1,24 +1,19 @@
-import { RecurringTask } from "@/database/models/recurring-task"
-import { Scope } from "@/database/models/scope"
-import { Task } from "@/database/models/task"
+import type { RecurringTask } from "@/database/models/recurring-task"
+import type { Scope } from "@/database/models/scope"
+import type { Task } from "@/database/models/task"
 
 // Persistent ordering only applies to scopes (across all views) and current tasks.
 // Snoozed / done / recurring lists use intrinsic temporal or custom logic.
 
-export function sortCurrentTasks<T extends Task>(tasks: T[], listOrder: string[]): T[] {
+export function sortCurrentTasks<T extends Task>(tasks: T[], idOrder: string[]): T[] {
   // Respect persisted order; append any new tasks by ascending status_time (nulls last) then created_at.
-  const idSet = new Set(listOrder)
-  const ordered: T[] = []
-  for (const id of listOrder) {
-    const t = tasks.find((x) => x.id === id && x.status === "current")
-    if (t) ordered.push(t)
-  }
-  const missing = tasks.filter((t) => t.status === "current" && !idSet.has(t.id))
-  missing.sort(
-    (a, b) =>
-      (a.status_time ?? Infinity) - (b.status_time ?? Infinity) || a.created_at - b.created_at
-  )
-  return [...ordered, ...missing]
+  return sortItemsByIdOrder({
+    items: tasks,
+    idOrder,
+    missingIdsPosition: "end",
+    sortMissingIds: (a, b) =>
+      (a.status_time ?? Infinity) - (b.status_time ?? Infinity) || a.created_at - b.created_at,
+  })
 }
 
 export function sortSnoozedTasks<T extends Task>(tasks: T[]): T[] {
@@ -44,16 +39,13 @@ export function sortDoneTasks<T extends Task>(tasks: T[]): T[] {
     })
 }
 
-export function sortScopes<T extends Scope>(scopes: T[], listOrder: string[]): T[] {
-  const idSet = new Set(listOrder)
-  const ordered: T[] = []
-  for (const id of listOrder) {
-    const s = scopes.find((x) => x.id === id)
-    if (s) ordered.push(s)
-  }
-  const missing = scopes.filter((s) => !idSet.has(s.id))
-  missing.sort((a, b) => (a.created_at ?? 0) - (b.created_at ?? 0))
-  return [...ordered, ...missing]
+export function sortScopes<T extends Scope>(scopes: T[], idOrder: string[]): T[] {
+  return sortItemsByIdOrder({
+    items: scopes,
+    idOrder,
+    missingIdsPosition: "end",
+    sortMissingIds: (a, b) => (a.created_at ?? 0) - (b.created_at ?? 0),
+  })
 }
 
 // Placeholder: future custom logic for recurring tasks (currently stable insertion order)

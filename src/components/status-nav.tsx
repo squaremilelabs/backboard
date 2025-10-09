@@ -1,10 +1,10 @@
 "use client"
 
 import { ListBox, ListBoxItem } from "react-aria-components"
-import { twm } from "@/core/lib/tailwind"
 import { TaskStatus } from "@/database/models/task"
 import { useQueryStates } from "@/hooks/use-query-states"
 import { useRootScopeTree } from "@/hooks/use-root-scope-tree"
+import { twm } from "@/lib/tailwind"
 import { badgeVariants } from "./class-variants/badge"
 
 export function StatusNav() {

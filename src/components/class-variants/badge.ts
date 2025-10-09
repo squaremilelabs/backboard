@@ -1,4 +1,4 @@
-import { twv } from "@/core/lib/tailwind"
+import { twv } from "@/lib/tailwind"
 
 export const badgeVariants = twv({
   base: ["text-xs leading-(--text-xs) font-bold", "px-space-md py-space-sm rounded-full border"],

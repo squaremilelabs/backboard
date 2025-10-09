@@ -1,5 +1,13 @@
 "use client"
-import { ArrowUpDownIcon, BanIcon, ChevronLeftIcon, PlusIcon } from "lucide-react"
+
+import {
+  ArrowUpDownIcon,
+  BanIcon,
+  ChevronLeftIcon,
+  CornerDownRightIcon,
+  EllipsisVerticalIcon,
+  PlusIcon,
+} from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import {
   Button,
@@ -13,13 +21,13 @@ import {
   TreeItemContent,
   useDragAndDrop,
 } from "react-aria-components"
-import { twm } from "@/core/lib/tailwind"
 import { db } from "@/database/db-client"
 import { parseAccountUpdateInput } from "@/database/models/account"
 import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
 import { TaskStatus } from "@/database/models/task"
 import { useAuth } from "@/hooks/use-auth"
 import { useRootScopeTree } from "@/hooks/use-root-scope-tree"
+import { twm } from "@/lib/tailwind"
 import { RootOrScopeTreeNode, ScopeTreeNode } from "../hooks/use-root-scope-tree"
 import { badgeVariants } from "./class-variants/badge"
 
@@ -60,6 +68,12 @@ export function ScopeTreeList({
 
   return (
     <div className="gap-space-sm flex flex-col">
+      <div className="p-space-md gap-space-md flex items-center text-sm">
+        <h2 className="text-neutral-muted-text font-medium uppercase">Scopes</h2>
+        <Button className="text-neutral-muted-text">
+          <EllipsisVerticalIcon />
+        </Button>
+      </div>
       <Tree
         aria-label="Scopes"
         items={items}
@@ -76,14 +90,7 @@ export function ScopeTreeList({
       >
         {function renderNode(node) {
           // Note the recursion!
-          return (
-            <ScopeTreeListItem
-              isRoot={node.id === rootNode.id}
-              node={node}
-              renderNode={renderNode}
-              countStatus={countStatus}
-            />
-          )
+          return <ScopeTreeListItem node={node} renderNode={renderNode} countStatus={countStatus} />
         }}
       </Tree>
       <ScopeTreeCreateField />
@@ -92,12 +99,10 @@ export function ScopeTreeList({
 }
 
 function ScopeTreeListItem({
-  isRoot: _isRoot,
   node,
   renderNode,
   countStatus,
 }: {
-  isRoot: boolean
   node: RootOrScopeTreeNode
   renderNode: (node: ScopeTreeNode) => React.ReactNode
   countStatus?: TaskStatus
@@ -123,7 +128,7 @@ function ScopeTreeListItem({
       ])}
     >
       <TreeItemContent>
-        {({ isExpanded, allowsDragging, hasChildItems, isDragging }) => {
+        {({ isExpanded, allowsDragging, hasChildItems, isDragging, level }) => {
           return (
             <>
               <div
@@ -135,7 +140,10 @@ function ScopeTreeListItem({
                 {allowsDragging && (
                   <Button slot="drag" className={"sr-only"} excludeFromTabOrder></Button>
                 )}
-                {isDragging && <ArrowUpDownIcon className="text-base-outline" strokeWidth={2.5} />}
+                {isDragging && (
+                  <ArrowUpDownIcon className="text-base-outline shrink-0" strokeWidth={2.5} />
+                )}
+                {level > 1 && !isDragging && <CornerDownRightIcon className="shrink-0" />}
                 {countStatus && directCount ? (
                   <span
                     className={badgeVariants({
@@ -207,7 +215,7 @@ function ScopeTreeCreateField({}) {
       </Button>
       <Input
         ref={inputRef}
-        placeholder="Add scope of work"
+        placeholder="Add scope"
         className={twm(["py-space-md grow", "!outline-0"])}
         value={title}
         onChange={(e) => setTitle(e.target.value)}
