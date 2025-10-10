@@ -30,7 +30,7 @@ export const RecurringTaskCreateSchema = z
       .object({
         id: z.uuidv4().optional(),
         owner_id: z.uuidv4(),
-        scope_id: z.uuidv4(),
+        scope_id: z.uuidv4().optional(),
         title: z.string().trim().min(1),
         content: z.string().trim().nullish(),
         is_inactive: z.boolean().optional().default(false),
@@ -52,13 +52,16 @@ export const RecurringTaskCreateSchema = z
     ])
   )
   .transform(({ id, scope_id, owner_id, ...data }) => {
+    const link: Partial<Record<keyof RecurringTaskLinks, string>> = {
+      owner: owner_id,
+    }
+    if (scope_id) {
+      link.scope = scope_id
+    }
     return {
       id: id ?? v4(),
       data,
-      link: {
-        scope: scope_id,
-        owner: owner_id,
-      },
+      link,
     }
   })
 

@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "./colors.css";
 @plugin "@tailwindcss/typography";
-@plugin "tailwindcss-react-aria-components";
 
 @theme {
   --font-sans: var(--font-sans);

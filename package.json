@@ -49,7 +49,6 @@
     "svix": "^1.76.1",
     "tailwind-merge": "^3.3.1",
     "tailwind-variants": "^3.1.1",
-    "tailwindcss-react-aria-components": "^2.0.1",
     "timezone-support": "^3.1.0",
     "usehooks-ts": "^3.1.1",
     "uuid": "^13.0.0",

@@ -4,5 +4,6 @@ export const listVariants = twv({
   slots: {
     list: [],
     item: [],
+    itemButton: [],
   },
 })

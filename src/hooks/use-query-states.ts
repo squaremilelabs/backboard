@@ -6,7 +6,7 @@ export function useQueryStates() {
     "status",
     parseAsStringLiteral(["current", "snoozed", "done"] as TaskStatus[]).withDefault("current")
   )
-  const [scope, setScope] = useQueryState("scope", parseAsString.withDefault("root"))
+  const [scopeId, setScopeId] = useQueryState("scope", parseAsString.withDefault("root"))
   const [showInactiveScopes, setShowInactiveScopes] = useQueryState(
     "show-inactive-scopes",
     parseAsBoolean.withDefault(false)
@@ -15,8 +15,8 @@ export function useQueryStates() {
   return {
     status,
     setStatus,
-    scope,
-    setScope,
+    scopeId,
+    setScopeId,
     showInactiveScopes,
     setShowInactiveScopes,
   }

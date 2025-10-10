@@ -5,7 +5,7 @@ import { TaskStatus } from "@/database/models/task"
 import { useQueryStates } from "@/hooks/use-query-states"
 import { useRootScopeTree } from "@/hooks/use-root-scope-tree"
 import { twm } from "@/lib/tailwind"
-import { badgeVariants } from "./class-variants/badge"
+import { badgeVariants } from "./tw-variants/badge"
 
 export function StatusNav() {
   const { status, setStatus } = useQueryStates()

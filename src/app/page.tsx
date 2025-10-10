@@ -3,6 +3,7 @@
 import { SignedOut, SignInButton } from "@clerk/nextjs"
 import { ScopeTreeList } from "@/components/scope-tree-list"
 import { StatusNav } from "@/components/status-nav"
+import { TaskList } from "@/components/task-list"
 import { useAuth } from "@/hooks/use-auth"
 import { useQueryStates } from "@/hooks/use-query-states"
 import { RootScopeTreeProvider } from "@/hooks/use-root-scope-tree"
@@ -10,7 +11,7 @@ import { twm } from "@/lib/tailwind"
 
 export default function Page() {
   const { account } = useAuth()
-  const { scope, setScope, status, showInactiveScopes } = useQueryStates()
+  const { scopeId, setScopeId, status, showInactiveScopes } = useQueryStates()
 
   return (
     <RootScopeTreeProvider account={account} fetchInactiveScopes={showInactiveScopes}>
@@ -37,20 +38,18 @@ export default function Page() {
           ])}
         >
           <div className="flex w-[324px] flex-col">
-            <ScopeTreeList
-              selectedId={scope}
-              onSelectId={setScope}
-              countStatus={status}
-              withDragAndDrop
-            />
+            <ScopeTreeList selectedId={scopeId} onSelectId={setScopeId} countStatus={status} />
           </div>
           <div
             className={twm(
               "sticky top-0",
               "bg-base-bg h-full max-h-full grow overflow-auto",
-              "rounded-lg border-2"
+              "rounded-lg border-2",
+              "p-space-lg"
             )}
-          ></div>
+          >
+            <TaskList />
+          </div>
         </div>
       </div>
     </RootScopeTreeProvider>

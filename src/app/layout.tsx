@@ -51,7 +51,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       )}
       suppressHydrationWarning
     >
-      <body className="relative flex h-full min-h-0 w-full flex-col overflow-hidden">
+      <body className="relative flex h-full max-h-full min-h-0 w-full flex-col overflow-hidden">
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -21,7 +21,7 @@ export const badgeVariants = twv({
     {
       color: "primary",
       type: "outline",
-      class: ["bg-transparent text-primary-text"],
+      class: ["bg-transparent text-primary-text border-transparent p-0"],
     },
     {
       color: "neutral",
@@ -31,7 +31,7 @@ export const badgeVariants = twv({
     {
       color: "neutral",
       type: "outline",
-      class: ["bg-transparent text-neutral-text"],
+      class: ["bg-transparent text-neutral-text border-transparent p-0"],
     },
   ],
   defaultVariants: {

@@ -4,7 +4,7 @@ import {
   ArrowUpDownIcon,
   BanIcon,
   ChevronLeftIcon,
-  CornerDownRightIcon,
+  EllipsisIcon,
   EllipsisVerticalIcon,
   PlusIcon,
 } from "lucide-react"
@@ -14,8 +14,8 @@ import {
   Collection,
   DragAndDropHooks,
   DropIndicator,
-  Group,
   Input,
+  TextField,
   Tree,
   TreeItem,
   TreeItemContent,
@@ -29,18 +29,18 @@ import { useAuth } from "@/hooks/use-auth"
 import { useRootScopeTree } from "@/hooks/use-root-scope-tree"
 import { twm } from "@/lib/tailwind"
 import { RootOrScopeTreeNode, ScopeTreeNode } from "../hooks/use-root-scope-tree"
-import { badgeVariants } from "./class-variants/badge"
+import { badgeVariants } from "./tw-variants/badge"
 
 export function ScopeTreeList({
   selectedId,
   onSelectId,
   countStatus,
-  withDragAndDrop,
+  isSelectList,
 }: {
   selectedId: "root" | string
   onSelectId: (id: string) => void
   countStatus?: TaskStatus
-  withDragAndDrop?: boolean
+  isSelectList?: boolean
 }) {
   const { rootNode, nodeById } = useRootScopeTree()
   const dragAndDropHooks = useScopeTreeListDragAndDrop()
@@ -66,14 +66,34 @@ export function ScopeTreeList({
     ...rootChildren,
   ]
 
+  const withHeader = !isSelectList
+  const withDragAndDrop = !isSelectList
+  const withCreateField = !isSelectList
+  const withActions = !isSelectList
+
   return (
-    <div className="gap-space-sm flex flex-col">
-      <div className="p-space-md gap-space-md flex items-center text-sm">
-        <h2 className="text-neutral-muted-text font-medium uppercase">Scopes</h2>
-        <Button className="text-neutral-muted-text">
-          <EllipsisVerticalIcon />
-        </Button>
-      </div>
+    <div className={twm("gap-space-sm flex flex-col")}>
+      {withHeader && (
+        <div
+          className={twm(
+            "flex items-center justify-between",
+            "px-space-md py-space-sm gap-space-md"
+          )}
+        >
+          <h2 className={twm("text-neutral-muted-text text-sm font-medium uppercase")}>Scopes</h2>
+          <Button
+            className={twm(
+              "flex items-center justify-center",
+              "text-neutral-muted-text",
+              "size-box-sm",
+              "rounded-md",
+              "hover:bg-base-bg/70 hover:text-base-text"
+            )}
+          >
+            <EllipsisIcon />
+          </Button>
+        </div>
+      )}
       <Tree
         aria-label="Scopes"
         items={items}
@@ -90,10 +110,17 @@ export function ScopeTreeList({
       >
         {function renderNode(node) {
           // Note the recursion!
-          return <ScopeTreeListItem node={node} renderNode={renderNode} countStatus={countStatus} />
+          return (
+            <ScopeTreeListItem
+              node={node}
+              renderNode={renderNode}
+              countStatus={countStatus}
+              withActions={withActions}
+            />
+          )
         }}
       </Tree>
-      <ScopeTreeCreateField />
+      {withCreateField && <ScopeTreeCreateField />}
     </div>
   )
 }
@@ -102,10 +129,12 @@ function ScopeTreeListItem({
   node,
   renderNode,
   countStatus,
+  withActions,
 }: {
   node: RootOrScopeTreeNode
   renderNode: (node: ScopeTreeNode) => React.ReactNode
-  countStatus?: TaskStatus
+  countStatus: TaskStatus | undefined
+  withActions: boolean
 }) {
   const { id, scope, taskCounts } = node
 
@@ -118,32 +147,46 @@ function ScopeTreeListItem({
       id={id}
       textValue={scope?.title || "Main"}
       className={twm([
-        "flex items-stretch",
+        "flex items-start",
         "transition-all",
         "rounded-md border-2 border-transparent",
         "hover:bg-base-bg/70",
-        "selected:bg-base-bg selected:border-base-border",
-        "drop-target:outline-2 drop-target:my-2",
+        "data-selected:bg-base-bg data-selected:border-base-border",
+        "data-drop-target:my-2 data-drop-target:outline-2",
         "ml-[calc((var(--tree-item-level)-1)*var(--spacing-space-lg)*2)]",
       ])}
     >
       <TreeItemContent>
-        {({ isExpanded, allowsDragging, hasChildItems, isDragging, level }) => {
+        {({ isSelected, isExpanded, allowsDragging, hasChildItems, isDragging }) => {
+          const showActions = id !== "root" && withActions
           return (
             <>
+              {showActions && (
+                <Button
+                  className={twm(
+                    "flex items-center justify-center",
+                    "shrink-0 transition-all",
+                    "size-box-md rounded-md",
+                    "text-neutral-muted-text",
+                    "hover:bg-neutral-muted-bg hover:text-base-text"
+                  )}
+                >
+                  <EllipsisVerticalIcon />
+                </Button>
+              )}
               <div
                 className={twm(
                   "flex grow items-center truncate",
-                  "pl-space-lg py-space-md gap-space-md"
+                  "px-space-xs py-space-md gap-space-md",
+                  !showActions && "pl-space-lg"
                 )}
               >
                 {allowsDragging && (
-                  <Button slot="drag" className={"sr-only"} excludeFromTabOrder></Button>
+                  <Button slot="drag" className="sr-only" excludeFromTabOrder></Button>
                 )}
                 {isDragging && (
                   <ArrowUpDownIcon className="text-base-outline shrink-0" strokeWidth={2.5} />
                 )}
-                {level > 1 && !isDragging && <CornerDownRightIcon className="shrink-0" />}
                 {countStatus && directCount ? (
                   <span
                     className={badgeVariants({
@@ -153,7 +196,9 @@ function ScopeTreeListItem({
                     {directCount}
                   </span>
                 ) : null}
-                <p className="grow truncate">{scope?.title || "Main"}</p>
+                <p className={twm("grow truncate", isSelected && "font-medium")}>
+                  {scope?.title || "Main"}
+                </p>
               </div>
               {hasChildItems ? (
                 <Button
@@ -162,7 +207,7 @@ function ScopeTreeListItem({
                     "flex items-center justify-center",
                     "shrink-0 transition-all",
                     "h-box-md rounded-md",
-                    "hover:bg-neutral-muted-bg hover:text-base-text",
+                    "hover:bg-neutral-muted-bg",
                     "pl-space-lg gap-space-sm"
                   )}
                 >
@@ -197,30 +242,37 @@ function ScopeTreeCreateField({}) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <Group
+    <TextField
+      aria-label="Add scope"
+      value={title}
+      onChange={setTitle}
       className={twm([
+        "group/create-field",
         "flex items-center",
-        "px-space-lg gap-space-md",
+        "px-space-lg py-space-md gap-space-md",
         "rounded-md border-2 border-transparent",
         "focus-within:bg-base-bg/70",
         "hover:bg-base-bg/50",
+        "has-data-focus-visible:outline-2",
       ])}
     >
-      <Button
-        onPress={() => inputRef.current?.focus()}
-        excludeFromTabOrder
-        className={"!outline-0"}
-      >
-        <PlusIcon />
-      </Button>
-      <Input
-        ref={inputRef}
-        placeholder="Add scope"
-        className={twm(["py-space-md grow", "!outline-0"])}
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-    </Group>
+      {({}) => (
+        <>
+          <Button
+            onPress={() => inputRef.current?.focus()}
+            excludeFromTabOrder
+            className={twm(
+              "!outline-0",
+              "text-neutral-muted-text",
+              "group-focus-within/create-field:text-base-text"
+            )}
+          >
+            <PlusIcon />
+          </Button>
+          <Input ref={inputRef} placeholder="Add scope" className={twm(["grow", "!outline-0"])} />
+        </>
+      )}
+    </TextField>
   )
 }
 
