@@ -102,13 +102,30 @@ function getRelativeTimeLabels(date: Date): { short: string; long: string } {
   const [fromNowInt, fromNowUnit] = formatDistanceToNowStrict(date)?.split(" ")
   const fromNowFull = formatDistanceToNow(date, { addSuffix: true })
 
+  let shortInt = fromNowInt
   let shortUnit = fromNowUnit[0]
+  if (fromNowUnit.startsWith("sec")) {
+    shortInt = "<1"
+    shortUnit = "min"
+  }
+  if (fromNowUnit.startsWith("min")) {
+    shortUnit = "min"
+  }
+  if (fromNowUnit.startsWith("hour")) {
+    shortUnit = "hr"
+  }
+  if (fromNowUnit.startsWith("day")) {
+    shortUnit = "day"
+  }
+  if (fromNowUnit.startsWith("week")) {
+    shortUnit = "wk"
+  }
   if (fromNowUnit.startsWith("month")) {
     shortUnit = "mo"
   }
 
   return {
-    short: fromNowInt + shortUnit,
+    short: shortInt + shortUnit,
     long: fromNowFull,
   }
 }

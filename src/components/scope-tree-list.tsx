@@ -15,6 +15,7 @@ import {
   DragAndDropHooks,
   DropIndicator,
   Input,
+  isTextDropItem,
   TextField,
   Tree,
   TreeItem,
@@ -24,7 +25,7 @@ import {
 import { db } from "@/database/db-client"
 import { parseAccountUpdateInput } from "@/database/models/account"
 import { parseScopeUpdateInput, Scope } from "@/database/models/scope"
-import { TaskStatus } from "@/database/models/task"
+import { Task, TaskStatus } from "@/database/models/task"
 import { useAuth } from "@/hooks/use-auth"
 import { useRootScopeTree } from "@/hooks/use-root-scope-tree"
 import { twm } from "@/lib/tailwind"
@@ -148,7 +149,6 @@ function ScopeTreeListItem({
       textValue={scope?.title || "Main"}
       className={twm([
         "flex items-start",
-        "transition-all",
         "rounded-md border-2 border-transparent",
         "hover:bg-base-bg/70",
         "data-selected:bg-base-bg data-selected:border-base-border",
@@ -161,11 +161,14 @@ function ScopeTreeListItem({
           const showActions = id !== "root" && withActions
           return (
             <>
+              {allowsDragging && (
+                <Button slot="drag" className="sr-only" excludeFromTabOrder></Button>
+              )}
               {showActions && (
                 <Button
                   className={twm(
                     "flex items-center justify-center",
-                    "shrink-0 transition-all",
+                    "shrink-0",
                     "size-box-md rounded-md",
                     "text-neutral-muted-text",
                     "hover:bg-neutral-muted-bg hover:text-base-text"
@@ -181,9 +184,6 @@ function ScopeTreeListItem({
                   !showActions && "pl-space-lg"
                 )}
               >
-                {allowsDragging && (
-                  <Button slot="drag" className="sr-only" excludeFromTabOrder></Button>
-                )}
                 {isDragging && (
                   <ArrowUpDownIcon className="text-base-outline shrink-0" strokeWidth={2.5} />
                 )}
@@ -205,7 +205,7 @@ function ScopeTreeListItem({
                   slot={"chevron"}
                   className={twm(
                     "flex items-center justify-center",
-                    "shrink-0 transition-all",
+                    "shrink-0",
                     "h-box-md rounded-md",
                     "hover:bg-neutral-muted-bg",
                     "pl-space-lg gap-space-sm"
@@ -324,7 +324,7 @@ function useScopeTreeListDragAndDrop(): DragAndDropHooks<ScopeTreeNode> {
         })
         .filter((item) => item !== null)
     },
-    acceptedDragTypes: ["db/scope"],
+    acceptedDragTypes: ["db/scope", "db/task"],
     shouldAcceptItemDrop(target, keys) {
       if (keys.has("db/scope")) {
         // Allow drops after root (which moves item to top of list)
@@ -366,6 +366,25 @@ function useScopeTreeListDragAndDrop(): DragAndDropHooks<ScopeTreeNode> {
           ])}
         />
       )
+    },
+    async onItemDrop(e) {
+      // Handles dropping tasks into a scope
+      const scopeId = e.target.key as string
+      const items = e.items.filter(isTextDropItem)
+      if (items.every((item) => item.types.has("db/task"))) {
+        const tasks = (await Promise.all(
+          items.map(async (item) => JSON.parse(await item.getText("db/task")))
+        )) as (Task & { scope: { id: string } | null })[]
+        if (scopeId !== "root") {
+          db.transact(db.tx.scopes[scopeId].link({ tasks: tasks.map((task) => task.id) }))
+        } else {
+          db.transact(
+            tasks
+              .filter((tasks) => tasks.scope)
+              .map((task) => db.tx.tasks[task.id].unlink({ scope: task.scope?.id }))
+          )
+        }
+      }
     },
     onMove({ keys, target }) {
       // Extracted variables for readability

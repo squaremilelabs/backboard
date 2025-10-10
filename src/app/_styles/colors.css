@@ -159,7 +159,7 @@
 
   --primary-muted-bg: var(--sml-gold-50);
   --primary-muted-fg: var(--sml-gold-600);
-  --primary-muted-text: var(--sml-gold-600);
+  --primary-muted-text: var(--sml-gold-300);
   --primary-muted-border: var(--sml-gold-200);
 }
 
