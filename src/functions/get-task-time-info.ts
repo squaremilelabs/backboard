@@ -70,7 +70,7 @@ export function getTaskTimeInfo(
     statusRelativeLong = statusRelativeLong.replace("in ", "").replace(" ago", "")
     if (task.status_time === null) {
       statusSuffix = "Snoozed until"
-      statusRelativeShort = "Som."
+      statusRelativeShort = "--"
       statusRelativeLong = "Someday"
       statusDateLong = "Someday"
       statusDateShort = "Someday"
@@ -105,17 +105,17 @@ function getRelativeTimeLabels(date: Date): { short: string; long: string } {
   let shortInt = fromNowInt
   let shortUnit = fromNowUnit[0]
   if (fromNowUnit.startsWith("sec")) {
-    shortInt = "<1"
-    shortUnit = "min"
+    shortInt = "< 1"
+    shortUnit = "m"
   }
   if (fromNowUnit.startsWith("min")) {
-    shortUnit = "min"
+    shortUnit = "m"
   }
   if (fromNowUnit.startsWith("hour")) {
     shortUnit = "hr"
   }
   if (fromNowUnit.startsWith("day")) {
-    shortUnit = "day"
+    shortUnit = "d"
   }
   if (fromNowUnit.startsWith("week")) {
     shortUnit = "wk"

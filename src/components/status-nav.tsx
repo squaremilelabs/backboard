@@ -5,7 +5,7 @@ import { TaskStatus } from "@/database/models/task"
 import { useQueryStates } from "@/hooks/use-query-states"
 import { useRootScopeTree } from "@/hooks/use-root-scope-tree"
 import { twm } from "@/lib/tailwind"
-import { badgeVariants } from "./tw-variants/badge"
+import { countBadge } from "./primitives/_class-names"
 
 export function StatusNav() {
   const { status, setStatus } = useQueryStates()
@@ -21,7 +21,7 @@ export function StatusNav() {
     <ListBox
       aria-label="Select Status View"
       selectionMode="single"
-      selectionBehavior="replace"
+      selectionBehavior="toggle"
       selectedKeys={[status]}
       disallowEmptySelection
       onSelectionChange={(keys) => setStatus([...keys][0] as TaskStatus)}
@@ -37,8 +37,7 @@ export function StatusNav() {
             className={twm([
               "flex items-center",
               "rounded-lg border-2 border-transparent",
-              "px-space-lg py-space-md gap-space-lg",
-              "text-md",
+              "h-box-md gap-space-md px-space-lg",
               "transition-all",
               "hover:bg-neutral-muted-bg",
               "opacity-50 hover:opacity-100 data-selected:opacity-100",
@@ -48,12 +47,7 @@ export function StatusNav() {
             ])}
           >
             {count > 0 && (
-              <span
-                className={badgeVariants({
-                  color: status === "current" ? "primary" : "neutral",
-                  class: "opacity-100 transition-all starting:opacity-0",
-                })}
-              >
+              <span className={countBadge({ color: status === "current" ? "primary" : "neutral" })}>
                 {count}
               </span>
             )}

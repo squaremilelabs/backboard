@@ -33,7 +33,7 @@ const twMergeConfig: Parameters<typeof extendTailwindMerge>[0] = {
 export const twv = createTV({ twMergeConfig })
 export const twm = (...inputs: ClassValue[]) => extendTailwindMerge(twMergeConfig)(...inputs)
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Can't create a generic tv return type without passing
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Can't create a generic tv return type
 export type SlottedClassNames<T extends (...args: any[]) => any, P extends object | null = null> = {
-  [K in keyof ReturnType<T>]: P extends null ? ClassValue : (props: P) => ClassValue
+  [K in keyof ReturnType<T>]: P extends null ? ClassValue : ClassValue | ((props: P) => ClassValue)
 }

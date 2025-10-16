@@ -37,7 +37,7 @@ export default function Page() {
             "p-space-lg gap-space-lg",
           ])}
         >
-          <div className="flex w-[324px] flex-col">
+          <div className="flex w-[324px] shrink-0 flex-col">
             <ScopeTreeList selectedId={scopeId} onSelectId={setScopeId} countStatus={status} />
           </div>
           <div
